@@ -127,6 +127,34 @@
         }
         .community-zone h2 { color: #d4798b; margin-bottom: 10px; }
         .community-zone p { color: #8b7d8b; }
+        
+        .game-zone {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 25px;
+            border: 4px solid #ffb6c1;
+            max-width: 700px;
+            text-align: center;
+        }
+        .game-zone h2 { color: #d4798b; margin-bottom: 15px; }
+        #game-canvas {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 15px;
+            cursor: none;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        .game-score {
+            font-size: 1.2rem;
+            color: #5d4e60;
+            margin-top: 10px;
+        }
+        .game-cat {
+            position: absolute;
+            font-size: 2rem;
+            transition: all 0.3s ease-out;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -185,6 +213,12 @@
 <p>Zoomie Champion</p>
 </div>
 </div>
+<div class="game-zone">
+<h2>🧶 Cat Chase Game 🧶</h2>
+<p style="color:#8b7d8b;margin-bottom:15px;">Move your mouse! Cats will chase the yarn ball!</p>
+<canvas height="300" id="game-canvas" width="650"></canvas>
+<p class="game-score">Yarn caught: <span id="score">0</span> times! 🎉</p>
+</div>
 <div class="community-zone">
 <h2>✨ Community Cat Corner ✨</h2>
 <p>🎉 The cat family is growing! 8 adorable felines now call this paradise home! 🎉</p>
@@ -219,6 +253,81 @@
         const style = document.createElement('style');
         style.textContent = '@keyframes fadeUp{0%{opacity:1;top:-10px;}100%{opacity:0;top:-50px;}}';
         document.head.appendChild(style);
+        
+        // Cat Chase Game
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        let mouseX = canvas.width / 2;
+        let mouseY = canvas.height / 2;
+        let score = 0;
+        
+        const gameCats = [
+            { x: 100, y: 100, emoji: '😺', speed: 2.5 },
+            { x: 500, y: 200, emoji: '🐱', speed: 2 },
+            { x: 300, y: 150, emoji: '😸', speed: 3 },
+            { x: 200, y: 250, emoji: '🐈', speed: 1.8 }
+        ];
+        
+        const yarn = { x: mouseX, y: mouseY, radius: 15 };
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        
+        function drawYarn(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, yarn.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff6b9d';
+            ctx.fill();
+            ctx.strokeStyle = '#ff4081';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            // Yarn string
+            ctx.beginPath();
+            ctx.moveTo(x, y + yarn.radius);
+            ctx.quadraticCurveTo(x + 20, y + 40, x - 10, y + 50);
+            ctx.strokeStyle = '#ff6b9d';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Smooth yarn movement
+            yarn.x += (mouseX - yarn.x) * 0.1;
+            yarn.y += (mouseY - yarn.y) * 0.1;
+            
+            drawYarn(yarn.x, yarn.y);
+            
+            // Update and draw cats
+            gameCats.forEach(cat => {
+                const dx = yarn.x - cat.x;
+                const dy = yarn.y - cat.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist > 30) {
+                    cat.x += (dx / dist) * cat.speed;
+                    cat.y += (dy / dist) * cat.speed;
+                } else if (dist < 25) {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                    // Scatter yarn
+                    yarn.x = Math.random() * (canvas.width - 60) + 30;
+                    yarn.y = Math.random() * (canvas.height - 60) + 30;
+                }
+                
+                ctx.font = '35px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(cat.emoji, cat.x, cat.y);
+            });
+            
+            requestAnimationFrame(gameLoop);
+        }
+        gameLoop();
     </script>
 </body>
 </html>
