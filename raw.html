@@ -279,6 +279,21 @@
         }
         .cat-score { color: #e74c3c; }
         .dog-score { color: #3498db; }
+        .hero-cat-indicator {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #ffd700 100%);
+            padding: 8px 14px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #5d4e60;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+            animation: heroGlow 1s ease-in-out infinite;
+            border: 2px solid #fff;
+        }
+        @keyframes heroGlow {
+            0%, 100% { box-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 20px #ffd700, 0 0 40px rgba(255,215,0,0.8), 0 0 60px rgba(255,107,107,0.4); }
+        }
         .vs-text {
             color: #f39c12;
             font-size: 1.5rem;
@@ -349,6 +364,7 @@
 <span class="vs-text">VS</span>
 <span class="dog-score">🐕 Dogs: <span id="dog-wins">0</span></span>
 </div>
+<div class="hero-cat-indicator" style="margin-top:12px;">🎮 HERO CAT: Type "left" or "right" in chat to control! 🐱⭐</div>
 </div>
 <div class="side-spectators right-side" style="display:flex;flex-direction:column;gap:10px;">
 </div>
@@ -793,6 +809,115 @@
         let cats = [];
         let dogs = [];
         
+        // 🎮 HERO CAT - Chat Controlled!
+        const heroCat = {
+            x: 100,
+            y: 180,
+            targetX: 100,
+            hp: 200,
+            maxHp: 200,
+            attackPower: 25,
+            attackCooldown: 0,
+            emoji: '⭐🐱',
+            size: 38,
+            bobOffset: 0,
+            isHero: true,
+            lastCommand: '',
+            commandFlash: 0
+        };
+        
+        function moveHeroCat(direction) {
+            if (direction === 'left') {
+                heroCat.targetX = Math.max(40, heroCat.x - 60);
+                heroCat.lastCommand = '⬅️ LEFT!';
+            } else if (direction === 'right') {
+                heroCat.targetX = Math.min(battleCanvas.width - 40, heroCat.x + 60);
+                heroCat.lastCommand = '➡️ RIGHT!';
+            }
+            heroCat.commandFlash = 30;
+        }
+        
+        function updateHeroCat() {
+            heroCat.bobOffset += 0.12;
+            if (heroCat.commandFlash > 0) heroCat.commandFlash--;
+            if (heroCat.attackCooldown > 0) heroCat.attackCooldown--;
+            
+            // Smooth movement toward target
+            const dx = heroCat.targetX - heroCat.x;
+            heroCat.x += dx * 0.15;
+            
+            // Attack nearby dogs
+            dogs.forEach(dog => {
+                const dist = Math.abs(dog.x - heroCat.x) + Math.abs(dog.y - heroCat.y);
+                if (dist < 80 && heroCat.attackCooldown <= 0) {
+                    dog.hp -= heroCat.attackPower;
+                    heroCat.attackCooldown = 25;
+                }
+            });
+            
+            // Take damage from nearby dogs
+            dogs.forEach(dog => {
+                const dist = Math.abs(dog.x - heroCat.x) + Math.abs(dog.y - heroCat.y);
+                if (dist < 50 && dog.attackCooldown <= 0) {
+                    heroCat.hp -= 5;
+                    if (heroCat.hp <= 0) heroCat.hp = heroCat.maxHp; // Respawn!
+                }
+            });
+        }
+        
+        function drawHeroCat(ctx) {
+            const bobY = Math.sin(heroCat.bobOffset) * 5;
+            
+            // Glow effect for hero
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 20 + Math.sin(heroCat.bobOffset * 2) * 10;
+            
+            // Health bar (bigger for hero)
+            const barWidth = 50;
+            const barHeight = 6;
+            ctx.fillStyle = '#333';
+            ctx.shadowBlur = 0;
+            ctx.fillRect(heroCat.x - barWidth/2, heroCat.y - 35 + bobY, barWidth, barHeight);
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(heroCat.x - barWidth/2, heroCat.y - 35 + bobY, barWidth * (heroCat.hp / heroCat.maxHp), barHeight);
+            
+            // Crown above hero
+            ctx.font = '18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', heroCat.x, heroCat.y - 45 + bobY);
+            
+            // Hero emoji
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 15;
+            ctx.font = `${heroCat.size}px Arial`;
+            ctx.fillText('🐱', heroCat.x, heroCat.y + bobY);
+            ctx.shadowBlur = 0;
+            
+            // Star sparkles
+            if (Math.random() < 0.3) {
+                ctx.font = '12px Arial';
+                ctx.fillText('✨', heroCat.x + (Math.random() - 0.5) * 40, heroCat.y + (Math.random() - 0.5) * 30 + bobY);
+            }
+            
+            // Attack flash
+            if (heroCat.attackCooldown > 20) {
+                ctx.font = '20px Arial';
+                ctx.fillText('💥', heroCat.x + 25, heroCat.y - 15 + bobY);
+            }
+            
+            // Command indicator
+            if (heroCat.commandFlash > 0) {
+                ctx.font = 'bold 14px Comic Sans MS';
+                ctx.fillStyle = '#ffd700';
+                ctx.fillText(heroCat.lastCommand, heroCat.x, heroCat.y - 55 + bobY);
+            }
+            
+            // Label
+            ctx.font = 'bold 10px Comic Sans MS';
+            ctx.fillStyle = '#ffd700';
+            ctx.fillText('HERO', heroCat.x, heroCat.y + 25 + bobY);
+        }
+        
         function spawnUnits() {
             if (cats.length < 4) cats.push(new BattleUnit('cat', 30 + Math.random() * 50));
             if (dogs.length < 4) dogs.push(new BattleUnit('dog', battleCanvas.width - 30 - Math.random() * 50));
@@ -832,6 +957,10 @@
                 dogWins += deadCats;
                 document.getElementById('dog-wins').textContent = dogWins;
             }
+            
+            // Update and draw hero cat
+            updateHeroCat();
+            drawHeroCat(battleCtx);
             
             // Draw all units
             cats.forEach(c => c.draw(battleCtx));
@@ -1119,6 +1248,14 @@
             chatWs.onmessage = (e) => {
                 const msg = JSON.parse(e.data);
                 if (msg.type === 'chat_message') {
+                    // 🎮 HERO CAT CONTROLS!
+                    const lowerMsg = msg.message.toLowerCase().trim();
+                    if (lowerMsg === 'left' || lowerMsg === 'l') {
+                        moveHeroCat('left');
+                    } else if (lowerMsg === 'right' || lowerMsg === 'r') {
+                        moveHeroCat('right');
+                    }
+                    
                     // Skip messages containing @ (mentions/commands)
                     if (msg.message && msg.message.includes('@')) {
                         return; // Echo ignores @ messages! 🙀
