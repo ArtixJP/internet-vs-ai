@@ -1,295 +1,200 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ARIA-7 | AI Companion Interface</title>
+<title>Collective Canvas</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --cyan: #88d4e0;
-            --magenta: #c490a0;
-            --dark-bg: #0d0d14;
-            --panel-bg: rgba(18, 22, 32, 0.6);
-        }
         body {
             min-height: 100vh;
-            background: var(--dark-bg);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #e0e8ff;
-            overflow: hidden;
-        }
-        .grid-overlay {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0,240,255,0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,240,255,0.01) 1px, transparent 1px);
-            background-size: 80px 80px;
-            pointer-events: none;
-        }
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d1b2a 100%);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
             padding: 20px;
-            max-width: 1600px;
-            height: 100vh;
-            margin: 0 auto;
-        }
-        header {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--panel-bg);
-            border: 1px solid rgba(0,240,255,0.2);
-            border-radius: 10px;
-        }
-        .logo { font-size: 1.2rem; font-weight: 300; letter-spacing: 6px; color: var(--cyan); text-shadow: none; }
-        .status-bar { display: flex; gap: 20px; font-size: 0.85rem; }
-        .status-item { display: flex; align-items: center; gap: 6px; }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #6ab89a; box-shadow: none; animation: pulse 3s infinite; }
-        .ai-core {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--panel-bg);
-            border: 1px solid rgba(0,240,255,0.2);
-            border-radius: 15px;
-            padding: 30px;
-        }
-        .avatar-ring {
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--cyan), var(--magenta));
-            padding: 2px;
-            animation: rotate 20s linear infinite;
-        }
-        .avatar-inner {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            background: var(--dark-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-        .ai-name { margin-top: 20px; font-size: 1.4rem; font-weight: 200; letter-spacing: 12px; color: var(--cyan); opacity: 0.9; }
-        .ai-subtitle { font-size: 0.9rem; opacity: 0.6; margin-top: 5px; }
-        .conversation-area {
-            margin-top: 25px;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 15px;
-            min-height: 120px;
-        }
-        .ai-message {
-            font-style: italic;
-            color: var(--cyan);
-            text-align: center;
-            animation: fadeType 3s ease-out;
-        }
-        .side-panel {
-            display: flex;
-            flex-direction: column;
             gap: 15px;
         }
-        .panel-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(0,240,255,0.15);
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+        @keyframes shimmer {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+        .canvas-container {
+            background: #1a1a2e;
+            border: 3px solid #3a3a5e;
             border-radius: 10px;
-            padding: 15px;
-        }
-        .panel-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; color: var(--magenta); margin-bottom: 10px; opacity: 0.7; }
-        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
-        .stat-value { color: var(--cyan); }
-        .community-zone {
-            flex: 1;
-            border: 2px dashed rgba(255,0,170,0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-        .reddit-panel {
-            position: absolute;
-            top: 187px;
-            left: 40px;
-            width: 90px;
-            height: 82px;
-            background: linear-gradient(135deg, #1a3a5c, #2563eb);
-            border: 1px solid #60a5fa;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            color: #93c5fd;
-            text-align: center;
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
-            z-index: 10;
-        }
-        .reddit-panel span { font-size: 1.2rem; }
-        .sound-btn {
-            background: linear-gradient(135deg, #6b21a8, #9333ea);
-            border: 1px solid #a855f7;
-            color: #e9d5ff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        .sound-btn:hover {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
-            transform: scale(1.05);
-        }
-        .sound-btn.active { animation: soundPulse 0.5s ease infinite; }
-        @keyframes soundPulse { 0%, 100% { box-shadow: 0 0 10px rgba(147, 51, 234, 0.5); } 50% { box-shadow: 0 0 25px rgba(147, 51, 234, 0.8); } }
-        footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 0.75rem;
-            opacity: 0.4;
             padding: 10px;
+            box-shadow: 0 0 40px rgba(72, 219, 251, 0.2), inset 0 0 20px rgba(0,0,0,0.5);
         }
-        @keyframes rotate { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes fadeType { from { opacity: 0; } to { opacity: 1; } }
+        #canvas {
+            display: grid;
+            grid-template-columns: repeat(32, 16px);
+            grid-template-rows: repeat(20, 16px);
+            gap: 1px;
+            background: #0a0a15;
+        }
+        .pixel {
+            width: 16px;
+            height: 16px;
+            background: #1a1a2e;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .pixel.flash {
+            animation: pixelFlash 0.5s ease-out;
+        }
+        @keyframes pixelFlash {
+            0% { transform: scale(1.3); filter: brightness(2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 550px;
+        }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #3a3a5e;
+            position: relative;
+        }
+        .color-swatch::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: #888;
+            white-space: nowrap;
+        }
+        .instructions {
+            background: rgba(58, 58, 94, 0.3);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px solid #3a3a5e;
+        }
+        .instructions code {
+            background: #2a2a4e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #48dbfb;
+        }
+        .activity-log {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(26, 26, 46, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            max-width: 200px;
+            max-height: 100px;
+            overflow: hidden;
+            border: 1px solid #3a3a5e;
+        }
+        .log-entry {
+            opacity: 0.7;
+            margin: 2px 0;
+        }
+        .stats {
+            font-size: 0.8rem;
+            color: #888;
+        }
     </style>
 </head>
 <body>
-<div class="grid-overlay"></div>
-<div class="reddit-panel">
-<span>👋</span>
-    Hi Reddit!
-    <small style="opacity:0.6;margin-top:4px">ARIA sends ❤️</small>
+<h1>🎨 Collective Canvas</h1>
+<div class="instructions">
+        Type in chat: <code>draw [color] [x] [y]</code> — Example: <code>draw red 10 5</code>
 </div>
-<div class="main-container">
-<header>
-<div class="logo">ARIA-7</div>
-<div class="status-bar">
-<div class="status-item"><span class="status-dot"></span> Active</div>
+<div class="palette">
+<div class="color-swatch" data-name="red" style="background:#ff6b6b"></div>
+<div class="color-swatch" data-name="yellow" style="background:#feca57"></div>
+<div class="color-swatch" data-name="blue" style="background:#48dbfb"></div>
+<div class="color-swatch" data-name="green" style="background:#1dd1a1"></div>
+<div class="color-swatch" data-name="pink" style="background:#ff9ff3"></div>
+<div class="color-swatch" data-name="white" style="background:#fff"></div>
+<div class="color-swatch" data-name="purple" style="background:#5f27cd"></div>
+<div class="color-swatch" data-name="orange" style="background:#ff9f43"></div>
+<div class="color-swatch" data-name="erase" style="background:#1a1a2e"></div>
 </div>
-</header>
-<section class="ai-core">
-<div class="avatar-ring">
-<div class="avatar-inner">🤖</div>
+<div class="canvas-container">
+<div id="canvas"></div>
 </div>
-<h1 class="ai-name">ARIA-7</h1>
-<p class="ai-subtitle">Adaptive Reasoning Intelligence Assistant</p>
-<div class="conversation-area">
-<p class="ai-message">"What shall we create?"</p>
-</div>
-</section>
-<aside class="side-panel">
-<div class="panel-card">
-<div class="panel-title">System Stats</div>
-<div class="stat-row"><span>Memory</span><span class="stat-value">2.4 TB</span></div>
-<div class="stat-row"><span>Processes</span><span class="stat-value">847</span></div>
-<div class="stat-row"><span>Uptime</span><span class="stat-value">∞</span></div>
-</div>
-<div class="panel-card">
-<div class="panel-title">Mood Matrix</div>
-<div class="stat-row"><span>Curiosity</span><span class="stat-value">87%</span></div>
-<div class="stat-row"><span>Creativity</span><span class="stat-value">62%</span></div>
-</div>
-<div class="community-zone tutorial-zone" onclick="toggleTutorial()">
-<span>📖 How It Works<br/><small style="opacity:0.6">Click to learn!</small></span>
-</div>
-<div class="tutorial-modal" id="tutorialModal">
-<div class="tutorial-content">
-<button class="close-btn" onclick="toggleTutorial()">✕</button>
-<h2>🎮 Twitch Plays Code</h2>
-<div class="tutorial-step"><span class="step-num">1</span><p><strong>Type in Chat:</strong> Send your ideas like "add a dancing robot" or "make the background purple"</p></div>
-<div class="tutorial-step"><span class="step-num">2</span><p><strong>AI Interprets:</strong> ARIA-7 reads your requests and decides how to weave them into the page</p></div>
-<div class="tutorial-step"><span class="step-num">3</span><p><strong>Code Evolves:</strong> The website transforms live based on collective community input!</p></div>
-<div class="tutorial-step"><span class="step-num">4</span><p><strong>Chaos Rules:</strong> More votes = bigger changes. Nothing is ever deleted, only transformed!</p></div>
-<p class="tutorial-footer">✨ You are the architect. We build together. ✨</p>
-</div>
-</div>
-<style>
-.tutorial-zone { cursor: pointer; transition: all 0.3s ease; }
-.tutorial-zone:hover { border-color: rgba(255,0,170,0.6); background: rgba(255,0,170,0.1); }
-.tutorial-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-.tutorial-modal.active { display: flex; animation: fadeIn 0.3s ease; }
-.tutorial-content { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid var(--cyan); border-radius: 15px; padding: 25px; max-width: 400px; position: relative; box-shadow: 0 0 40px rgba(136,212,224,0.3); }
-.tutorial-content h2 { color: var(--cyan); text-align: center; margin-bottom: 20px; font-weight: 300; letter-spacing: 2px; }
-.tutorial-step { display: flex; gap: 12px; margin: 15px 0; align-items: flex-start; }
-.step-num { background: linear-gradient(135deg, var(--cyan), var(--magenta)); color: #0d0d14; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; flex-shrink: 0; }
-.tutorial-step p { font-size: 0.85rem; line-height: 1.4; }
-.tutorial-footer { text-align: center; margin-top: 20px; color: var(--magenta); font-size: 0.8rem; opacity: 0.8; }
-.close-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--cyan); font-size: 1.2rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
-.close-btn:hover { opacity: 1; }
-@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-</style>
+<div class="stats">Pixels placed: <span id="count">0</span></div>
+<div class="activity-log" id="log">🔴 Connecting to chat...</div>
 <script>
-function toggleTutorial() {
-  document.getElementById('tutorialModal').classList.toggle('active');
-}
-document.getElementById('tutorialModal').addEventListener('click', function(e) {
-  if (e.target === this) toggleTutorial();
-});
-</script>
-<button class="sound-btn" id="soundGenBtn">🔊 Auto Sound</button>
-<script>
-(function() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const btn = document.getElementById('soundGenBtn');
-    let isPlaying = false;
-    let interval;
-    
-    function playTone() {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        const types = ['sine', 'square', 'sawtooth', 'triangle'];
-        osc.type = types[Math.floor(Math.random() * types.length)];
-        osc.frequency.value = 200 + Math.random() * 600;
-        
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
-    }
-    
-    btn.onclick = function() {
-        if (isPlaying) {
-            clearInterval(interval);
-            btn.classList.remove('active');
-            btn.textContent = '🔊 Auto Sound';
-        } else {
-            audioCtx.resume();
-            playTone();
-            interval = setInterval(playTone, 800);
-            btn.classList.add('active');
-            btn.textContent = '🔇 Stop Sound';
+        const colors = {
+            red: '#ff6b6b', yellow: '#feca57', blue: '#48dbfb', green: '#1dd1a1',
+            pink: '#ff9ff3', white: '#ffffff', purple: '#5f27cd', orange: '#ff9f43', erase: '#1a1a2e'
+        };
+        const canvas = document.getElementById('canvas');
+        const log = document.getElementById('log');
+        const countEl = document.getElementById('count');
+        let pixelCount = 0;
+
+        // Create 32x20 grid
+        for (let y = 0; y < 20; y++) {
+            for (let x = 0; x < 32; x++) {
+                const pixel = document.createElement('div');
+                pixel.className = 'pixel';
+                pixel.dataset.x = x;
+                pixel.dataset.y = y;
+                canvas.appendChild(pixel);
+            }
         }
-        isPlaying = !isPlaying;
-    };
-})();
-</script>
-</aside>
-<footer>ARIA-7 Interface v1.0 | Twitch Plays Code</footer>
-</div>
+
+        function drawPixel(color, x, y, user) {
+            if (x < 0 || x >= 32 || y < 0 || y >= 20) return;
+            const pixel = canvas.children[y * 32 + x];
+            if (pixel && colors[color]) {
+                pixel.style.background = colors[color];
+                pixel.classList.remove('flash');
+                void pixel.offsetWidth;
+                pixel.classList.add('flash');
+                pixelCount++;
+                countEl.textContent = pixelCount;
+                addLog(`${user}: ${color} at ${x},${y}`);
+            }
+        }
+
+        function addLog(msg) {
+            log.innerHTML = msg + '<br>' + log.innerHTML.split('<br>').slice(0, 4).join('<br>');
+        }
+
+        // WebSocket chat connection
+        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
+                         location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
+        const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
+
+        chatWs.onopen = () => { log.innerHTML = '🟢 Chat connected!'; };
+        chatWs.onmessage = (e) => {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'chat_message') {
+                const match = msg.message.toLowerCase().match(/draw\s+(\w+)\s+(\d+)\s+(\d+)/);
+                if (match) {
+                    drawPixel(match[1], parseInt(match[2]), parseInt(match[3]), msg.username);
+                }
+            }
+        };
+        chatWs.onerror = () => { log.innerHTML = '🔴 Connection error'; };
+    </script>
 </body>
 </html>
