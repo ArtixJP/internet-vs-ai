@@ -904,6 +904,178 @@
             }
         }, 8000);
         
+        // PLANE CRASH SYSTEM
+        let activeCrash = null;
+        
+        function createPlaneCrash() {
+            if (activeCrash) return; // Only one crash at a time
+            
+            const crashGroup = new THREE.Group();
+            
+            // Plane wreckage
+            const fuselageGeo = new THREE.CylinderGeometry(0.3, 0.4, 2.5, 8);
+            const wreckageMat = new THREE.MeshStandardMaterial({ 
+                color: 0x2a2a2a, 
+                roughness: 0.9,
+                metalness: 0.3
+            });
+            const fuselage = new THREE.Mesh(fuselageGeo, wreckageMat);
+            fuselage.rotation.z = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+            fuselage.rotation.x = (Math.random() - 0.5) * 0.3;
+            crashGroup.add(fuselage);
+            
+            // Broken wing
+            const wingGeo = new THREE.BoxGeometry(0.1, 1.5, 0.5);
+            const wing = new THREE.Mesh(wingGeo, wreckageMat);
+            wing.position.set(0.5, -0.5, 0);
+            wing.rotation.z = Math.PI / 4;
+            crashGroup.add(wing);
+            
+            // Tail section
+            const tailGeo = new THREE.ConeGeometry(0.3, 0.8, 6);
+            const tail = new THREE.Mesh(tailGeo, wreckageMat);
+            tail.position.set(-1.5, 0.3, 0);
+            tail.rotation.z = Math.PI / 2;
+            crashGroup.add(tail);
+            
+            // Crash fire light
+            const crashFireLight = new THREE.PointLight(0xff4500, 3, 20);
+            crashFireLight.position.set(0, 1, 0);
+            crashGroup.add(crashFireLight);
+            crashGroup.userData.fireLight = crashFireLight;
+            
+            // Fire particles
+            const fireParticles = [];
+            const crashFireGeo = new THREE.SphereGeometry(0.08, 6, 6);
+            for (let i = 0; i < 15; i++) {
+                const fireMat = new THREE.MeshBasicMaterial({ color: 0xff4500, transparent: true, opacity: 0.9 });
+                const particle = new THREE.Mesh(crashFireGeo, fireMat);
+                particle.position.set(
+                    (Math.random() - 0.5) * 1.5,
+                    Math.random() * 1.5,
+                    (Math.random() - 0.5) * 0.8
+                );
+                particle.userData.baseY = particle.position.y;
+                particle.userData.speed = 0.5 + Math.random() * 0.5;
+                particle.userData.offset = Math.random() * Math.PI * 2;
+                fireParticles.push(particle);
+                crashGroup.add(particle);
+            }
+            crashGroup.userData.fireParticles = fireParticles;
+            
+            // Smoke particles
+            const smokeParticles = [];
+            const smokeGeo = new THREE.SphereGeometry(0.2, 6, 6);
+            for (let i = 0; i < 10; i++) {
+                const smokeMat = new THREE.MeshBasicMaterial({ 
+                    color: 0x333333, 
+                    transparent: true, 
+                    opacity: 0.4 
+                });
+                const smoke = new THREE.Mesh(smokeGeo, smokeMat);
+                smoke.position.set(
+                    (Math.random() - 0.5) * 1,
+                    1 + Math.random() * 2,
+                    (Math.random() - 0.5) * 0.5
+                );
+                smoke.userData.baseY = smoke.position.y;
+                smoke.userData.speed = 0.3 + Math.random() * 0.2;
+                smokeParticles.push(smoke);
+                crashGroup.add(smoke);
+            }
+            crashGroup.userData.smokeParticles = smokeParticles;
+            
+            // Position in distant forest
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 25 + Math.random() * 15;
+            crashGroup.position.set(
+                Math.cos(angle) * radius,
+                -0.3,
+                Math.sin(angle) * radius
+            );
+            
+            crashGroup.userData.birthTime = time;
+            crashGroup.userData.lifetime = 25 + Math.random() * 15; // 25-40 seconds
+            crashGroup.userData.opacity = 1;
+            
+            scene.add(crashGroup);
+            activeCrash = crashGroup;
+            
+            // Show whisper about the crash
+            setTimeout(() => {
+                const container = document.getElementById('whisperContainer');
+                const whisper = document.createElement('div');
+                whisper.className = 'whisper';
+                whisper.textContent = '...they didn\'t make it...';
+                whisper.style.left = '50%';
+                whisper.style.top = '30%';
+                whisper.style.color = 'rgba(255, 100, 0, 0.7)';
+                container.appendChild(whisper);
+                setTimeout(() => whisper.remove(), 3000);
+            }, 2000);
+            
+            triggerGlitch();
+        }
+        
+        function updatePlaneCrash() {
+            if (!activeCrash) return;
+            
+            const age = time - activeCrash.userData.birthTime;
+            const lifetime = activeCrash.userData.lifetime;
+            
+            // Animate fire
+            activeCrash.userData.fireLight.intensity = 2 + Math.sin(time * 8) * 1.5 + Math.random() * 0.5;
+            
+            activeCrash.userData.fireParticles.forEach(p => {
+                p.position.y = p.userData.baseY + Math.sin(time * p.userData.speed * 5 + p.userData.offset) * 0.3;
+                p.position.x += (Math.random() - 0.5) * 0.02;
+                p.material.color.setHSL(0.05 + Math.random() * 0.08, 1, 0.5 + Math.random() * 0.3);
+            });
+            
+            // Animate smoke rising
+            activeCrash.userData.smokeParticles.forEach(s => {
+                s.position.y += 0.02;
+                s.scale.multiplyScalar(1.002);
+                if (s.position.y > s.userData.baseY + 5) {
+                    s.position.y = s.userData.baseY;
+                    s.scale.set(1, 1, 1);
+                }
+            });
+            
+            // Fade out near end of lifetime
+            if (age > lifetime * 0.7) {
+                const fadeProgress = (age - lifetime * 0.7) / (lifetime * 0.3);
+                activeCrash.userData.opacity = 1 - fadeProgress;
+                
+                activeCrash.userData.fireLight.intensity *= (1 - fadeProgress);
+                activeCrash.userData.fireParticles.forEach(p => {
+                    p.material.opacity = 0.9 * (1 - fadeProgress);
+                });
+                activeCrash.userData.smokeParticles.forEach(s => {
+                    s.material.opacity = 0.4 * (1 - fadeProgress);
+                });
+            }
+            
+            // Remove when lifetime exceeded
+            if (age > lifetime) {
+                scene.remove(activeCrash);
+                activeCrash = null;
+            }
+        }
+        
+        // Schedule plane crashes
+        setInterval(() => {
+            if (!activeCrash && Math.random() < 0.4) {
+                createPlaneCrash();
+            }
+        }, 30000); // Check every 30 seconds
+        
+        // First crash after 10-20 seconds
+        setTimeout(createPlaneCrash, 10000 + Math.random() * 10000);
+        
+        // Add to animation loop
+        setInterval(updatePlaneCrash, 16);
+        
     </script>
 </body>
 </html>
