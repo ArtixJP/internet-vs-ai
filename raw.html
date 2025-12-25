@@ -88,15 +88,57 @@
             border-color: rgba(168,213,229,0.4);
         }
         
+        .glitch-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 200;
+            opacity: 0;
+            background: rgba(30, 0, 0, 0.3);
+            mix-blend-mode: overlay;
+        }
+        
+        .glitch-overlay.active {
+            animation: glitch-flash 0.1s ease-out;
+        }
+        
+        @keyframes glitch-flash {
+            0% { opacity: 0.8; transform: translateX(-2px); }
+            25% { opacity: 0.4; transform: translateX(2px); }
+            50% { opacity: 0.6; transform: translateY(1px); }
+            100% { opacity: 0; transform: translate(0); }
+        }
+        
+        .whisper {
+            position: fixed;
+            color: rgba(180, 0, 0, 0.6);
+            font-size: 0.8rem;
+            font-style: italic;
+            pointer-events: none;
+            z-index: 150;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(100, 0, 0, 0.8);
+            animation: whisper-appear 3s ease-in-out forwards;
+        }
+        
+        @keyframes whisper-appear {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.5; }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
         
     </style>
 </head>
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">❄️ AUTO-TOUR MODE • sit back and feel the cold</div>
+<div class="hint">❄️ AUTO-TOUR MODE • something watches from the trees...</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
+<div class="glitch-overlay" id="glitchOverlay"></div>
+<div id="whisperContainer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
         // Scene setup
@@ -530,7 +572,180 @@
             }
         });
         
-        // Peaceful winter ambiance - restored
+        // HORROR ELEMENTS
+        
+        // Shadow figures between trees
+        const shadowFigures = [];
+        const shadowMat = new THREE.MeshBasicMaterial({ 
+            color: 0x000000, 
+            transparent: true, 
+            opacity: 0.7 
+        });
+        
+        for (let i = 0; i < 5; i++) {
+            const shadowGroup = new THREE.Group();
+            
+            // Tall, thin humanoid shape
+            const bodyGeo = new THREE.CylinderGeometry(0.15, 0.2, 2.5, 8);
+            const body = new THREE.Mesh(bodyGeo, shadowMat);
+            body.position.y = 1.25;
+            shadowGroup.add(body);
+            
+            // Head
+            const headGeo = new THREE.SphereGeometry(0.25, 8, 8);
+            const head = new THREE.Mesh(headGeo, shadowMat);
+            head.position.y = 2.7;
+            shadowGroup.add(head);
+            
+            // Glowing eyes (sometimes visible)
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const eyeGeo = new THREE.SphereGeometry(0.03, 6, 6);
+            const leftEye = new THREE.Mesh(eyeGeo, eyeMat.clone());
+            const rightEye = new THREE.Mesh(eyeGeo, eyeMat.clone());
+            leftEye.position.set(-0.08, 2.75, 0.2);
+            rightEye.position.set(0.08, 2.75, 0.2);
+            leftEye.visible = false;
+            rightEye.visible = false;
+            shadowGroup.add(leftEye);
+            shadowGroup.add(rightEye);
+            
+            // Random starting position in the forest
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 15 + Math.random() * 20;
+            shadowGroup.position.set(
+                Math.cos(angle) * radius,
+                -0.5,
+                Math.sin(angle) * radius
+            );
+            
+            shadowGroup.visible = false;
+            shadowGroup.userData = {
+                targetX: shadowGroup.position.x,
+                targetZ: shadowGroup.position.z,
+                moveTimer: Math.random() * 500,
+                eyesVisible: false,
+                eyeTimer: 0,
+                leftEye: leftEye,
+                rightEye: rightEye
+            };
+            
+            shadowFigures.push(shadowGroup);
+            scene.add(shadowGroup);
+        }
+        
+        // Creepy whispers
+        const whispers = [
+            "...behind you...",
+            "...so cold...",
+            "...don't look...",
+            "...it watches...",
+            "...run...",
+            "...they're here...",
+            "...can you hear us...",
+            "...never alone..."
+        ];
+        
+        function showWhisper() {
+            const container = document.getElementById('whisperContainer');
+            const whisper = document.createElement('div');
+            whisper.className = 'whisper';
+            whisper.textContent = whispers[Math.floor(Math.random() * whispers.length)];
+            whisper.style.left = (20 + Math.random() * 60) + '%';
+            whisper.style.top = (20 + Math.random() * 60) + '%';
+            container.appendChild(whisper);
+            setTimeout(() => whisper.remove(), 3000);
+        }
+        
+        function triggerGlitch() {
+            const overlay = document.getElementById('glitchOverlay');
+            overlay.classList.add('active');
+            setTimeout(() => overlay.classList.remove('active'), 150);
+        }
+        
+        // Horror event scheduler
+        let horrorTimer = 0;
+        
+        function updateHorror() {
+            horrorTimer++;
+            
+            // Random whispers
+            if (Math.random() < 0.002) {
+                showWhisper();
+            }
+            
+            // Random glitches
+            if (Math.random() < 0.001) {
+                triggerGlitch();
+            }
+            
+            // Update shadow figures
+            shadowFigures.forEach((shadow, idx) => {
+                shadow.userData.moveTimer++;
+                
+                // Randomly appear/disappear
+                if (shadow.userData.moveTimer > 200 + Math.random() * 300) {
+                    shadow.userData.moveTimer = 0;
+                    shadow.visible = Math.random() > 0.4;
+                    
+                    if (shadow.visible) {
+                        // Move to new position when appearing
+                        const angle = Math.random() * Math.PI * 2;
+                        const radius = 12 + Math.random() * 25;
+                        shadow.userData.targetX = Math.cos(angle) * radius;
+                        shadow.userData.targetZ = Math.sin(angle) * radius;
+                    }
+                }
+                
+                if (shadow.visible) {
+                    // Slowly move toward target
+                    shadow.position.x += (shadow.userData.targetX - shadow.position.x) * 0.02;
+                    shadow.position.z += (shadow.userData.targetZ - shadow.position.z) * 0.02;
+                    
+                    // Face the camera
+                    shadow.lookAt(camera.position.x, shadow.position.y, camera.position.z);
+                    
+                    // Random eye glow
+                    shadow.userData.eyeTimer++;
+                    if (shadow.userData.eyeTimer > 100 && Math.random() < 0.01) {
+                        shadow.userData.eyesVisible = !shadow.userData.eyesVisible;
+                        shadow.userData.leftEye.visible = shadow.userData.eyesVisible;
+                        shadow.userData.rightEye.visible = shadow.userData.eyesVisible;
+                        shadow.userData.eyeTimer = 0;
+                        
+                        if (shadow.userData.eyesVisible) {
+                            triggerGlitch();
+                        }
+                    }
+                    
+                    // Pulse eye brightness
+                    if (shadow.userData.eyesVisible) {
+                        const intensity = 0.5 + Math.sin(time * 5 + idx) * 0.5;
+                        shadow.userData.leftEye.material.color.setRGB(intensity, 0, 0);
+                        shadow.userData.rightEye.material.color.setRGB(intensity, 0, 0);
+                    }
+                }
+            });
+        }
+        
+        // Inject horror update into animation loop
+        const originalAnimate = animate;
+        function animateWithHorror() {
+            updateHorror();
+        }
+        
+        // Modify the existing animate loop to include horror
+        setInterval(animateWithHorror, 16);
+        
+        // Occasional temperature drop effect
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                const tempEl = document.querySelector('.temperature');
+                const newTemp = -40 - Math.floor(Math.random() * 20);
+                tempEl.textContent = newTemp + '°';
+                tempEl.style.color = newTemp < -50 ? '#8a0000' : '#4a9ebb';
+            }
+        }, 8000);
+        
     </script>
 </body>
 </html>
