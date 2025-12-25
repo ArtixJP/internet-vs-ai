@@ -38,29 +38,43 @@
         .rocket {
             position: absolute;
             left: 50%; top: 50%;
-            transform: translate(-50%, -50%) rotateX(10deg);
             font-size: 80px;
             filter: drop-shadow(0 0 30px rgba(255,100,50,0.8));
-            animation: rocketFloat 3s ease-in-out infinite;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: left 0.4s ease-out, top 0.4s ease-out, transform 0.3s;
             z-index: 10;
         }
-        .rocket:hover { transform: translate(-50%, -50%) rotateX(10deg) scale(1.2); }
-        @keyframes rocketFloat {
-            0%, 100% { transform: translate(-50%, -50%) rotateX(10deg) translateY(0); }
-            50% { transform: translate(-50%, -50%) rotateX(10deg) translateY(-20px); }
-        }
+        .rocket:hover { transform: translate(-50%, -50%) scale(1.2); }
+        .rocket.moving-up { transform: translate(-50%, -50%) rotate(-15deg); }
+        .rocket.moving-down { transform: translate(-50%, -50%) rotate(165deg); }
+        .rocket.moving-left { transform: translate(-50%, -50%) rotate(-75deg); }
+        .rocket.moving-right { transform: translate(-50%, -50%) rotate(75deg); }
         .flame {
             position: absolute;
-            left: 50%; top: calc(50% + 50px);
-            transform: translateX(-50%);
             width: 30px; height: 60px;
             background: linear-gradient(to bottom, #ff6b35, #f7931e, transparent);
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             animation: flameFlicker 0.15s infinite;
             filter: blur(3px);
+            pointer-events: none;
+            z-index: 9;
+            transition: left 0.4s ease-out, top 0.4s ease-out;
         }
+        .chat-command {
+            position: fixed;
+            bottom: 80px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,212,255,0.2);
+            border: 1px solid rgba(0,212,255,0.5);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #00d4ff;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+        .chat-command.visible { opacity: 1; }
         @keyframes flameFlicker { 0%,100% { height: 60px; opacity: 1; } 50% { height: 70px; opacity: 0.8; } }
         .planet {
             position: absolute;
@@ -153,8 +167,81 @@
 <div class="planet planet-2" title="Saturn"></div>
 <div class="planet planet-3" title="Neptune"></div>
 <div class="community-zone">
-<span>✨ Community additions appear here ✨</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀</span>
 </div>
+<div class="chat-command" id="chatCommand"></div>
 </div>
+<script>
+(function() {
+    const rocket = document.querySelector('.rocket');
+    const flame = document.querySelector('.flame');
+    const chatCmd = document.getElementById('chatCommand');
+    
+    let rocketX = 50;
+    let rocketY = 50;
+    const step = 8;
+    const bounds = { minX: 10, maxX: 90, minY: 15, maxY: 85 };
+    
+    function updateRocket() {
+        rocket.style.left = rocketX + '%';
+        rocket.style.top = rocketY + '%';
+        rocket.style.transform = 'translate(-50%, -50%)';
+        flame.style.left = rocketX + '%';
+        flame.style.top = (rocketY + 5) + '%';
+        flame.style.transform = 'translate(-50%, 0)';
+    }
+    
+    function showCommand(user, cmd) {
+        chatCmd.textContent = `${user}: ${cmd.toUpperCase()}`;
+        chatCmd.classList.add('visible');
+        setTimeout(() => chatCmd.classList.remove('visible'), 1500);
+    }
+    
+    function moveRocket(direction, user) {
+        rocket.className = 'rocket';
+        switch(direction) {
+            case 'up':
+                rocketY = Math.max(bounds.minY, rocketY - step);
+                rocket.classList.add('moving-up');
+                break;
+            case 'down':
+                rocketY = Math.min(bounds.maxY, rocketY + step);
+                rocket.classList.add('moving-down');
+                break;
+            case 'left':
+                rocketX = Math.max(bounds.minX, rocketX - step);
+                rocket.classList.add('moving-left');
+                break;
+            case 'right':
+                rocketX = Math.min(bounds.maxX, rocketX + step);
+                rocket.classList.add('moving-right');
+                break;
+        }
+        updateRocket();
+        showCommand(user, direction);
+        setTimeout(() => rocket.className = 'rocket', 400);
+    }
+    
+    updateRocket();
+    
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
+                     location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
+    const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
+    
+    chatWs.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'chat_message') {
+            const text = msg.message.toLowerCase().trim();
+            if (['up', 'down', 'left', 'right'].includes(text)) {
+                moveRocket(text, msg.username);
+            }
+        }
+    };
+    
+    chatWs.onerror = () => console.log('Chat connection error');
+    chatWs.onclose = () => setTimeout(() => location.reload(), 5000);
+})();
+</script>
 </body>
 </html>
