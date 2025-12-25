@@ -49,7 +49,7 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
+<div id="community-zone">🗣️ Citizens chatting | 🚶 Rectilinear paths | 🐢 TMNT active | 🎵 Click to whistle</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 10<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
@@ -399,19 +399,45 @@
         // Walker uses emissive material - no additional point light needed for GPU compatibility
         scene.add(walker);
         
-        // Crowd (NPCs) - Now humanoid!
+        // Crowd (NPCs) - Now humanoid! Walking on sidewalks
         const crowd = [];
-        for (let i = 0; i < 10; i++) { // Reduced from 15 for better performance
+        const sidewalkOffsets = [-1.8, 1.8]; // Left and right sidewalks
+        
+        for (let i = 0; i < 12; i++) {
             const npcColor = neonColors[Math.floor(Math.random() * neonColors.length)];
             const npc = createHumanoid(npcColor, Math.random() > 0.5, 0.9 + Math.random() * 0.3);
-            npc.position.set(
-                (Math.random() - 0.5) * 40,
-                0,
-                (Math.random() - 0.5) * 40
-            );
-            npc.userData.speed = 0.01 + Math.random() * 0.02;
-            npc.userData.direction = Math.random() * Math.PI * 2;
+            
+            // Place NPCs on sidewalks along avenues or streets
+            const onAvenue = Math.random() > 0.5;
+            const sidewalkSide = sidewalkOffsets[Math.floor(Math.random() * 2)];
+            
+            if (onAvenue) {
+                // Walking north-south along an avenue
+                const avenueIndex = Math.floor(Math.random() * 8) - 4;
+                npc.position.set(
+                    avenueIndex * gridSpacingX + sidewalkSide,
+                    0,
+                    (Math.random() - 0.5) * 60
+                );
+                npc.userData.walkAxis = 'z'; // Walk along Z axis
+                npc.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+                npc.userData.laneX = avenueIndex * gridSpacingX + sidewalkSide;
+            } else {
+                // Walking east-west along a street
+                const streetIndex = Math.floor(Math.random() * 6) - 3;
+                npc.position.set(
+                    (Math.random() - 0.5) * 60,
+                    0,
+                    streetIndex * gridSpacingZ + sidewalkSide
+                );
+                npc.userData.walkAxis = 'x'; // Walk along X axis
+                npc.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+                npc.userData.laneZ = streetIndex * gridSpacingZ + sidewalkSide;
+            }
+            
+            npc.userData.speed = 0.015 + Math.random() * 0.015;
             npc.userData.walkPhase = Math.random() * Math.PI * 2;
+            npc.userData.turningCooldown = 0;
             scene.add(npc);
             crowd.push(npc);
         }
@@ -770,17 +796,62 @@
                 mh.visible = dist < 35; // Tighter distance culling
             });
             
-            // Animate crowd with walking motion + distance culling
+            // Animate crowd with rectilinear Manhattan-style walking
             crowd.forEach(npc => {
                 // Distance-based LOD: hide NPCs far from camera
                 const distToCam = npc.position.distanceTo(camera.position);
-                npc.visible = distToCam < 40;
-                npc.position.x += Math.cos(npc.userData.direction) * npc.userData.speed;
-                npc.position.z += Math.sin(npc.userData.direction) * npc.userData.speed;
-                npc.rotation.y = -npc.userData.direction + Math.PI/2;
-                if (Math.abs(npc.position.x) > 30 || Math.abs(npc.position.z) > 30) {
-                    npc.userData.direction += Math.PI;
+                npc.visible = distToCam < 45;
+                
+                // Rectilinear movement along streets/avenues
+                if (npc.userData.walkAxis === 'z') {
+                    // Walking north-south
+                    npc.position.z += npc.userData.walkDirection * npc.userData.speed;
+                    npc.rotation.y = npc.userData.walkDirection > 0 ? 0 : Math.PI;
+                    
+                    // Turn around at boundaries or randomly turn at intersections
+                    if (Math.abs(npc.position.z) > 35) {
+                        npc.userData.walkDirection *= -1;
+                    }
+                    // Chance to turn at intersection
+                    if (npc.userData.turningCooldown <= 0) {
+                        for (let si = -4; si <= 4; si++) {
+                            const streetZ = si * gridSpacingZ;
+                            if (Math.abs(npc.position.z - streetZ) < 0.3 && Math.random() < 0.02) {
+                                npc.userData.walkAxis = 'x';
+                                npc.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+                                npc.userData.laneZ = streetZ + (Math.random() > 0.5 ? 1.8 : -1.8);
+                                npc.position.z = npc.userData.laneZ;
+                                npc.userData.turningCooldown = 100;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    // Walking east-west
+                    npc.position.x += npc.userData.walkDirection * npc.userData.speed;
+                    npc.rotation.y = npc.userData.walkDirection > 0 ? Math.PI/2 : -Math.PI/2;
+                    
+                    if (Math.abs(npc.position.x) > 35) {
+                        npc.userData.walkDirection *= -1;
+                    }
+                    // Chance to turn at intersection
+                    if (npc.userData.turningCooldown <= 0) {
+                        for (let ai = -5; ai <= 5; ai++) {
+                            const avenueX = ai * gridSpacingX;
+                            if (Math.abs(npc.position.x - avenueX) < 0.3 && Math.random() < 0.02) {
+                                npc.userData.walkAxis = 'z';
+                                npc.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+                                npc.userData.laneX = avenueX + (Math.random() > 0.5 ? 1.8 : -1.8);
+                                npc.position.x = npc.userData.laneX;
+                                npc.userData.turningCooldown = 100;
+                                break;
+                            }
+                        }
+                    }
                 }
+                
+                if (npc.userData.turningCooldown > 0) npc.userData.turningCooldown--;
+                
                 // Walking animation
                 if (npc.userData.limbs) {
                     npc.userData.walkPhase += npc.userData.speed * 8;
