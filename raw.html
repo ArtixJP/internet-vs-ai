@@ -407,17 +407,19 @@
 <p style="margin-top:8px;font-size:0.9rem;color:#ff69b4;font-weight:bold;">📣 The cats are now SPECTATORS around the battle arena! Cheer them on! 🎉🐱</p>
 </div>
 </div>
-<div class="silent-nyan-indicator" style="position:fixed;bottom:70px;right:10px;background:rgba(255,182,193,0.9);padding:8px 12px;border-radius:15px;font-size:0.75rem;color:#5d4e60;z-index:100;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,0.2);animation:nyanPulse 1s ease-in-out infinite;">
-<span style="font-size:1.2rem;">🌈🐱</span>
-<span>Nyan Cat playing silently...</span>
-<span class="sound-waves" style="display:flex;gap:2px;">
-<span style="width:3px;height:8px;background:#ff69b4;border-radius:2px;animation:wave1 0.5s ease-in-out infinite;"></span>
-<span style="width:3px;height:12px;background:#ff69b4;border-radius:2px;animation:wave2 0.5s ease-in-out infinite 0.1s;"></span>
-<span style="width:3px;height:6px;background:#ff69b4;border-radius:2px;animation:wave3 0.5s ease-in-out infinite 0.2s;"></span>
-</span>
-<span style="font-size:0.6rem;opacity:0.7;">🔇</span>
-</div>
 
+<div class="nyan-indicator" id="nyan-indicator" style="position:fixed;bottom:70px;right:10px;background:linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);padding:10px 15px;border-radius:20px;font-size:0.8rem;color:#fff;z-index:100;display:flex;align-items:center;gap:8px;box-shadow:0 3px 15px rgba(255,105,180,0.5), 0 0 30px rgba(255,105,180,0.3);animation:nyanPulse 0.5s ease-in-out infinite;cursor:pointer;border:2px solid #fff;">
+<span style="font-size:1.4rem;animation:nyanBounce 0.3s ease-in-out infinite alternate;">🌈🐱</span>
+<span style="font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">NYAN CAT PLAYING!</span>
+<span class="sound-waves" style="display:flex;gap:3px;align-items:flex-end;height:20px;">
+<span style="width:4px;height:8px;background:#fff;border-radius:2px;animation:wave1 0.3s ease-in-out infinite;"></span>
+<span style="width:4px;height:14px;background:#fff;border-radius:2px;animation:wave2 0.3s ease-in-out infinite 0.1s;"></span>
+<span style="width:4px;height:10px;background:#fff;border-radius:2px;animation:wave3 0.3s ease-in-out infinite 0.15s;"></span>
+<span style="width:4px;height:16px;background:#fff;border-radius:2px;animation:wave1 0.3s ease-in-out infinite 0.2s;"></span>
+<span style="width:4px;height:6px;background:#fff;border-radius:2px;animation:wave2 0.3s ease-in-out infinite 0.05s;"></span>
+</span>
+<span style="font-size:1rem;">🔊</span>
+</div>
 <div class="paw-prints">
 <span class="paw">🐾</span>
 <span class="paw">🐾</span>
@@ -484,6 +486,10 @@
         // Silent Nyan Cat styles
         const nyanStyle = document.createElement('style');
         nyanStyle.textContent = `
+            @keyframes nyanBounce {
+                0% { transform: translateY(0) rotate(-5deg); }
+                100% { transform: translateY(-3px) rotate(5deg); }
+            }
             @keyframes nyanPulse {
                 0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
                 50% { transform: scale(1.02); box-shadow: 0 3px 15px rgba(255,105,180,0.4); }
@@ -503,10 +509,31 @@
         `;
         document.head.appendChild(nyanStyle);
         
-        // Set Nyan Cat audio to silent (volume 0) - the ultimate paradox!
+        // NYAN CAT NOW PLAYS OUT LOUD! 🌈🔊
         const nyanAudio = document.getElementById('nyan-audio');
+        const nyanIndicator = document.getElementById('nyan-indicator');
         if (nyanAudio) {
-            nyanAudio.volume = 0; // Playing silently as requested! 🔇🌈
+            nyanAudio.volume = 0.4; // Playing at 40% volume - not too loud! 🔊🌈
+            
+            // Click indicator to toggle mute
+            if (nyanIndicator) {
+                nyanIndicator.addEventListener('click', () => {
+                    if (nyanAudio.paused) {
+                        nyanAudio.play();
+                        nyanIndicator.querySelector('span:last-child').textContent = '🔊';
+                    } else {
+                        nyanAudio.pause();
+                        nyanIndicator.querySelector('span:last-child').textContent = '🔇';
+                    }
+                });
+            }
+            
+                        nyanAudio.play().catch(() => {
+                console.log('Autoplay blocked - click the Nyan indicator to start!');
+                if (nyanIndicator) {
+                    nyanIndicator.querySelector('span:nth-child(2)').textContent = 'Click to play!';
+                }
+            });
         }
         
         // Distribute cat cards around the battle arena as spectators!
