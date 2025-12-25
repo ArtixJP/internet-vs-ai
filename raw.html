@@ -141,6 +141,59 @@
         background: #ff0000;
         box-shadow: inset 5px 0 0 #fff, inset 10px 0 0 #ff0000, inset 15px 0 0 #fff;
     }
+    .mario {
+        position: absolute;
+        width: 20px;
+        height: 26px;
+        z-index: 100;
+        transition: left 0.15s ease-out, bottom 0.1s ease-out;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+    .mario-sprite {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, 
+            #ff0000 0%, #ff0000 30%, 
+            #ffcc99 30%, #ffcc99 45%,
+            #ff0000 45%, #ff0000 60%,
+            #0066cc 60%, #0066cc 85%,
+            #8b4513 85%, #8b4513 100%);
+        border-radius: 4px 4px 0 0;
+        position: relative;
+    }
+    .mario-sprite::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 14px;
+        height: 6px;
+        background: #ff0000;
+        border-radius: 50% 50% 0 0;
+    }
+    .mario-sprite::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 4px;
+        width: 4px;
+        height: 3px;
+        background: #000;
+        border-radius: 50%;
+        box-shadow: 8px 0 0 #000;
+    }
+    .mario.jumping {
+        animation: marioJump 0.5s ease-out;
+    }
+    .mario.left .mario-sprite {
+        transform: scaleX(-1);
+    }
+    @keyframes marioJump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-40px); }
+    }
     .block.lava {
         background: linear-gradient(180deg, #ff4500 0%, #ff6600 50%, #ff0000 100%);
         animation: lavaGlow 1s ease-in-out infinite;
@@ -281,8 +334,8 @@
 <p>Type <code>!idea your suggestion</code> to evolve this page with AI!</p>
 </div>
 <div class="instructions">
-<code>place [block] [x] [y]</code> or <code>mine [x] [y]</code><br/>
-    Example: <code>place diamond 10 5</code> · <code>mine 3 7</code>
+<code>place [block] [x] [y]</code> · <code>mine [x] [y]</code> · <code>left/right/jump</code><br/>
+    Example: <code>place diamond 10 5</code> · <code>jump</code> to control Mario!
 </div>
 <div class="palette">
 <div class="block-btn grass" data-name="grass"></div>
@@ -301,6 +354,9 @@
 </div>
 <div class="world-container">
 <div id="world"></div>
+<div class="mario" id="mario">
+<div class="mario-sprite"></div>
+</div>
 </div>
 <div class="stats">Blocks placed: <span id="count">0</span> | Day <span id="day">1</span></div>
 <div class="activity-log" id="log">🔴 Connecting...</div>
@@ -459,22 +515,89 @@
         }
     }, 60000);
 
-    // Audio
+    // Smooth Audio System
     let audioCtx = null;
     function playSound(type) {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        const freqs = { grass: 200, dirt: 150, stone: 100, wood: 180, leaves: 300, water: 400, sand: 220, cobble: 120, brick: 140, gold: 600, diamond: 800, lava: 80, tnt: 60, mine: 90, explode: 50 };
-        osc.frequency.value = freqs[type] || 200;
-        osc.type = type === 'diamond' || type === 'gold' ? 'sine' : 'square';
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-        osc.connect(gain);
+        const filter = audioCtx.createBiquadFilter();
+        const freqs = { grass: 220, dirt: 165, stone: 110, wood: 196, leaves: 330, water: 440, sand: 247, cobble: 131, brick: 147, gold: 659, diamond: 880, lava: 82, tnt: 65, mine: 98, explode: 55, jump: 523, step: 196 };
+        const baseFreq = freqs[type] || 220;
+        osc.frequency.value = baseFreq;
+        osc2.frequency.value = baseFreq * 1.5;
+        osc.type = 'sine';
+        osc2.type = 'triangle';
+        filter.type = 'lowpass';
+        filter.frequency.value = 2000;
+        filter.Q.value = 1;
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
+        osc2.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+        osc2.stop(audioCtx.currentTime + 0.4);
     }
+
+    // Mario Controller
+    const mario = document.getElementById('mario');
+    let marioX = 12;
+    let marioY = 0;
+    let marioDir = 'right';
+    let isJumping = false;
+
+    function updateMarioPosition() {
+        const groundY = findGround(marioX);
+        marioY = groundY;
+        const worldRect = world.getBoundingClientRect();
+        const blockSize = 23;
+        mario.style.left = (marioX * blockSize + 4) + 'px';
+        mario.style.bottom = ((HEIGHT - marioY) * blockSize - 4) + 'px';
+    }
+
+    function findGround(x) {
+        for (let y = 0; y < HEIGHT; y++) {
+            if (grid[y] && grid[y][x] && grid[y][x] !== 'air' && grid[y][x] !== 'water') {
+                return y;
+            }
+        }
+        return HEIGHT - 1;
+    }
+
+    function moveMario(dir, user) {
+        if (dir === 'left' && marioX > 0) {
+            marioX--;
+            marioDir = 'left';
+            mario.classList.add('left');
+            mario.classList.remove('right');
+            playSound('step');
+            addLog(`${user}: Mario ←`);
+        } else if (dir === 'right' && marioX < WIDTH - 1) {
+            marioX++;
+            marioDir = 'right';
+            mario.classList.remove('left');
+            playSound('step');
+            addLog(`${user}: Mario →`);
+        } else if (dir === 'jump' && !isJumping) {
+            isJumping = true;
+            mario.classList.add('jumping');
+            playSound('jump');
+            addLog(`${user}: Mario ↑`);
+            setTimeout(() => {
+                mario.classList.remove('jumping');
+                isJumping = false;
+            }, 500);
+        }
+        updateMarioPosition();
+    }
+
+    updateMarioPosition();
+    setInterval(updateMarioPosition, 500);
 
     // WebSocket
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -493,6 +616,12 @@
                 placeBlock(placeMatch[1], parseInt(placeMatch[2]), parseInt(placeMatch[3]), msg.username);
             } else if (mineMatch) {
                 mineBlock(parseInt(mineMatch[1]), parseInt(mineMatch[2]), msg.username);
+            } else if (txt.includes('left')) {
+                moveMario('left', msg.username);
+            } else if (txt.includes('right')) {
+                moveMario('right', msg.username);
+            } else if (txt.includes('jump')) {
+                moveMario('jump', msg.username);
             }
         }
     };
