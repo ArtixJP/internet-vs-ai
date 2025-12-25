@@ -141,7 +141,7 @@
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">🐺 THE HUNT • camera follows the fleeing snowman... 🌬️ click for wind • drag to look around</div>
+<div class="hint">🐺 THE HUNT • 🔥 watch the skies for falling planes... 🌬️ click for wind • drag to look around</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
@@ -932,9 +932,182 @@
         
         // PLANE CRASH SYSTEM
         let activeCrash = null;
+        let fallingPlane = null;
         
-        function createPlaneCrash() {
-            if (activeCrash) return; // Only one crash at a time
+        function createFallingPlane() {
+            if (fallingPlane || activeCrash) return;
+            
+            const planeGroup = new THREE.Group();
+            
+            // Plane body
+            const fuselageGeo = new THREE.CylinderGeometry(0.25, 0.35, 3, 8);
+            const planeMat = new THREE.MeshStandardMaterial({ 
+                color: 0x888888, 
+                roughness: 0.7,
+                metalness: 0.5
+            });
+            const fuselage = new THREE.Mesh(fuselageGeo, planeMat);
+            fuselage.rotation.z = Math.PI / 2;
+            planeGroup.add(fuselage);
+            
+            // Wings
+            const wingGeo = new THREE.BoxGeometry(0.1, 2.5, 0.6);
+            const wing = new THREE.Mesh(wingGeo, planeMat);
+            wing.position.set(0, 0, 0);
+            planeGroup.add(wing);
+            
+            // Tail
+            const tailGeo = new THREE.BoxGeometry(0.08, 0.8, 0.4);
+            const tail = new THREE.Mesh(tailGeo, planeMat);
+            tail.position.set(-1.3, 0.4, 0);
+            planeGroup.add(tail);
+            
+            // Engine fire (on wing)
+            const engineFireLight = new THREE.PointLight(0xff4500, 5, 30);
+            engineFireLight.position.set(0.5, 1, 0);
+            planeGroup.add(engineFireLight);
+            planeGroup.userData.engineLight = engineFireLight;
+            
+            // Fire trail particles
+            const trailParticles = [];
+            for (let i = 0; i < 25; i++) {
+                const fireMat = new THREE.MeshBasicMaterial({ 
+                    color: 0xff4500, 
+                    transparent: true, 
+                    opacity: 0.8 
+                });
+                const fireGeo = new THREE.SphereGeometry(0.1 + Math.random() * 0.15, 6, 6);
+                const fire = new THREE.Mesh(fireGeo, fireMat);
+                fire.position.set(
+                    -1 - Math.random() * 3,
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5
+                );
+                fire.userData.offset = Math.random() * Math.PI * 2;
+                trailParticles.push(fire);
+                planeGroup.add(fire);
+            }
+            planeGroup.userData.trailParticles = trailParticles;
+            
+            // Smoke trail
+            const smokeTrail = [];
+            for (let i = 0; i < 15; i++) {
+                const smokeMat = new THREE.MeshBasicMaterial({ 
+                    color: 0x222222, 
+                    transparent: true, 
+                    opacity: 0.5 
+                });
+                const smokeGeo = new THREE.SphereGeometry(0.3 + Math.random() * 0.3, 6, 6);
+                const smoke = new THREE.Mesh(smokeGeo, smokeMat);
+                smoke.position.set(
+                    -2 - Math.random() * 5,
+                    (Math.random() - 0.5) * 1,
+                    (Math.random() - 0.5) * 1
+                );
+                smokeTrail.push(smoke);
+                planeGroup.add(smoke);
+            }
+            planeGroup.userData.smokeTrail = smokeTrail;
+            
+            // Starting position - high in sky, far away
+            const startAngle = Math.random() * Math.PI * 2;
+            const startRadius = 60 + Math.random() * 20;
+            planeGroup.position.set(
+                Math.cos(startAngle) * startRadius,
+                40 + Math.random() * 15,
+                Math.sin(startAngle) * startRadius
+            );
+            
+            // Target crash position
+            const crashAngle = Math.random() * Math.PI * 2;
+            const crashRadius = 20 + Math.random() * 15;
+            planeGroup.userData.targetX = Math.cos(crashAngle) * crashRadius;
+            planeGroup.userData.targetZ = Math.sin(crashAngle) * crashRadius;
+            planeGroup.userData.startPos = planeGroup.position.clone();
+            planeGroup.userData.fallProgress = 0;
+            planeGroup.userData.fallDuration = 12 + Math.random() * 8; // 12-20 seconds fall
+            planeGroup.userData.crashAngle = crashAngle;
+            
+            // Point toward crash site
+            planeGroup.lookAt(planeGroup.userData.targetX, 0, planeGroup.userData.targetZ);
+            planeGroup.rotation.x = 0.3; // Nose down
+            
+            scene.add(planeGroup);
+            fallingPlane = planeGroup;
+            
+            // Ominous whisper
+            setTimeout(() => {
+                const container = document.getElementById('whisperContainer');
+                const whisper = document.createElement('div');
+                whisper.className = 'whisper';
+                whisper.textContent = '...falling...falling...';
+                whisper.style.left = '50%';
+                whisper.style.top = '20%';
+                whisper.style.fontSize = '1.2rem';
+                container.appendChild(whisper);
+                setTimeout(() => whisper.remove(), 3000);
+            }, 1000);
+            
+            triggerGlitch();
+        }
+        
+        function updateFallingPlane() {
+            if (!fallingPlane) return;
+            
+            const data = fallingPlane.userData;
+            data.fallProgress += 0.016 / data.fallDuration;
+            
+            // Eased descent - starts slow, accelerates
+            const easeProgress = data.fallProgress * data.fallProgress;
+            
+            // Interpolate position
+            fallingPlane.position.x = data.startPos.x + (data.targetX - data.startPos.x) * easeProgress;
+            fallingPlane.position.z = data.startPos.z + (data.targetZ - data.startPos.z) * easeProgress;
+            fallingPlane.position.y = data.startPos.y * (1 - easeProgress);
+            
+            // Increase nose-down angle as it falls
+            fallingPlane.rotation.x = 0.3 + easeProgress * 0.4;
+            
+            // Wobble and spin slightly
+            fallingPlane.rotation.z = Math.sin(time * 3) * 0.1 * (1 + easeProgress);
+            
+            // Animate fire trail
+            fallingPlane.userData.engineLight.intensity = 4 + Math.sin(time * 10) * 2 + Math.random();
+            
+            data.trailParticles.forEach((p, i) => {
+                p.position.x = -1 - Math.random() * 4 - easeProgress * 2;
+                p.position.y = (Math.random() - 0.5) * (0.5 + easeProgress);
+                p.material.color.setHSL(0.05 + Math.random() * 0.08, 1, 0.5 + Math.random() * 0.3);
+                p.material.opacity = 0.6 + Math.random() * 0.4;
+            });
+            
+            data.smokeTrail.forEach((s, i) => {
+                s.position.x = -2 - i * 0.5 - Math.random() * 2;
+                s.position.y += 0.01;
+                s.scale.multiplyScalar(1.003);
+                if (s.scale.x > 2) {
+                    s.scale.set(1, 1, 1);
+                    s.position.y = (Math.random() - 0.5) * 1;
+                }
+            });
+            
+            // Impact!
+            if (data.fallProgress >= 1) {
+                // Create crash at impact point
+                const crashPos = { x: data.targetX, z: data.targetZ, angle: data.crashAngle };
+                scene.remove(fallingPlane);
+                fallingPlane = null;
+                createPlaneCrashAt(crashPos);
+                
+                // Big glitch on impact
+                triggerGlitch();
+                setTimeout(triggerGlitch, 100);
+                setTimeout(triggerGlitch, 200);
+            }
+        }
+        
+        function createPlaneCrashAt(crashPos) {
+            if (activeCrash) return;
             
             const crashGroup = new THREE.Group();
             
@@ -1011,13 +1184,11 @@
             }
             crashGroup.userData.smokeParticles = smokeParticles;
             
-            // Position in distant forest
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 25 + Math.random() * 15;
+            // Position at crash site
             crashGroup.position.set(
-                Math.cos(angle) * radius,
+                crashPos.x,
                 -0.3,
-                Math.sin(angle) * radius
+                crashPos.z
             );
             
             crashGroup.userData.birthTime = time;
@@ -1089,18 +1260,21 @@
             }
         }
         
-        // Schedule plane crashes
+        // Schedule plane crashes - now with dramatic falling sequence
         setInterval(() => {
-            if (!activeCrash && Math.random() < 0.4) {
-                createPlaneCrash();
+            if (!activeCrash && !fallingPlane && Math.random() < 0.4) {
+                createFallingPlane();
             }
-        }, 30000); // Check every 30 seconds
+        }, 45000); // Check every 45 seconds
         
-        // First crash after 10-20 seconds
-        setTimeout(createPlaneCrash, 10000 + Math.random() * 10000);
+        // First falling plane after 8-15 seconds
+        setTimeout(createFallingPlane, 8000 + Math.random() * 7000);
         
         // Add to animation loop
-        setInterval(updatePlaneCrash, 16);
+        setInterval(() => {
+            updateFallingPlane();
+            updatePlaneCrash();
+        }, 16);
         
     </script>
 </body>
