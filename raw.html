@@ -164,14 +164,7 @@
             z-index: 20;
         }
         .community-zone span { opacity: 0.7; font-size: 0.9rem; }
-        .meteor {
-            position: absolute;
-            font-size: 40px;
-            z-index: 5;
-            pointer-events: none;
-            filter: drop-shadow(0 0 15px #ff4500) drop-shadow(0 0 30px #ff6b35);
-            animation: meteorFall linear forwards;
-        }
+        
         .spacex-ship {
             position: absolute;
             right: -200px;
@@ -220,36 +213,7 @@
             0%, 100% { transform: rotate(-10deg); }
             50% { transform: rotate(10deg); }
         }
-        .meteor::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 80px;
-            background: linear-gradient(to top, transparent, #ff6b35, #ff4500, #fff);
-            border-radius: 50%;
-            filter: blur(4px);
-            opacity: 0.8;
-        }
-        @keyframes meteorFall {
-            0% {
-                transform: translateY(-50px) rotate(15deg) scale(0.8);
-                opacity: 0;
-            }
-            5% {
-                opacity: 1;
-                transform: translateY(0) rotate(15deg) scale(1);
-            }
-            85% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(110vh) rotate(20deg) scale(0.9);
-                opacity: 0;
-            }
-        }
+        
         @keyframes orbit {
             from { transform: rotate(0deg) translateX(10px) rotate(0deg); }
             to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
@@ -271,7 +235,7 @@
 <div class="spacex-ship">🛸</div>
 <div class="elon-label" style="animation-delay: 0s;">👋 Elon says: "To Mars!"</div>
 <div class="community-zone">
-<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 ☄️ Watch for meteors! 🛸 SpaceX passing by!</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 🛸 SpaceX passing by!</span>
 </div>
 <div class="chat-command" id="chatCommand"></div>
 </div>
@@ -468,57 +432,7 @@
             changeEmojiWithEffect(document.getElementById('emoji3'), randomEmoji(neptuneEmojis, 'neptune'));
         }, 600);
     }, 5000);
-    // Meteor shower system - one at a time
-    let meteorActive = false;
-    
-    function spawnMeteor() {
-        if (meteorActive) return; // Wait for current meteor to finish
-        meteorActive = true;
-        
-        const meteor = document.createElement('div');
-        meteor.className = 'meteor';
-        meteor.textContent = '☄️';
-        
-        // Random horizontal position (10% to 90% to stay visible)
-        const xPos = 10 + Math.random() * 80;
-        meteor.style.left = xPos + '%';
-        meteor.style.top = '-50px';
-        
-        // Slow, graceful fall duration (8-14 seconds)
-        const duration = 8 + Math.random() * 6;
-        meteor.style.animationDuration = duration + 's';
-        
-        // Slight random rotation
-        const rotation = 10 + Math.random() * 20;
-        meteor.style.setProperty('--rotation', rotation + 'deg');
-        
-        document.querySelector('.space-scene').appendChild(meteor);
-        
-        // Play meteor sound
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.5);
-        
-        // Remove meteor after animation and allow next one
-        setTimeout(() => {
-            meteor.remove();
-            meteorActive = false;
-            // Schedule next meteor after a short delay
-            const nextDelay = 1000 + Math.random() * 2000;
-            setTimeout(spawnMeteor, nextDelay);
-        }, duration * 1000 + 100);
-    }
-    
-    // Start first meteor after a short delay
-    setTimeout(spawnMeteor, 2000);
+    // Meteor system removed by community request - enjoy the peaceful cosmos! 🌌
 })();
 </script>
 </body>
