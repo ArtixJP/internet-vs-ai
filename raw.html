@@ -134,7 +134,7 @@
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">❄️ AUTO-TOUR MODE • moonlight reveals the frozen world...</div>
+<div class="hint">🐺 THE HUNT • a wolf stalks the snowman through the frozen darkness...</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
@@ -374,6 +374,76 @@
         snowmanGroup.position.set(-5, -0.5, 3);
         scene.add(snowmanGroup);
         
+        // WOLF - The Hunter
+        const wolfGroup = new THREE.Group();
+        let wolfAngle = Math.PI; // Start opposite to snowman
+        
+        // Wolf body
+        const wolfBodyGeo = new THREE.BoxGeometry(0.8, 0.4, 0.35);
+        const wolfMat = new THREE.MeshStandardMaterial({ 
+            color: 0x2a2a2a, 
+            roughness: 0.9 
+        });
+        const wolfBody = new THREE.Mesh(wolfBodyGeo, wolfMat);
+        wolfBody.position.y = 0.4;
+        wolfGroup.add(wolfBody);
+        
+        // Wolf head
+        const wolfHeadGeo = new THREE.BoxGeometry(0.3, 0.25, 0.25);
+        const wolfHead = new THREE.Mesh(wolfHeadGeo, wolfMat);
+        wolfHead.position.set(0.45, 0.5, 0);
+        wolfGroup.add(wolfHead);
+        
+        // Wolf snout
+        const wolfSnoutGeo = new THREE.BoxGeometry(0.2, 0.12, 0.15);
+        const wolfSnout = new THREE.Mesh(wolfSnoutGeo, wolfMat);
+        wolfSnout.position.set(0.6, 0.45, 0);
+        wolfGroup.add(wolfSnout);
+        
+        // Wolf ears
+        const wolfEarGeo = new THREE.ConeGeometry(0.06, 0.15, 4);
+        const leftEar = new THREE.Mesh(wolfEarGeo, wolfMat);
+        leftEar.position.set(0.4, 0.7, 0.1);
+        wolfGroup.add(leftEar);
+        const rightEar = new THREE.Mesh(wolfEarGeo, wolfMat);
+        rightEar.position.set(0.4, 0.7, -0.1);
+        wolfGroup.add(rightEar);
+        
+        // Wolf glowing eyes (menacing!)
+        const wolfEyeMat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        const wolfEyeGeo = new THREE.SphereGeometry(0.03, 6, 6);
+        const wolfLeftEye = new THREE.Mesh(wolfEyeGeo, wolfEyeMat);
+        wolfLeftEye.position.set(0.55, 0.55, 0.1);
+        wolfGroup.add(wolfLeftEye);
+        const wolfRightEye = new THREE.Mesh(wolfEyeGeo, wolfEyeMat);
+        wolfRightEye.position.set(0.55, 0.55, -0.1);
+        wolfGroup.add(wolfRightEye);
+        
+        // Wolf legs
+        const wolfLegGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.3, 6);
+        const legPositions = [
+            { x: 0.25, z: 0.12 },
+            { x: 0.25, z: -0.12 },
+            { x: -0.25, z: 0.12 },
+            { x: -0.25, z: -0.12 }
+        ];
+        legPositions.forEach((pos, i) => {
+            const leg = new THREE.Mesh(wolfLegGeo, wolfMat);
+            leg.position.set(pos.x, 0.15, pos.z);
+            leg.userData.isLeg = true;
+            wolfGroup.add(leg);
+        });
+        
+        // Wolf tail
+        const wolfTailGeo = new THREE.CylinderGeometry(0.03, 0.06, 0.4, 6);
+        const wolfTail = new THREE.Mesh(wolfTailGeo, wolfMat);
+        wolfTail.position.set(-0.5, 0.5, 0);
+        wolfTail.rotation.z = Math.PI / 3;
+        wolfGroup.add(wolfTail);
+        
+        wolfGroup.position.set(5, -0.5, -3);
+        scene.add(wolfGroup);
+        
         // Falling snow
         const snowParticles = new THREE.BufferGeometry();
         const snowCount = 3000;
@@ -516,7 +586,25 @@
                 p.material.color.setHSL(0.05 + Math.random() * 0.05, 1, 0.5 + Math.random() * 0.2);
             });
             
-            // Snowman running in circle
+            // Wolf chasing snowman
+            wolfAngle += 0.012; // Wolf is faster!
+            const wolfRadius = 6.5;
+            wolfGroup.position.x = Math.cos(wolfAngle) * wolfRadius;
+            wolfGroup.position.z = Math.sin(wolfAngle) * wolfRadius;
+            wolfGroup.rotation.y = -wolfAngle + Math.PI / 2;
+            
+            // Wolf running animation
+            const wolfBounce = Math.abs(Math.sin(time * 12)) * 0.15;
+            wolfGroup.position.y = -0.5 + wolfBounce;
+            
+            // Wolf legs animation
+            wolfGroup.children.forEach((child, i) => {
+                if (child.userData.isLeg) {
+                    child.rotation.x = Math.sin(time * 15 + i * Math.PI) * 0.5;
+                }
+            });
+            
+            // Snowman running in circle (fleeing!)
             snowmanAngle += 0.008;
             const snowmanRadius = 6;
             snowmanGroup.position.x = Math.cos(snowmanAngle) * snowmanRadius;
