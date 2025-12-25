@@ -406,10 +406,9 @@
 <p style="margin-top:5px;font-size:0.8rem;color:#d4798b;">🎭 Click any cat to see their mood change! Each meow brings a new expression! 😺😻😼</p>
 <p style="margin-top:8px;font-size:0.9rem;color:#ff69b4;font-weight:bold;">📣 The cats are now SPECTATORS around the battle arena! Cheer them on! 🎉🐱</p>
 <p style="margin-top:5px;font-size:0.85rem;color:#ff1493;">🔊 AUTO-MEOW ENABLED! Click anywhere to start hearing the cats! 🐱🎵</p>
-<p style="margin-top:8px;font-size:0.9rem;color:#7c3aed;font-weight:bold;">🎵 NEW: Procedural Cat Symphony! Dreamy auto-generated ambient music! 🎶✨</p>
+<p style="margin-top:8px;font-size:0.9rem;color:#7c3aed;font-weight:bold;">🎵 Procedural Cat Symphony AUTO-PLAYS! Dreamy ambient music starts automatically! 🎶✨</p>
 </div>
 </div>
-
 <div class="nyan-indicator" id="nyan-indicator" style="position:fixed;bottom:70px;right:10px;background:linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);padding:10px 15px;border-radius:20px;font-size:0.8rem;color:#fff;z-index:100;display:flex;align-items:center;gap:8px;box-shadow:0 3px 15px rgba(255,105,180,0.5), 0 0 30px rgba(255,105,180,0.3);animation:nyanPulse 0.5s ease-in-out infinite;cursor:pointer;border:2px solid #fff;">
 <span style="font-size:1.4rem;animation:nyanBounce 0.3s ease-in-out infinite alternate;">🌈🐱</span>
 <span style="font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">CUSTOM NYAN! 🎵</span>
@@ -1029,10 +1028,35 @@
         setInterval(generateMusicPhrase, 2500 + Math.random() * 1500);
         setTimeout(generateMusicPhrase, 1000);
         
-        // Resume audio context on click
-        document.addEventListener('click', () => {
-            if (musicCtx.state === 'suspended') musicCtx.resume();
-        }, { once: true });
+        // AUTO-PLAY: Try to resume immediately!
+        function tryAutoPlay() {
+            if (musicCtx.state === 'suspended') {
+                musicCtx.resume().then(() => {
+                    console.log('🎵 Cat Symphony auto-playing!');
+                    document.getElementById('music-status').textContent = '🔊';
+                }).catch(() => {
+                    console.log('Auto-play blocked, waiting for interaction...');
+                    document.getElementById('music-indicator').style.animation = 'musicNeedClick 0.5s ease-in-out infinite';
+                });
+            }
+        }
+        
+        // Try auto-play on load
+        tryAutoPlay();
+        setTimeout(tryAutoPlay, 500);
+        setTimeout(tryAutoPlay, 1500);
+        
+        // Also resume on any user interaction
+        ['click', 'touchstart', 'keydown', 'scroll'].forEach(event => {
+            document.addEventListener(event, () => {
+                if (musicCtx.state === 'suspended') {
+                    musicCtx.resume().then(() => {
+                        document.getElementById('music-indicator').style.animation = 'musicPulse 2s ease-in-out infinite';
+                        document.getElementById('music-status').textContent = '🔊';
+                    });
+                }
+            }, { once: true });
+        });
         
         // Add music animation styles
         const musicStyles = document.createElement('style');
@@ -1044,6 +1068,10 @@
             @keyframes noteFloat {
                 0% { transform: translateY(0) rotate(-10deg); }
                 100% { transform: translateY(-3px) rotate(10deg); }
+            }
+            @keyframes musicNeedClick {
+                0%, 100% { transform: scale(1); background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); }
+                50% { transform: scale(1.08); background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); }
             }
         `;
         document.head.appendChild(musicStyles);
