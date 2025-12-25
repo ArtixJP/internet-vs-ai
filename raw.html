@@ -114,9 +114,15 @@
         // Main character (the walker)
         const walker = new THREE.Group();
         const body = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.3, 1, 4, 8),
+            new THREE.CylinderGeometry(0.3, 0.3, 1.6, 8),
             new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00aaaa, emissiveIntensity: 0.8 })
         );
+        const head = new THREE.Mesh(
+            new THREE.SphereGeometry(0.35, 8, 8),
+            new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00aaaa, emissiveIntensity: 0.8 })
+        );
+        head.position.y = 2.1;
+        walker.add(head);
         // Add glow light to walker
         const walkerGlow = new THREE.PointLight(0x00ffff, 3, 8);
         walkerGlow.position.y = 1;
@@ -128,13 +134,23 @@
         // Crowd (NPCs)
         const crowd = [];
         for (let i = 0; i < 30; i++) {
-            const npc = new THREE.Mesh(
-                new THREE.CapsuleGeometry(0.25, 0.8, 4, 8),
-                new THREE.MeshStandardMaterial({ color: neonColors[Math.floor(Math.random() * neonColors.length)] })
+            const npcColor = neonColors[Math.floor(Math.random() * neonColors.length)];
+            const npc = new THREE.Group();
+            const npcBody = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.25, 0.25, 1.2, 8),
+                new THREE.MeshStandardMaterial({ color: npcColor })
             );
+            npcBody.position.y = 0.6;
+            npc.add(npcBody);
+            const npcHead = new THREE.Mesh(
+                new THREE.SphereGeometry(0.28, 8, 8),
+                new THREE.MeshStandardMaterial({ color: npcColor })
+            );
+            npcHead.position.y = 1.4;
+            npc.add(npcHead);
             npc.position.set(
                 (Math.random() - 0.5) * 40,
-                0.65,
+                0,
                 (Math.random() - 0.5) * 40
             );
             npc.userData.speed = 0.01 + Math.random() * 0.02;
