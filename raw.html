@@ -376,6 +376,7 @@
 <p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
 <p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">💬 Echo shows the latest chat message (ignores @ mentions)! 🗨️🐱</p>
 <p style="margin-top:5px;font-size:0.75rem;color:#999;">🐾 Cat interactions now happen every 25-45 seconds for ultra zen vibes! 🧘‍♀️🐾</p>
+<p style="margin-top:5px;font-size:0.8rem;color:#d4798b;">🎭 Click any cat to see their mood change! Each meow brings a new expression! 😺😻😼</p>
 </div>
 </div>
 <div class="paw-prints">
@@ -393,14 +394,47 @@
                 card.style.animation = 'none';
                 card.offsetHeight;
                 card.style.animation = 'wiggle 0.5s ease-in-out';
-                const meows = ['Meow!', 'Purrrr~', 'Mrrp?', 'Nya~', '*head bonk*'];
-                const msg = meows[Math.floor(Math.random() * meows.length)];
+                
+                // Mood-based meows with matching expressions
+                const moodMeows = [
+                    { msg: 'Meow!', emoji: '😺', mood: 'happy' },
+                    { msg: 'Purrrr~', emoji: '😻', mood: 'love' },
+                    { msg: 'Mrrp?', emoji: '🙀', mood: 'curious' },
+                    { msg: 'Nya~', emoji: '😸', mood: 'playful' },
+                    { msg: '*head bonk*', emoji: '😽', mood: 'affectionate' },
+                    { msg: '*yawns*', emoji: '😿', mood: 'sleepy' },
+                    { msg: 'HISS!', emoji: '🙀', mood: 'angry' },
+                    { msg: '*happy chirp*', emoji: '😸', mood: 'excited' },
+                    { msg: '*slow blink*', emoji: '😻', mood: 'trusting' },
+                    { msg: 'Mrow?!', emoji: '🙀', mood: 'surprised' },
+                    { msg: '*smug look*', emoji: '😼', mood: 'smug' },
+                    { msg: '*kneads paws*', emoji: '😺', mood: 'content' }
+                ];
+                
+                const choice = moodMeows[Math.floor(Math.random() * moodMeows.length)];
+                const emojiEl = card.querySelector('.emoji');
+                const originalEmoji = emojiEl.textContent;
+                
+                // Temporarily change emoji to match mood
+                emojiEl.textContent = choice.emoji;
+                emojiEl.style.transition = 'transform 0.3s ease';
+                emojiEl.style.transform = 'scale(1.2)';
+                
+                // Create speech bubble with mood message
                 const bubble = document.createElement('div');
-                bubble.textContent = msg;
-                bubble.style.cssText = 'position:absolute;background:#fff;padding:8px 15px;border-radius:15px;font-size:1rem;box-shadow:0 3px 10px rgba(0,0,0,0.2);animation:fadeUp 1.5s forwards;pointer-events:none;';
+                bubble.textContent = choice.msg;
+                bubble.style.cssText = 'position:absolute;background:#fff;padding:8px 15px;border-radius:15px;font-size:1rem;box-shadow:0 3px 10px rgba(0,0,0,0.2);animation:fadeUp 1.5s forwards;pointer-events:none;z-index:5;';
                 card.style.position = 'relative';
                 card.appendChild(bubble);
-                setTimeout(() => bubble.remove(), 1500);
+                
+                // Restore original emoji after animation
+                setTimeout(() => {
+                    bubble.remove();
+                    emojiEl.style.transform = 'scale(1)';
+                    setTimeout(() => {
+                        emojiEl.textContent = originalEmoji;
+                    }, 300);
+                }, 1500);
             });
         });
         
