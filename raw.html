@@ -317,7 +317,7 @@
 <h2>✨ Community Cat Corner ✨</h2>
 <p>🎉 The cat family is growing! 9 adorable felines now call this paradise home! 🎉</p>
 <p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
-<p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">💬 Echo shows ONLY the latest chat message in the speech bubble! 🗨️🐱</p>
+<p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">💬 Echo shows the latest chat message (ignores @ mentions)! 🗨️🐱</p>
 <p style="margin-top:5px;font-size:0.75rem;color:#999;">🐾 Cat interactions now happen less frequently for a calmer vibe! 🐾</p>
 </div>
 </div>
@@ -576,6 +576,10 @@
             chatWs.onmessage = (e) => {
                 const msg = JSON.parse(e.data);
                 if (msg.type === 'chat_message') {
+                    // Skip messages containing @ (mentions/commands)
+                    if (msg.message && msg.message.includes('@')) {
+                        return; // Echo ignores @ messages! 🙀
+                    }
                     echoMessages.push({message: msg.message, username: msg.username});
                     if (echoMessages.length > 20) echoMessages.shift(); // Keep last 20
                     updateEchoBubble(msg.message, msg.username);
