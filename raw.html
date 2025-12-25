@@ -73,6 +73,36 @@
             20%, 24%, 55% { opacity: 0.8; }
         }
         
+        .reddit-sign {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 16px;
+            font-size: 0.55rem;
+            color: #ff4500;
+            background: rgba(255,69,0,0.1);
+            border: 2px solid #ff4500;
+            border-radius: 4px;
+            text-shadow: 
+                0 0 5px #ff4500,
+                0 0 10px #ff4500,
+                0 0 20px #ff4500;
+            animation: redditGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .reddit-alien {
+            animation: bounce 0.5s ease-in-out infinite alternate;
+            display: inline-block;
+        }
+        
+        @keyframes redditGlow {
+            from { box-shadow: 0 0 5px #ff4500, 0 0 10px rgba(255,69,0,0.5); }
+            to { box-shadow: 0 0 15px #ff4500, 0 0 25px rgba(255,69,0,0.7); }
+        }
+        
+        @keyframes bounce {
+            to { transform: translateY(-3px); }
+        }
+        
         .subtitle {
             font-size: 0.6rem;
             color: var(--neon-yellow);
@@ -216,6 +246,9 @@
 <header class="arcade-header">
 <h1 class="neon-title">NEON ARCADE</h1>
 <p class="subtitle">INSERT COIN TO PLAY</p>
+<div class="reddit-sign">
+<span class="reddit-alien">👾</span> HI REDDIT! <span class="reddit-alien">👾</span>
+</div>
 </header>
 <main class="arcade-floor">
 <div class="cabinet">
