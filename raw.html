@@ -1,41 +1,206 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hyprland Desktop</title>
+<style>
+        :root {
+            --bg-dark: #1e1e2e;
+            --bg-surface: #313244;
+            --bg-overlay: #45475a;
+            --accent: #89dceb;
+            --accent-alt: #94e2d5;
+            --text: #cdd6f4;
+            --text-dim: #6c7086;
+            --gap: 8px;
+            --radius: 12px;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: var(--bg-dark);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: var(--text);
+            padding: var(--gap);
             display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+        }
+        /* Waybar-style top bar */
+        .waybar {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        .workspaces { display: flex; gap: 6px; }
+        .workspace {
+            width: 24px; height: 24px;
+            background: var(--bg-overlay);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+        }
+        .workspace:hover, .workspace.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+        }
+        .center-modules { display: flex; gap: 16px; color: var(--text-dim); }
+        .right-modules { display: flex; gap: 12px; align-items: center; }
+        .module { padding: 4px 10px; background: var(--bg-overlay); border-radius: 6px; }
+        /* Tiling container */
+        .tiles {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: var(--gap);
+        }
+        .tile {
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            border: 2px solid transparent;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+        .tile:hover { border-color: var(--accent); }
+        .tile.focused { border-color: var(--accent-alt); box-shadow: 0 0 20px rgba(137, 220, 235, 0.2); }
+        .tile-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-overlay);
+            font-size: 0.8rem;
+        }
+        .tile-title { display: flex; align-items: center; gap: 8px; }
+        .tile-controls { display: flex; gap: 6px; }
+        .control { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
+        .control.close { background: #f38ba8; }
+        .control.max { background: #a6e3a1; }
+        .control.min { background: #f9e2af; }
+        .tile-content { flex: 1; padding: 16px; overflow: auto; }
+        .tile.main { grid-row: span 2; }
+        /* Terminal styling */
+        .terminal-line { margin: 4px 0; font-size: 0.85rem; }
+        .prompt { color: var(--accent); }
+        .command { color: var(--accent-alt); }
+        /* Placeholder areas */
+        .placeholder {
+            border: 2px dashed var(--bg-overlay);
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        /* Animations */
+        @keyframes blink { 50% { opacity: 0; } }
+        .cursor { animation: blink 1s step-end infinite; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .tile { animation: fadeSlide 0.5s ease forwards; }
+        .tile:nth-child(2) { animation-delay: 0.1s; }
+        .tile:nth-child(3) { animation-delay: 0.2s; }
+        .tile:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<nav class="waybar">
+<div class="workspaces">
+<div class="workspace active">1</div>
+<div class="workspace">2</div>
+<div class="workspace">3</div>
+<div class="workspace">4</div>
+<div class="workspace">5</div>
+</div>
+<div class="center-modules">
+<span id="clock">12:00</span>
+</div>
+<div class="right-modules">
+<span class="module">󰍛 4.2G</span>
+<span class="module">󰂄 100%</span>
+<span class="module">󰤨 Connected</span>
+</div>
+</nav>
+<main class="tiles">
+<div class="tile">
+<div class="tile-header">
+<span class="tile-title">󰆍 neofetch</span>
+<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
+</div>
+<div class="tile-content">
+<div class="terminal-line"><span class="prompt">user@hypr</span> ~ </div>
+<div class="terminal-line">OS: Twitch Plays Code</div>
+<div class="terminal-line">WM: Hyprland</div>
+<div class="terminal-line">Theme: Catppuccin</div>
+<div class="terminal-line">Viewers: ∞</div>
+</div>
+</div>
+<div class="tile main focused">
+<div class="tile-header">
+<span class="tile-title">󰈹 Welcome</span>
+<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
+</div>
+<div class="tile-content">
+<h2 style="color: var(--accent); margin-bottom: 12px;">Welcome to Hyprland</h2>
+<p style="color: var(--text-dim); line-height: 1.6;">A dynamic tiling Wayland compositor. This page is yours to customize!</p>
+<div class="placeholder" style="margin-top: 20px;">Community additions go here ✨</div>
+</div>
+</div>
+<div class="tile">
+<div class="tile-header">
+<span class="tile-title">󰙀 htop</span>
+<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
+</div>
+<div class="tile-content">
+<div class="terminal-line">CPU: <span style="color: var(--accent-alt);">████░░░░</span> 48%</div>
+<div class="terminal-line">MEM: <span style="color: var(--accent);">██████░░</span> 72%</div>
+</div>
+</div>
+<div class="tile">
+<div class="tile-header">
+<span class="tile-title">󰋼 chat</span>
+<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
+</div>
+<div class="tile-content">
+<div class="placeholder">Twitch chat integration area</div>
+</div>
+</div>
+</main>
+<script>
+        // Live clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+        // Workspace switching
+        document.querySelectorAll('.workspace').forEach(ws => {
+            ws.addEventListener('click', () => {
+                document.querySelector('.workspace.active')?.classList.remove('active');
+                ws.classList.add('active');
+            });
+        });
+        // Tile focus
+        document.querySelectorAll('.tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                document.querySelector('.tile.focused')?.classList.remove('focused');
+                tile.classList.add('focused');
+            });
+        });
+    </script>
 </body>
 </html>
