@@ -803,26 +803,61 @@
             const tile1 = swappable[idx1];
             const tile2 = swappable[idx2];
             
-            // Animate the swap
-            tile1.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s';
-            tile2.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s';
-            tile1.style.opacity = '0.7';
-            tile2.style.opacity = '0.7';
-            tile1.style.transform = 'scale(0.95)';
-            tile2.style.transform = 'scale(0.95)';
+            // Get current positions
+            const rect1 = tile1.getBoundingClientRect();
+            const rect2 = tile2.getBoundingClientRect();
+            
+            // Calculate the delta for each tile to move to the other's position
+            const deltaX1 = rect2.left - rect1.left;
+            const deltaY1 = rect2.top - rect1.top;
+            const deltaX2 = rect1.left - rect2.left;
+            const deltaY2 = rect1.top - rect2.top;
+            
+            // Add glow effect during swap
+            tile1.style.boxShadow = '0 0 30px rgba(137, 220, 235, 0.6), 0 0 60px rgba(148, 226, 213, 0.3)';
+            tile2.style.boxShadow = '0 0 30px rgba(243, 139, 168, 0.6), 0 0 60px rgba(250, 179, 135, 0.3)';
+            tile1.style.zIndex = '10';
+            tile2.style.zIndex = '10';
+            
+            // Animate tiles sliding to each other's position
+            tile1.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s';
+            tile2.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s';
+            
+            requestAnimationFrame(() => {
+                tile1.style.transform = `translate(${deltaX1}px, ${deltaY1}px) scale(1.02) rotate(1deg)`;
+                tile2.style.transform = `translate(${deltaX2}px, ${deltaY2}px) scale(1.02) rotate(-1deg)`;
+            });
             
             setTimeout(() => {
+                // Reset transforms before DOM swap
+                tile1.style.transition = 'none';
+                tile2.style.transition = 'none';
+                tile1.style.transform = '';
+                tile2.style.transform = '';
+                tile1.style.boxShadow = '';
+                tile2.style.boxShadow = '';
+                tile1.style.zIndex = '';
+                tile2.style.zIndex = '';
+                
                 // Actually swap in DOM
                 const parent = tile1.parentNode;
                 const sibling = tile1.nextSibling === tile2 ? tile1 : tile1.nextSibling;
                 tile2.parentNode.insertBefore(tile1, tile2);
                 parent.insertBefore(tile2, sibling);
                 
-                tile1.style.opacity = '1';
-                tile2.style.opacity = '1';
-                tile1.style.transform = 'scale(1)';
-                tile2.style.transform = 'scale(1)';
-            }, 300);
+                // Quick settle animation
+                requestAnimationFrame(() => {
+                    tile1.style.transition = 'transform 0.2s ease-out';
+                    tile2.style.transition = 'transform 0.2s ease-out';
+                    tile1.style.transform = 'scale(1.05)';
+                    tile2.style.transform = 'scale(1.05)';
+                    
+                    setTimeout(() => {
+                        tile1.style.transform = '';
+                        tile2.style.transform = '';
+                    }, 100);
+                });
+            }, 600);
         }
         
         // Schedule rare shuffles (15-30 seconds interval)
