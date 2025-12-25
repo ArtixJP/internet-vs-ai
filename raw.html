@@ -1,41 +1,203 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>☕ The Cozy Bean - Coffee Shop</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --cream: #F5E6D3;
+            --brown: #4A3728;
+            --amber: #D4A574;
+            --dark-brown: #2C1810;
+            --warm-white: #FFF8F0;
+        }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--warm-white) 100%);
+            font-family: 'Georgia', serif;
+            color: var(--brown);
+            overflow-x: hidden;
+        }
+        .header {
+            background: var(--dark-brown);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(44, 24, 16, 0.3);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--cream);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p { color: var(--amber); font-style: italic; margin-top: 5px; }
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .coffee-display {
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .cup {
+            font-size: 8rem;
+            filter: drop-shadow(0 10px 20px rgba(74, 55, 40, 0.4));
+        }
+        .steam {
+            font-size: 2rem;
+            opacity: 0.6;
+            animation: steam 2s ease-in-out infinite;
+        }
+        @keyframes steam {
+            0%, 100% { opacity: 0.3; transform: translateY(0) scale(1); }
+            50% { opacity: 0.7; transform: translateY(-15px) scale(1.1); }
+        }
+        .menu-board {
+            background: var(--dark-brown);
+            border: 8px solid var(--brown);
+            border-radius: 10px;
+            padding: 25px;
+            min-width: 280px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+        .menu-board h2 {
+            color: var(--cream);
+            text-align: center;
+            border-bottom: 2px dashed var(--amber);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            color: var(--warm-white);
+            padding: 8px 0;
+            border-bottom: 1px dotted var(--amber);
+        }
+        .menu-item:hover { color: var(--amber); cursor: pointer; }
+        .community-board {
+            background: #C4A77D;
+            border: 10px solid var(--brown);
+            border-radius: 5px;
+            padding: 20px;
+            min-width: 300px;
+            min-height: 200px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+        .community-board h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--dark-brown);
+        }
+        .sticky-note {
+            background: #FFFACD;
+            padding: 10px;
+            margin: 8px;
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .sticky-note:nth-child(odd) { transform: rotate(2deg); background: #FFE4E1; }
+        .cozy-corner {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            gap: 10px;
+            background: var(--amber);
+            padding: 15px 25px;
+            border-radius: 50px;
+            color: var(--dark-brown);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cozy-corner:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(212, 165, 116, 0.5);
+        }
+        .footer {
+            background: var(--dark-brown);
+            color: var(--cream);
             text-align: center;
+            padding: 15px;
+            margin-top: 20px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .fairy-lights {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 10;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: twinkle 1.5s ease-in-out infinite;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .light:nth-child(1) { background: #FFD700; animation-delay: 0s; }
+        .light:nth-child(2) { background: #FFA500; animation-delay: 0.3s; }
+        .light:nth-child(3) { background: #FF6347; animation-delay: 0.6s; }
+        .light:nth-child(4) { background: #FFD700; animation-delay: 0.9s; }
+        .light:nth-child(5) { background: #FFA500; animation-delay: 1.2s; }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="fairy-lights">
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+</div>
+<header class="header">
+<h1>☕ The Cozy Bean</h1>
+<p>"Where every cup tells a story"</p>
+</header>
+<main class="main-content">
+<div class="coffee-display">
+<div class="steam">～～～</div>
+<div class="cup">☕</div>
+<p style="margin-top: 10px; font-style: italic;">Fresh brewed happiness</p>
+</div>
+<div class="menu-board">
+<h2>📋 Today's Menu</h2>
+<div class="menu-item"><span>Espresso</span><span>$3.50</span></div>
+<div class="menu-item"><span>Cappuccino</span><span>$4.50</span></div>
+<div class="menu-item"><span>Latte</span><span>$4.75</span></div>
+<div class="menu-item"><span>Mocha</span><span>$5.00</span></div>
+<div class="menu-item"><span>Hot Chocolate</span><span>$4.00</span></div>
+</div>
+<div class="community-board">
+<h3>📌 Community Board</h3>
+<div class="sticky-note">Welcome! ✨</div>
+<div class="sticky-note">Leave your mark!</div>
+<div class="sticky-note">☕ + 📖 = 💕</div>
+</div>
+</main>
+<div style="text-align: center; padding: 20px;">
+<div class="cozy-corner">🛋️ Find a Cozy Spot</div>
+</div>
+<footer class="footer">
+<p>Open Daily: 7am - 9pm | 🌿 Organic &amp; Fair Trade</p>
+</footer>
 </body>
 </html>
