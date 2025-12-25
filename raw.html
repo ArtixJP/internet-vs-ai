@@ -172,6 +172,54 @@
             filter: drop-shadow(0 0 15px #ff4500) drop-shadow(0 0 30px #ff6b35);
             animation: meteorFall linear forwards;
         }
+        .spacex-ship {
+            position: absolute;
+            right: -200px;
+            font-size: 60px;
+            z-index: 15;
+            pointer-events: none;
+            animation: spacexFly 20s linear infinite;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+        }
+        .spacex-ship::before {
+            content: '🧑‍🚀';
+            position: absolute;
+            font-size: 20px;
+            top: 5px;
+            left: 25px;
+            animation: elonWave 0.5s ease-in-out infinite;
+        }
+        .spacex-ship::after {
+            content: 'SpaceX';
+            position: absolute;
+            font-size: 10px;
+            color: #fff;
+            font-weight: bold;
+            top: 35px;
+            left: 15px;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        .elon-label {
+            position: absolute;
+            font-size: 12px;
+            color: #00d4ff;
+            white-space: nowrap;
+            animation: spacexFly 20s linear infinite;
+            right: -200px;
+            pointer-events: none;
+            z-index: 16;
+        }
+        @keyframes spacexFly {
+            0% { right: -200px; top: 30%; transform: rotate(-5deg); }
+            25% { top: 45%; transform: rotate(0deg); }
+            50% { top: 35%; transform: rotate(3deg); }
+            75% { top: 50%; transform: rotate(-2deg); }
+            100% { right: 110%; top: 40%; transform: rotate(-5deg); }
+        }
+        @keyframes elonWave {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
         .meteor::after {
             content: '';
             position: absolute;
@@ -220,8 +268,10 @@
 <div class="planet planet-1" title="Mars"><span class="planet-emoji" id="emoji1"></span></div>
 <div class="planet planet-2" title="Saturn"><span class="planet-emoji" id="emoji2"></span></div>
 <div class="planet planet-3" title="Neptune"><span class="planet-emoji" id="emoji3"></span></div>
+<div class="spacex-ship">🛸</div>
+<div class="elon-label" style="animation-delay: 0s;">👋 Elon says: "To Mars!"</div>
 <div class="community-zone">
-<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 ☄️ Watch for meteors!</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 ☄️ Watch for meteors! 🛸 SpaceX passing by!</span>
 </div>
 <div class="chat-command" id="chatCommand"></div>
 </div>
