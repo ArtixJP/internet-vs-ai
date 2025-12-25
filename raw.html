@@ -49,7 +49,7 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ 24 Citizens chatting | 🚶 Rectilinear paths | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
+<div id="community-zone">🗣️ Citizens respawn! | 🎬 Attack cam focus | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
@@ -731,6 +731,51 @@
             document.getElementById('count').textContent = crowd.length;
         }
         
+        // NPC Respawn system - new citizens arrive after deaths!
+        function spawnNewNPC() {
+            const npcColor = neonColors[Math.floor(Math.random() * neonColors.length)];
+            const npc = createHumanoid(npcColor, Math.random() > 0.5, 0.9 + Math.random() * 0.3);
+            
+            const onAvenue = Math.random() > 0.5;
+            const sidewalkSide = sidewalkOffsets[Math.floor(Math.random() * 2)];
+            
+            if (onAvenue) {
+                const avenueIndex = Math.floor(Math.random() * 8) - 4;
+                npc.position.set(
+                    avenueIndex * gridSpacingX + sidewalkSide,
+                    0,
+                    (Math.random() > 0.5 ? 1 : -1) * 35 // Spawn at edge
+                );
+                npc.userData.walkAxis = 'z';
+                npc.userData.walkDirection = npc.position.z > 0 ? -1 : 1;
+                npc.userData.laneX = avenueIndex * gridSpacingX + sidewalkSide;
+            } else {
+                const streetIndex = Math.floor(Math.random() * 6) - 3;
+                npc.position.set(
+                    (Math.random() > 0.5 ? 1 : -1) * 35,
+                    0,
+                    streetIndex * gridSpacingZ + sidewalkSide
+                );
+                npc.userData.walkAxis = 'x';
+                npc.userData.walkDirection = npc.position.x > 0 ? -1 : 1;
+                npc.userData.laneZ = streetIndex * gridSpacingZ + sidewalkSide;
+            }
+            
+            npc.userData.speed = 0.015 + Math.random() * 0.015;
+            npc.userData.walkPhase = Math.random() * Math.PI * 2;
+            npc.userData.turningCooldown = 0;
+            scene.add(npc);
+            crowd.push(npc);
+            document.getElementById('count').textContent = crowd.length;
+        }
+        
+        // Attack camera system
+        let attackCamActive = false;
+        let attackCamTimer = 0;
+        let attackCamTarget = null;
+        let normalTimeScale = 1;
+        let currentTimeScale = 1;
+        
         function sliceNPC(npc, index, turtle) {
             npc.userData.isDying = true;
             
@@ -1034,7 +1079,7 @@
         let cullCount = 0;
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.016;
+            time += 0.016 * currentTimeScale;
             
             // Walker movement (figure-8 path)
             walker.position.x = Math.sin(time * 0.3) * 15;
@@ -1044,11 +1089,33 @@
                 Math.cos(time * 0.6) * 10 * 0.6
             );
             
-            // Camera follows walker
-            camera.position.x = walker.position.x - 8;
-            camera.position.y = 5;
-            camera.position.z = walker.position.z + 8;
-            camera.lookAt(walker.position.x, 1.5, walker.position.z);
+            // Camera follows walker OR focuses on attack
+            if (attackCamActive && attackCamTarget) {
+                // Dramatic attack camera!
+                const turtlePos = attackCamTarget.turtle.position;
+                const victimPos = attackCamTarget.victimPos;
+                const midX = (turtlePos.x + victimPos.x) / 2;
+                const midZ = (turtlePos.z + victimPos.z) / 2;
+                
+                // Orbit around the action
+                const camAngle = time * 2;
+                camera.position.x = midX + Math.sin(camAngle) * 5;
+                camera.position.y = 2.5;
+                camera.position.z = midZ + Math.cos(camAngle) * 5;
+                camera.lookAt(midX, 1, midZ);
+                
+                attackCamTimer--;
+                if (attackCamTimer <= 0) {
+                    attackCamActive = false;
+                    attackCamTarget = null;
+                    currentTimeScale = 1;
+                }
+            } else {
+                camera.position.x = walker.position.x - 8;
+                camera.position.y = 5;
+                camera.position.z = walker.position.z + 8;
+                camera.lookAt(walker.position.x, 1.5, walker.position.z);
+            }
             
             // Update frustum for culling
             camera.updateMatrixWorld();
@@ -1258,9 +1325,18 @@
                             const victimDist = turtle.position.distanceTo(victim.position);
                             if (victimDist < 1.5) {
                                 // SLICE THEM IN HALF!
+                                // Activate dramatic attack camera!
+                                attackCamActive = true;
+                                attackCamTimer = 90; // 1.5 seconds of drama
+                                attackCamTarget = { turtle: turtle, victimPos: victim.position.clone() };
+                                currentTimeScale = 0.3; // Slow motion!
+                                
                                 sliceNPC(victim, ci, turtle);
                                 turtle.userData.killCount++;
                                 updateKillCount();
+                                
+                                // Schedule respawn after 3-5 seconds
+                                setTimeout(spawnNewNPC, 3000 + Math.random() * 2000);
                             }
                         }
                     } else {
