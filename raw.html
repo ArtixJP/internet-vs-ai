@@ -1,41 +1,210 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>The Brass Tinkerer's Workshop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Special+Elite&amp;display=swap" rel="stylesheet"/>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --brass: #b87333;
+            --copper: #d4a574;
+            --dark-wood: #2d1810;
+            --leather: #8b4513;
+            --steam: rgba(255,255,255,0.1);
+        }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #1a1209 0%, #2d1810 50%, #1a1209 100%);
+            font-family: 'Special Elite', monospace;
+            color: var(--copper);
+            overflow-x: hidden;
+            position: relative;
+        }
+        .steam-particles {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='2' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+            animation: steamRise 20s linear infinite;
+        }
+        @keyframes steamRise { from { transform: translateY(0); } to { transform: translateY(-100px); } }
+        
+        .gear {
+            position: absolute;
+            border: 8px solid var(--brass);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+        .gear::before {
+            content: '';
+            position: absolute;
+            inset: 15%;
+            border: 4px solid var(--brass);
+            border-radius: 50%;
+        }
+        .gear-1 { width: 120px; height: 120px; top: 5%; left: 5%; animation-duration: 15s; }
+        .gear-2 { width: 80px; height: 80px; top: 8%; right: 10%; animation-duration: 10s; animation-direction: reverse; }
+        .gear-3 { width: 60px; height: 60px; bottom: 15%; left: 8%; animation-duration: 8s; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 3px double var(--brass);
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--brass);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 30px rgba(184,115,51,0.3);
+            letter-spacing: 3px;
+        }
+        .subtitle { font-size: 0.9rem; opacity: 0.7; margin-top: 8px; }
+        
+        .workshop {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .station {
+            background: linear-gradient(145deg, rgba(45,24,16,0.9) 0%, rgba(26,18,9,0.95) 100%);
+            border: 2px solid var(--brass);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .station:hover {
+            transform: translateY(-3px);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 8px 25px rgba(184,115,51,0.2);
+        }
+        .station h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--brass);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .station p { font-size: 0.85rem; line-height: 1.6; opacity: 0.85; }
+        
+        .invention-shelf {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .invention {
+            width: 50px; height: 50px;
+            background: var(--dark-wood);
+            border: 2px solid var(--copper);
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .invention:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 0 15px rgba(212,165,116,0.4);
+        }
+        
+        .pressure-gauge {
+            width: 80px; height: 80px;
+            border: 4px solid var(--brass);
+            border-radius: 50%;
+            margin: 15px auto;
+            position: relative;
+            background: radial-gradient(circle, #1a1209 60%, var(--dark-wood) 100%);
+        }
+        .gauge-needle {
+            position: absolute;
+            width: 3px; height: 30px;
+            background: #ff4444;
+            left: 50%; bottom: 50%;
+            transform-origin: bottom center;
+            animation: gaugeWobble 2s ease-in-out infinite;
+        }
+        @keyframes gaugeWobble { 0%,100% { transform: rotate(-30deg); } 50% { transform: rotate(45deg); } }
+        
+        .community-board {
+            background: var(--leather);
+            border: 3px solid var(--brass);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            opacity: 0.6;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        
+        footer {
             text-align: center;
-        }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 20px;
+            border-top: 2px solid var(--brass);
+            font-size: 0.75rem;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="steam-particles"></div>
+<div class="gear gear-1"></div>
+<div class="gear gear-2"></div>
+<div class="gear gear-3"></div>
+<header>
+<h1>⚙️ The Brass Tinkerer's Workshop ⚙️</h1>
+<p class="subtitle">Est. 1887 — Where Imagination Meets Machinery</p>
+</header>
+<main class="workshop">
+<section class="station">
+<h2>🔧 Workbench</h2>
+<p>The heart of creation. Scattered blueprints and half-finished contraptions await the next spark of genius.</p>
+<div class="invention-shelf">
+<div class="invention" title="Clockwork Mouse">🐭</div>
+<div class="invention" title="Steam Whistle">🎺</div>
+<div class="invention" title="Brass Compass">🧭</div>
+</div>
+</section>
+<section class="station">
+<h2>🌡️ Boiler Room</h2>
+<p>The thundering heart that powers all experiments. Pressure levels: NOMINAL.</p>
+<div class="pressure-gauge">
+<div class="gauge-needle"></div>
+</div>
+</section>
+<section class="station">
+<h2>📜 Blueprint Archive</h2>
+<p>Ancient schematics and wild new ideas coexist in organized chaos.</p>
+<div class="community-board">[ Community inventions will appear here ]</div>
+</section>
+<section class="station">
+<h2>🔬 Curiosity Cabinet</h2>
+<p>Strange specimens and mysterious artifacts collected from distant lands.</p>
+<div class="invention-shelf">
+<div class="invention" title="Mystery Vial">🧪</div>
+<div class="invention" title="Ancient Key">🗝️</div>
+<div class="invention" title="Crystal Lens">🔮</div>
+<div class="invention" title="Unknown">❓</div>
+</div>
+</section>
+</main>
+<footer>
+<p>"The impossible is merely the untried." — The Tinkerer's Creed</p>
+</footer>
 </body>
 </html>
