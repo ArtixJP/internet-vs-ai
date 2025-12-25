@@ -3,31 +3,25 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>The Cozy Corner Bookstore</title>
+<title>Ravenswood Manor</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { min-height: 100vh; background: #f5e6d3; color: #4a3728; font-family: Georgia, serif; }
-        header { background: #8b6914; padding: 20px; text-align: center; }
-        h1 { font-size: 2rem; color: #f5e6d3; text-shadow: 2px 2px #3d2914; }
-        .tagline { color: #d4c4a8; font-style: italic; margin-top: 5px; }
-        main { max-width: 900px; margin: 40px auto; padding: 20px; text-align: center; }
-        .bookshelf { background: #d4a574; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(74,55,40,0.3); }
-        .books { font-size: 3rem; letter-spacing: 10px; }
-        .placeholder { margin-top: 20px; color: #7a5a3a; font-style: italic; }
-        footer { text-align: center; padding: 15px; color: #8b6914; font-size: 0.9rem; }
+        body { min-height: 100vh; background: #0d0d0d; color: #c4a7e7; font-family: 'Times New Roman', serif; text-align: center; overflow: hidden; }
+        .fog { position: fixed; inset: 0; background: radial-gradient(ellipse at bottom, rgba(50,30,60,0.3) 0%, transparent 70%); pointer-events: none; }
+        h1 { font-size: 3rem; margin-top: 15vh; text-shadow: 0 0 20px #6b3fa0; animation: flicker 3s infinite; }
+        .door { width: 120px; height: 200px; background: linear-gradient(#2a1a3a, #1a0a2a); margin: 40px auto; border: 4px solid #4a2a5a; border-radius: 60px 60px 0 0; cursor: pointer; position: relative; }
+        .door::after { content: '🔮'; position: absolute; right: 15px; top: 50%; font-size: 1.5rem; }
+        .whisper { opacity: 0.5; font-style: italic; margin: 30px; }
+        .rooms { display: flex; justify-content: center; gap: 40px; margin-top: 50px; opacity: 0.3; }
+        .rooms span { border: 1px dashed #6b3fa0; padding: 20px 30px; }
+        @keyframes flicker { 0%,90%,100% { opacity: 1; } 92%,94% { opacity: 0.4; } }
     </style>
 </head>
 <body>
-<header>
-<h1>📚 The Cozy Corner</h1>
-<p class="tagline">Where stories find their readers...</p>
-</header>
-<main>
-<div class="bookshelf">
-<div class="books">📕📗📘📙📓</div>
-<p class="placeholder">[Community books will appear here...]</p>
-</div>
-</main>
-<footer>☕ Open daily • [More to come...]</footer>
+<div class="fog"></div>
+<h1>🏚️ Ravenswood Manor</h1>
+<p class="whisper">"They say no one leaves after midnight..."</p>
+<div class="door" title="Enter if you dare"></div>
+<div class="rooms"><span>[ West Wing ]</span><span>[ ... ]</span><span>[ East Wing ]</span></div>
 </body>
 </html>
