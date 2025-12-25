@@ -204,9 +204,9 @@
         }
         
         .fire {
-            font-size: 1.5rem;
+            font-size: 4rem;
             animation: flicker 0.15s infinite alternate;
-            filter: drop-shadow(0 0 20px #ff4500) drop-shadow(0 0 40px #ff2200) drop-shadow(0 0 60px rgba(255,100,0,0.5));
+            filter: drop-shadow(0 0 40px #ff4500) drop-shadow(0 0 80px #ff2200) drop-shadow(0 0 120px rgba(255,100,0,0.5));
             z-index: 10;
         }
         
@@ -222,10 +222,10 @@
         }
         
         .fire-logs {
-            font-size: 0.8rem;
+            font-size: 2rem;
             opacity: 0.7;
             filter: grayscale(60%) brightness(0.8);
-            letter-spacing: -0.3rem;
+            letter-spacing: -0.5rem;
         }
         
         .pit-stones {
@@ -298,12 +298,12 @@
         
         .camp-scene {
             position: fixed;
-            bottom: 15%;
+            bottom: 18%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: flex-end;
-            gap: 1rem;
+            gap: 2rem;
             z-index: 8;
         }
         
@@ -324,30 +324,30 @@
         }
         
         .human {
-            font-size: 2rem;
+            font-size: 5rem;
             filter: grayscale(30%) brightness(0.8);
             text-shadow: 0 0 30px rgba(255,100,50,0.3);
         }
         
         .human.sitting {
-            font-size: 1.5rem;
+            font-size: 4rem;
         }
         
         .tent {
-            font-size: 3rem;
+            font-size: 7rem;
             filter: grayscale(60%) brightness(0.6);
-            margin: 0 1rem;
-            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            margin: 0 2rem;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
         
         .speech-bubble {
             background: rgba(200,220,240,0.08);
             border: 1px solid rgba(168,213,229,0.15);
-            border-radius: 10px;
-            padding: 0.4rem 0.8rem;
-            font-size: 0.65rem;
-            color: rgba(168,213,229,0.6);
-            margin-bottom: 0.5rem;
+            border-radius: 15px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            color: rgba(168,213,229,0.7);
+            margin-bottom: 1rem;
             white-space: nowrap;
             animation: bubble-fade 8s ease-in-out infinite;
             backdrop-filter: blur(5px);
@@ -416,20 +416,20 @@
         .running-snowman {
             position: fixed;
             bottom: 25%;
-            font-size: 2.5rem;
+            font-size: 6rem;
             z-index: 9;
             animation: snowman-run 12s linear infinite;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
         }
         
         .snowman-legs {
             position: absolute;
-            bottom: -10px;
+            bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.6rem;
+            font-size: 1.5rem;
             animation: legs-move 0.3s steps(2) infinite;
-            opacity: 0.6;
+            opacity: 0.7;
         }
         
         @keyframes snowman-run {
@@ -448,13 +448,14 @@
         
         .snowman-panic {
             position: absolute;
-            top: -15px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.5rem;
-            color: rgba(168,213,229,0.7);
+            font-size: 1.2rem;
+            color: rgba(168,213,229,0.8);
             animation: panic-text 0.8s ease-in-out infinite;
             white-space: nowrap;
+            text-shadow: 0 0 10px rgba(168,213,229,0.4);
         }
         
         @keyframes panic-text {
