@@ -1,41 +1,160 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>Space Odyssey</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2838 0%, #090a0f 100%);
+            overflow: hidden;
+            perspective: 1000px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 200px, #fff, transparent),
+                radial-gradient(1px 1px at 400px 50px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(2px 2px at 500px 150px, #fff, transparent);
+            background-size: 550px 300px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+        @keyframes twinkle { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .space-scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            transform-style: preserve-3d;
+        }
+        .rocket {
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%) rotateX(10deg);
+            font-size: 80px;
+            filter: drop-shadow(0 0 30px rgba(255,100,50,0.8));
+            animation: rocketFloat 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            z-index: 10;
+        }
+        .rocket:hover { transform: translate(-50%, -50%) rotateX(10deg) scale(1.2); }
+        @keyframes rocketFloat {
+            0%, 100% { transform: translate(-50%, -50%) rotateX(10deg) translateY(0); }
+            50% { transform: translate(-50%, -50%) rotateX(10deg) translateY(-20px); }
+        }
+        .flame {
+            position: absolute;
+            left: 50%; top: calc(50% + 50px);
+            transform: translateX(-50%);
+            width: 30px; height: 60px;
+            background: linear-gradient(to bottom, #ff6b35, #f7931e, transparent);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flameFlicker 0.15s infinite;
+            filter: blur(3px);
+        }
+        @keyframes flameFlicker { 0%,100% { height: 60px; opacity: 1; } 50% { height: 70px; opacity: 0.8; } }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: orbit linear infinite;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .planet:hover { transform: scale(1.3); box-shadow: 0 0 40px currentColor; }
+        .planet-1 {
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #922b21 100%);
+            top: 15%; left: 10%;
+            animation-duration: 20s;
+            box-shadow: inset -20px -10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(231,76,60,0.5);
+        }
+        .planet-2 {
+            width: 150px; height: 150px;
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 50%, #b9770e 100%);
+            top: 60%; right: 8%;
+            animation-duration: 25s;
+            box-shadow: inset -30px -15px 40px rgba(0,0,0,0.4), 0 0 30px rgba(243,156,18,0.4);
+        }
+        .planet-2::after {
+            content: ''; position: absolute;
+            width: 200px; height: 20px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotateX(75deg);
+        }
+        .planet-3 {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 50%, #1a5276 100%);
+            top: 75%; left: 20%;
+            animation-duration: 15s;
+            box-shadow: inset -15px -8px 20px rgba(0,0,0,0.5), 0 0 15px rgba(52,152,219,0.5);
+        }
+        .title {
+            position: absolute;
+            top: 5%; left: 50%;
+            transform: translateX(-50%);
             text-align: center;
+            z-index: 20;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        .title h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(123,44,191,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes glow { from { filter: brightness(1); } to { filter: brightness(1.2); } }
+        .title p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        .community-zone {
+            position: absolute;
+            bottom: 5%; left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            text-align: center;
+            z-index: 20;
+        }
+        .community-zone span { opacity: 0.7; font-size: 0.9rem; }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(10px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars"></div>
+<div class="space-scene">
+<div class="title">
+<h1>🌌 Space Odyssey</h1>
+<p>Explore the cosmos together</p>
+</div>
+<div class="rocket">🚀</div>
+<div class="flame"></div>
+<div class="planet planet-1" title="Mars"></div>
+<div class="planet planet-2" title="Saturn"></div>
+<div class="planet planet-3" title="Neptune"></div>
+<div class="community-zone">
+<span>✨ Community additions appear here ✨</span>
+</div>
+</div>
 </body>
 </html>
