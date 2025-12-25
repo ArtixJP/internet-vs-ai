@@ -133,6 +133,36 @@
             animation-duration: 25s;
             box-shadow: inset -30px -15px 40px rgba(0,0,0,0.4), 0 0 30px rgba(243,156,18,0.4);
         }
+        .simpson-family {
+            position: absolute;
+            pointer-events: none;
+            z-index: 12;
+        }
+        .simpson {
+            position: absolute;
+            font-size: 28px;
+            filter: drop-shadow(0 0 8px rgba(255,255,0,0.6));
+            animation: simpsonFloat 4s ease-in-out infinite;
+        }
+        .simpson.homer { animation-delay: 0s; }
+        .simpson.marge { animation-delay: 0.5s; }
+        .simpson.bart { animation-delay: 1s; }
+        .simpson.lisa { animation-delay: 1.5s; }
+        .simpson.maggie { animation-delay: 2s; }
+        @keyframes simpsonFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        .simpson-label {
+            position: absolute;
+            font-size: 10px;
+            color: #ffd700;
+            white-space: nowrap;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
         .planet-2::after {
             content: ''; position: absolute;
             width: 200px; height: 20px;
@@ -249,7 +279,14 @@
 <div class="rocket">🚀</div>
 <div class="flame"></div>
 <div class="planet planet-1" title="Mars"><span class="planet-emoji" id="emoji1"></span></div>
-<div class="planet planet-2" title="Saturn"><span class="planet-emoji" id="emoji2"></span></div>
+<div class="planet planet-2" title="Saturn - Home of the Simpsons"><span class="planet-emoji" id="emoji2"></span></div>
+<div class="simpson-family" style="top: 52%; right: 2%;">
+<div class="simpson homer" style="top: 0; left: 0;">👨‍🦲<span class="simpson-label">Homer</span></div>
+<div class="simpson marge" style="top: -30px; left: 60px;">👩‍🦱<span class="simpson-label">Marge</span></div>
+<div class="simpson bart" style="top: 40px; left: 80px;">👦<span class="simpson-label">Bart</span></div>
+<div class="simpson lisa" style="top: 50px; left: 20px;">👧<span class="simpson-label">Lisa</span></div>
+<div class="simpson maggie" style="top: 20px; left: 110px;">👶<span class="simpson-label">Maggie</span></div>
+</div>
 <div class="planet planet-3" title="Neptune"><span class="planet-emoji" id="emoji3"></span></div>
 <div class="spacex-ship">🛸</div>
 <div class="elon-label" style="animation-delay: 0s;">👋 Elon says: "To Mars!"</div>
@@ -265,7 +302,7 @@
     const chatCmd = document.getElementById('chatCommand');
     
     let rocketX = 50;
-    let rocketY = 50;
+    let rocketY = 80;
     const step = 8;
     const bounds = { minX: 10, maxX: 90, minY: 15, maxY: 85 };
     
