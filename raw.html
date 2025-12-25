@@ -1,717 +1,119 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>NEON ARCADE ZONE</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Internet vs AI - A Friendly Guide</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --neon-pink: #ff6b9d;
-            --neon-cyan: #7fdbff;
-            --neon-yellow: #ffd93d;
-            --arcade-purple: #5a3d7a;
-            --arcade-dark: #3d2a5a;
-            --warm-coral: #ff8a80;
-            --soft-lavender: #b39ddb;
-            --peachy: #ffab91;
-        }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--arcade-dark) 0%, #4a3366 50%, var(--arcade-purple) 100%);
-            font-family: 'Press Start 2P', monospace;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #f0f0f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             overflow-x: hidden;
-            position: relative;
         }
-        
-        /* Scanline overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.08) 0px,
-                rgba(0,0,0,0.08) 1px,
-                transparent 1px,
-                transparent 3px
-            );
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        /* Pixel grid background */
-        .pixel-grid {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255,0,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,0,255,0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: -1;
-        }
-        
-        .arcade-header {
+        .hero {
             text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(180deg, rgba(45,27,78,0.9) 0%, rgba(255,138,128,0.1) 50%, transparent 100%);
+            padding: 40px 20px 30px;
+            animation: slideDown 0.8s ease-out;
         }
-        
-        .neon-title {
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            color: var(--neon-yellow);
-            text-shadow: 
-                0 0 5px var(--neon-yellow),
-                0 0 10px var(--peachy),
-                0 0 20px var(--warm-coral),
-                0 0 40px var(--neon-pink);
-            animation: flicker 3s infinite;
+        .hero h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7, #f107a3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
         }
-        
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.8; }
-        }
-        
-        .reddit-sign {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 6px 16px;
-            font-size: 0.55rem;
-            color: #ff4500;
-            background: rgba(255,69,0,0.1);
-            border: 2px solid #ff4500;
-            border-radius: 4px;
-            text-shadow: 
-                0 0 5px #ff4500,
-                0 0 10px #ff4500,
-                0 0 20px #ff4500;
-            animation: redditGlow 2s ease-in-out infinite alternate;
-        }
-        
-        .reddit-alien {
-            animation: bounce 0.5s ease-in-out infinite alternate;
-            display: inline-block;
-        }
-        
-        @keyframes redditGlow {
-            from { box-shadow: 0 0 5px #ff4500, 0 0 10px rgba(255,69,0,0.5); }
-            to { box-shadow: 0 0 15px #ff4500, 0 0 25px rgba(255,69,0,0.7); }
-        }
-        
-        @keyframes bounce {
-            to { transform: translateY(-3px); }
-        }
-        
-        .welcome-banner {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 25px;
-            font-size: 0.9rem;
-            color: #ffd93d;
-            background: linear-gradient(90deg, rgba(255,171,145,0.2) 0%, rgba(255,217,61,0.25) 50%, rgba(255,171,145,0.2) 100%);
-            border: 3px solid var(--peachy);
-            border-radius: 8px;
-            text-shadow: 
-                0 0 10px var(--neon-yellow),
-                0 0 20px var(--peachy),
-                0 0 40px var(--warm-coral);
-            animation: welcomePulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes welcomePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,171,145,0.5); }
-            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(255,217,61,0.6); }
-        }
-        
-        .star {
-            display: inline-block;
-            animation: starSpin 3s linear infinite;
-            color: var(--neon-yellow);
-        }
-        
-        @keyframes starSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .friendly-msg {
-            font-size: 0.45rem;
-            color: rgba(255,255,255,0.7);
-            margin-top: 12px;
-            letter-spacing: 2px;
-            animation: friendlyBlink 2.5s ease-in-out infinite;
-        }
-        
-        @keyframes friendlyBlink {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; color: var(--neon-cyan); }
-        }
-        
-        .subtitle {
-            font-size: 0.6rem;
-            color: var(--neon-yellow);
-            margin-top: 15px;
-            letter-spacing: 4px;
-        }
-        
-        .arcade-floor {
+        .hero p { font-size: 1.2rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+        .comparison {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
+            padding: 30px 20px;
+            flex-wrap: wrap;
         }
-        
-        .cabinet {
-            width: 200px;
-            height: 280px;
-            background: linear-gradient(180deg, #3d2a5a 0%, #2d1b4e 100%);
-            border: 3px solid var(--soft-lavender);
-            border-radius: 10px 10px 5px 5px;
-            position: relative;
-            box-shadow: 
-                0 0 15px rgba(179,157,219,0.4),
-                inset 0 0 30px rgba(0,0,0,0.3);
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 25px;
+            width: 320px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
             transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            animation: fadeUp 1s ease-out;
         }
-        
-        .cabinet:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 
-                0 0 30px rgba(255,171,145,0.6),
-                0 0 50px rgba(179,157,219,0.4),
-                0 20px 40px rgba(0,0,0,0.3);
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        
-        .cabinet-screen {
-            width: 160px;
-            height: 120px;
-            margin: 20px auto 10px;
-            background: #000;
-            border: 4px solid #333;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .screen-content {
-            font-size: 0.5rem;
-            color: var(--neon-cyan);
+        .card.internet { border-top: 4px solid #00d4ff; }
+        .card.ai { border-top: 4px solid #f107a3; }
+        .card h2 { font-size: 1.6rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .card ul { list-style: none; text-align: left; }
+        .card li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
+        .card li:last-child { border: none; }
+        .card li::before { content: '→ '; opacity: 0.6; }
+        .icon { font-size: 1.8rem; }
+        .middle-section {
             text-align: center;
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            50% { opacity: 0.7; }
-        }
-        
-        .cabinet-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .joystick {
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle at 30% 30%, #ff4444, #880000);
-            border-radius: 50%;
-            box-shadow: 0 4px 0 #440000;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            box-shadow: 0 3px 0 rgba(0,0,0,0.5);
-        }
-        
-        .btn-a { background: var(--neon-cyan); }
-        .btn-b { background: var(--neon-pink); }
-        .btn-c { background: var(--neon-yellow); }
-        
-        .cabinet-label {
-            position: absolute;
-            bottom: 15px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.5rem;
-            color: var(--neon-yellow);
-        }
-        
-        .high-scores {
-            background: rgba(45,27,78,0.85);
-            border: 2px solid var(--peachy);
             padding: 20px;
+            background: rgba(123, 47, 247, 0.15);
             margin: 20px auto;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(255,171,145,0.2);
+            max-width: 700px;
+            border-radius: 15px;
         }
-        
-        .high-scores h2 {
-            font-size: 0.8rem;
-            color: var(--neon-yellow);
-            margin-bottom: 15px;
-        }
-        
-        .score-entry {
-            font-size: 0.6rem;
-            color: var(--neon-cyan);
-            margin: 8px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        
+        .middle-section h3 { font-size: 1.4rem; margin-bottom: 10px; color: #c9a0ff; }
         .community-zone {
             text-align: center;
-            padding: 30px;
-            border-top: 2px dashed var(--soft-lavender);
-            margin-top: 30px;
+            padding: 30px 20px;
+            border: 2px dashed rgba(255,255,255,0.2);
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 20px;
         }
-        
-        .community-hearts {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            animation: heartbeat 1s ease-in-out infinite;
-            color: var(--warm-coral);
-            text-shadow: 0 0 10px var(--warm-coral), 0 0 20px var(--peachy);
-        }
-        
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .community-zone p {
-            font-size: 0.5rem;
-            color: rgba(255,255,255,0.5);
-        }
+        .community-zone h3 { color: #7bffb1; margin-bottom: 10px; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
-<div class="pixel-grid"></div>
-<header class="arcade-header">
-<h1 class="neon-title">NEON ARCADE</h1>
-<p class="subtitle">TWITCH PLAYS CODE</p>
-<div class="welcome-banner">
-<span class="star">✦</span> WELCOME NEW PLAYER! <span class="star">✦</span>
+<div class="hero">
+<h1>🌐 Internet vs 🤖 AI</h1>
+<p>Welcome! Let's explore two powerful technologies that shape our digital world.</p>
 </div>
-<p class="friendly-msg">TWITCH CHAT + WEBSITE CHAT = DOUBLE THE CHAOS!</p>
-<div class="reddit-sign">
-<span class="reddit-alien">👾</span> HI REDDIT! <span class="reddit-alien">👾</span>
+<div class="comparison">
+<div class="card internet">
+<h2><span class="icon">🌐</span> The Internet</h2>
+<ul>
+<li>A global network connecting billions of devices</li>
+<li>Stores and shares information created by humans</li>
+<li>You search, it finds what already exists</li>
+<li>Like a massive library you can browse</li>
+</ul>
 </div>
-</header>
-<section class="tutorial-zone">
-<div class="tutorial-cabinet">
-<div class="tutorial-screen">
-<h3 class="tutorial-title">📺 HOW TO PLAY</h3>
-<div class="tutorial-steps">
-<div class="step"><span class="step-num">1</span> TYPE IN ANY CHAT</div>
-<div class="step"><span class="step-num">2</span> AI READS YOUR REQUEST</div>
-<div class="step"><span class="step-num">3</span> PAGE TRANSFORMS LIVE!</div>
-</div>
-<p class="tutorial-hint">TRY: "add a dancing cat" or "make it rain pizza"</p>
-</div>
-</div>
-<div class="info-panel">
-<h3>🎮 WHAT IS THIS?</h3>
-<p>This website is CONTROLLED BY CHAT! Use <strong style="color:var(--neon-pink)">TWITCH CHAT</strong> or the <strong style="color:var(--neon-cyan)">WEBSITE CHAT</strong> to request changes. An AI architect builds them in real-time!</p>
-<div class="mode-badges">
-<span class="mode-badge anarchy">⚡ ANARCHY MODE</span>
-<span class="mode-badge democracy">🗳️ DEMOCRACY MODE</span>
-</div>
-<p class="mode-desc">Anarchy = First come, first served | Democracy = Vote on changes!</p>
-</div>
-</section>
-<style>
-.tutorial-zone {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  padding: 25px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.tutorial-cabinet {
-  width: 280px;
-  background: linear-gradient(180deg, #2d1b4e 0%, #1a1030 100%);
-  border: 4px solid var(--neon-cyan);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 0 30px rgba(127,219,255,0.3), inset 0 0 20px rgba(127,219,255,0.1);
-  animation: cabinetGlow 2s ease-in-out infinite alternate;
-}
-@keyframes cabinetGlow {
-  from { box-shadow: 0 0 30px rgba(127,219,255,0.3); }
-  to { box-shadow: 0 0 50px rgba(127,219,255,0.5), 0 0 80px rgba(255,107,157,0.2); }
-}
-.tutorial-screen {
-  background: #000;
-  border: 3px solid #444;
-  border-radius: 8px;
-  padding: 15px;
-}
-.tutorial-title {
-  font-size: 0.7rem;
-  color: var(--neon-yellow);
-  text-align: center;
-  margin-bottom: 15px;
-  text-shadow: 0 0 10px var(--neon-yellow);
-}
-.tutorial-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.step {
-  font-size: 0.5rem;
-  color: var(--neon-cyan);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.step-num {
-  background: var(--neon-pink);
-  color: #000;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.5rem;
-  font-weight: bold;
-}
-.tutorial-hint {
-  font-size: 0.4rem;
-  color: var(--neon-yellow);
-  margin-top: 15px;
-  text-align: center;
-  animation: blink 1.5s infinite;
-}
-.info-panel {
-  width: 320px;
-  background: rgba(45,27,78,0.9);
-  border: 3px solid var(--peachy);
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 20px rgba(255,171,145,0.3);
-}
-.info-panel h3 {
-  font-size: 0.7rem;
-  color: var(--neon-yellow);
-  margin-bottom: 12px;
-  text-shadow: 0 0 10px var(--neon-yellow);
-}
-.info-panel p {
-  font-size: 0.45rem;
-  color: rgba(255,255,255,0.8);
-  line-height: 1.8;
-  margin-bottom: 12px;
-}
-.mode-badges {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin: 15px 0;
-}
-.mode-badge {
-  font-size: 0.4rem;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-.mode-badge.anarchy {
-  background: rgba(255,107,157,0.3);
-  border: 2px solid var(--neon-pink);
-  color: var(--neon-pink);
-}
-.mode-badge.democracy {
-  background: rgba(127,219,255,0.3);
-  border: 2px solid var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-.mode-desc {
-  font-size: 0.35rem !important;
-  text-align: center;
-  color: rgba(255,255,255,0.5) !important;
-}
-</style>
-<section class="chat-game-zone">
-<div class="game-cabinet">
-<div class="game-marquee">🐍 CHAT SNAKE 🐍</div>
-<div class="game-instructions">TYPE IN CHAT: UP / DOWN / LEFT / RIGHT</div>
-<canvas height="300" id="snakeGame" width="300"></canvas>
-<div class="game-stats">
-<span>SCORE: <span id="snakeScore">0</span></span>
-<span>LAST CMD: <span id="lastCmd">---</span></span>
+<div class="card ai">
+<h2><span class="icon">🤖</span> Artificial Intelligence</h2>
+<ul>
+<li>Software that learns patterns from data</li>
+<li>Generates new content and makes decisions</li>
+<li>You ask, it creates or predicts answers</li>
+<li>Like a thinking assistant that adapts</li>
+</ul>
 </div>
 </div>
-</section>
-<style>
-.chat-game-zone {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
-.game-cabinet {
-  background: linear-gradient(180deg, #2d1b4e 0%, #1a1030 100%);
-  border: 5px solid var(--neon-pink);
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0 0 40px rgba(255,107,157,0.4), inset 0 0 30px rgba(255,107,157,0.1);
-  text-align: center;
-}
-.game-marquee {
-  font-size: 0.9rem;
-  color: var(--neon-yellow);
-  text-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-pink);
-  margin-bottom: 8px;
-  animation: marqueeFlash 1s ease-in-out infinite alternate;
-}
-@keyframes marqueeFlash {
-  from { text-shadow: 0 0 10px var(--neon-yellow); }
-  to { text-shadow: 0 0 20px var(--neon-yellow), 0 0 40px var(--neon-pink); }
-}
-.game-instructions {
-  font-size: 0.4rem;
-  color: var(--neon-cyan);
-  margin-bottom: 10px;
-  animation: blink 1.5s infinite;
-}
-#snakeGame {
-  background: #000;
-  border: 4px solid #333;
-  border-radius: 5px;
-  image-rendering: pixelated;
-}
-.game-stats {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.5rem;
-  color: var(--neon-cyan);
-  margin-top: 10px;
-  padding: 8px;
-  background: rgba(0,0,0,0.5);
-  border-radius: 5px;
-}
-#snakeScore { color: var(--neon-yellow); }
-#lastCmd { color: var(--neon-pink); }
-</style>
-<script>
-(function() {
-  const canvas = document.getElementById('snakeGame');
-  const ctx = canvas.getContext('2d');
-  const gridSize = 15;
-  const tileCount = canvas.width / gridSize;
-  
-  let snake = [{x: 10, y: 10}];
-  let food = {x: 5, y: 5};
-  let dx = 0, dy = 0;
-  let score = 0;
-  let gameSpeed = 150;
-  
-  function spawnFood() {
-    food.x = Math.floor(Math.random() * tileCount);
-    food.y = Math.floor(Math.random() * tileCount);
-  }
-  
-  function gameLoop() {
-    // Move snake
-    if (dx !== 0 || dy !== 0) {
-      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-      
-      // Wrap around
-      if (head.x < 0) head.x = tileCount - 1;
-      if (head.x >= tileCount) head.x = 0;
-      if (head.y < 0) head.y = tileCount - 1;
-      if (head.y >= tileCount) head.y = 0;
-      
-      // Check self collision
-      for (let segment of snake) {
-        if (head.x === segment.x && head.y === segment.y) {
-          snake = [{x: 10, y: 10}];
-          dx = 0; dy = 0;
-          score = 0;
-          document.getElementById('snakeScore').textContent = score;
-          spawnFood();
-          return;
-        }
-      }
-      
-      snake.unshift(head);
-      
-      // Check food
-      if (head.x === food.x && head.y === food.y) {
-        score += 10;
-        document.getElementById('snakeScore').textContent = score;
-        spawnFood();
-      } else {
-        snake.pop();
-      }
-    }
-    
-    // Draw
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw grid
-    ctx.strokeStyle = '#111';
-    for (let i = 0; i < tileCount; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * gridSize, 0);
-      ctx.lineTo(i * gridSize, canvas.height);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i * gridSize);
-      ctx.lineTo(canvas.width, i * gridSize);
-      ctx.stroke();
-    }
-    
-    // Draw food
-    ctx.fillStyle = '#ff6b9d';
-    ctx.shadowColor = '#ff6b9d';
-    ctx.shadowBlur = 10;
-    ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
-    
-    // Draw snake
-    ctx.shadowColor = '#7fdbff';
-    ctx.shadowBlur = 8;
-    snake.forEach((segment, i) => {
-      ctx.fillStyle = i === 0 ? '#ffd93d' : '#7fdbff';
-      ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
-    });
-    ctx.shadowBlur = 0;
-  }
-  
-  setInterval(gameLoop, gameSpeed);
-  
-  // Connect to chat WebSocket
-  const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
-                   location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
-  const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
-  
-  chatWs.onmessage = (e) => {
-    const msg = JSON.parse(e.data);
-    if (msg.type === 'chat_message') {
-      const cmd = msg.message.toLowerCase().trim();
-      const cmdDisplay = document.getElementById('lastCmd');
-      
-      if (cmd === 'up' && dy !== 1) { dx = 0; dy = -1; cmdDisplay.textContent = '↑ ' + msg.username; }
-      else if (cmd === 'down' && dy !== -1) { dx = 0; dy = 1; cmdDisplay.textContent = '↓ ' + msg.username; }
-      else if (cmd === 'left' && dx !== 1) { dx = -1; dy = 0; cmdDisplay.textContent = '← ' + msg.username; }
-      else if (cmd === 'right' && dx !== -1) { dx = 1; dy = 0; cmdDisplay.textContent = '→ ' + msg.username; }
-    }
-  };
-  
-  chatWs.onerror = () => console.log('Snake game: Chat connection unavailable');
-})();
-</script>
-<main class="arcade-floor">
-<h2 class="floor-title">🕹️ COMMUNITY CREATIONS 🕹️</h2>
-<div class="cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">PRESS START<br/>▶ 1 PLAYER</div>
+<div class="middle-section">
+<h3>💡 The Key Difference</h3>
+<p>The Internet <strong>stores</strong> human knowledge. AI <strong>generates</strong> new responses by learning from patterns. Together, they're transforming how we interact with information!</p>
 </div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons">
-<div class="btn btn-a"></div>
-<div class="btn btn-b"></div>
+<div class="community-zone">
+<h3 class="pulse">✨ Community Ideas Go Here ✨</h3>
+<p>This space is waiting for YOUR contributions! What would you add?</p>
 </div>
-</div>
-<div class="cabinet-label">SPACE BLASTER</div>
-</div>
-<div class="cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">GAME OVER<br/>CONTINUE? 9</div>
-</div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons">
-<div class="btn btn-a"></div>
-<div class="btn btn-b"></div>
-<div class="btn btn-c"></div>
-</div>
-</div>
-<div class="cabinet-label">PIXEL FIGHTER</div>
-</div>
-<div class="cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">HIGH SCORE<br/>999,999</div>
-</div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons">
-<div class="btn btn-b"></div>
-</div>
-</div>
-<div class="cabinet-label">PAC-MAZE</div>
-</div>
-</main>
-<section class="high-scores">
-<h2>★ TOP SCORES ★</h2>
-<div class="score-entry"><span>1. AAA</span><span>999,999</span></div>
-<div class="score-entry"><span>2. CPU</span><span>888,888</span></div>
-<div class="score-entry"><span>3. ???</span><span>777,777</span></div>
-</section>
-<section class="community-zone">
-<p>🎮 USE TWITCH CHAT OR WEBSITE CHAT! 🎮</p>
-<div class="example-requests">
-<span class="example">"add a dancing robot"</span>
-<span class="example">"make the background space"</span>
-<span class="example">"add fireworks"</span>
-</div>
-<p class="community-hearts">♥ ♥ ♥</p>
-</section>
-<style>
-.floor-title {
-  width: 100%;
-  text-align: center;
-  font-size: 0.7rem;
-  color: var(--soft-lavender);
-  margin-bottom: 10px;
-  text-shadow: 0 0 10px var(--soft-lavender);
-}
-.example-requests {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 0;
-}
-.example {
-  font-size: 0.4rem;
-  background: rgba(127,219,255,0.2);
-  border: 1px solid var(--neon-cyan);
-  color: var(--neon-cyan);
-  padding: 5px 12px;
-  border-radius: 15px;
-  animation: examplePulse 3s ease-in-out infinite;
-}
-.example:nth-child(2) { animation-delay: 1s; }
-.example:nth-child(3) { animation-delay: 2s; }
-@keyframes examplePulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-</style>
 </body>
 </html>
