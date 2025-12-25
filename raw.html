@@ -405,9 +405,9 @@
 <p style="margin-top:5px;font-size:0.75rem;color:#999;">🐾 Cat interactions now happen every 25-45 seconds for ultra zen vibes! 🧘‍♀️🐾</p>
 <p style="margin-top:5px;font-size:0.8rem;color:#d4798b;">🎭 Click any cat to see their mood change! Each meow brings a new expression! 😺😻😼</p>
 <p style="margin-top:8px;font-size:0.9rem;color:#ff69b4;font-weight:bold;">📣 The cats are now SPECTATORS around the battle arena! Cheer them on! 🎉🐱</p>
+<p style="margin-top:5px;font-size:0.85rem;color:#ff1493;">🔊 AUTO-MEOW ENABLED! Click anywhere to start hearing the cats! 🐱🎵</p>
 </div>
 </div>
-
 <div class="nyan-indicator" id="nyan-indicator" style="position:fixed;bottom:70px;right:10px;background:linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);padding:10px 15px;border-radius:20px;font-size:0.8rem;color:#fff;z-index:100;display:flex;align-items:center;gap:8px;box-shadow:0 3px 15px rgba(255,105,180,0.5), 0 0 30px rgba(255,105,180,0.3);animation:nyanPulse 0.5s ease-in-out infinite;cursor:pointer;border:2px solid #fff;">
 <span style="font-size:1.4rem;animation:nyanBounce 0.3s ease-in-out infinite alternate;">🌈🐱</span>
 <span style="font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">NYAN CAT PLAYING!</span>
@@ -419,6 +419,11 @@
 <span style="width:4px;height:6px;background:#fff;border-radius:2px;animation:wave2 0.3s ease-in-out infinite 0.05s;"></span>
 </span>
 <span style="font-size:1rem;">🔊</span>
+</div>
+<div id="meow-indicator" onclick="if(typeof randomMeow!=='undefined')randomMeow();" style="position:fixed;bottom:120px;right:10px;background:linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);padding:8px 12px;border-radius:15px;font-size:0.75rem;color:#fff;z-index:100;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(255,105,180,0.4);border:2px solid #fff;cursor:pointer;">
+<span style="font-size:1.2rem;">🐱</span>
+<span style="font-weight:bold;">MEOWS ENABLED!</span>
+<span style="font-size:0.9rem;">🔊</span>
 </div>
 <div class="paw-prints">
 <span class="paw">🐾</span>
@@ -836,6 +841,53 @@
         // Start cat interactions every 25-45 seconds (ultra calm mode per community request)
         setInterval(catInteraction, 25000 + Math.random() * 20000);
         setTimeout(catInteraction, 1000); // First interaction after 1 second
+        
+        // 🔊 AUTO-PLAYING MEOW SOUNDS SYSTEM 🐱
+        const meowContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playMeow() {
+            const oscillator = meowContext.createOscillator();
+            const gainNode = meowContext.createGain();
+            
+            // Random meow characteristics
+            const baseFreq = 400 + Math.random() * 400; // 400-800 Hz range
+            const meowDuration = 0.15 + Math.random() * 0.25;
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(meowContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(baseFreq, meowContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, meowContext.currentTime + meowDuration * 0.3);
+            oscillator.frequency.exponentialRampToValueAtTime(baseFreq * 0.7, meowContext.currentTime + meowDuration);
+            
+            gainNode.gain.setValueAtTime(0.15, meowContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, meowContext.currentTime + meowDuration);
+            
+            oscillator.start(meowContext.currentTime);
+            oscillator.stop(meowContext.currentTime + meowDuration);
+        }
+        
+        function randomMeow() {
+            playMeow();
+            // Sometimes double meow!
+            if (Math.random() < 0.3) {
+                setTimeout(playMeow, 150 + Math.random() * 100);
+            }
+        }
+        
+        // Auto-play meows every 3-8 seconds
+        setInterval(() => {
+            if (Math.random() < 0.7) randomMeow(); // 70% chance each interval
+        }, 3000 + Math.random() * 5000);
+        
+        // First meow after 2 seconds
+        setTimeout(randomMeow, 2000);
+        
+        // Click anywhere to enable audio context (browser requirement)
+        document.addEventListener('click', () => {
+            if (meowContext.state === 'suspended') meowContext.resume();
+        }, { once: true });
         
         // Chat Mimic Cat - Echo!
         const echoBubble = document.getElementById('echo-bubble');
