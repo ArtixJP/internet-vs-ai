@@ -406,6 +406,7 @@
 <p style="margin-top:5px;font-size:0.8rem;color:#d4798b;">🎭 Click any cat to see their mood change! Each meow brings a new expression! 😺😻😼</p>
 <p style="margin-top:8px;font-size:0.9rem;color:#ff69b4;font-weight:bold;">📣 The cats are now SPECTATORS around the battle arena! Cheer them on! 🎉🐱</p>
 <p style="margin-top:5px;font-size:0.85rem;color:#ff1493;">🔊 AUTO-MEOW ENABLED! Click anywhere to start hearing the cats! 🐱🎵</p>
+<p style="margin-top:8px;font-size:0.9rem;color:#7c3aed;font-weight:bold;">🎵 NEW: Procedural Cat Symphony! Dreamy auto-generated ambient music! 🎶✨</p>
 </div>
 </div>
 <div class="nyan-indicator" id="nyan-indicator" style="position:fixed;bottom:70px;right:10px;background:linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);padding:10px 15px;border-radius:20px;font-size:0.8rem;color:#fff;z-index:100;display:flex;align-items:center;gap:8px;box-shadow:0 3px 15px rgba(255,105,180,0.5), 0 0 30px rgba(255,105,180,0.3);animation:nyanPulse 0.5s ease-in-out infinite;cursor:pointer;border:2px solid #fff;">
@@ -419,6 +420,11 @@
 <span style="width:4px;height:6px;background:#fff;border-radius:2px;animation:wave2 0.3s ease-in-out infinite 0.05s;"></span>
 </span>
 <span style="font-size:1rem;">🔊</span>
+</div>
+<div id="music-indicator" onclick="toggleCatMusic()" style="position:fixed;bottom:170px;right:10px;background:linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #6366f1 100%);padding:10px 14px;border-radius:18px;font-size:0.8rem;color:#fff;z-index:100;display:flex;align-items:center;gap:8px;box-shadow:0 3px 15px rgba(139,92,246,0.5), 0 0 25px rgba(139,92,246,0.3);border:2px solid #fff;cursor:pointer;animation:musicPulse 2s ease-in-out infinite;">
+<span style="font-size:1.3rem;animation:noteFloat 1s ease-in-out infinite alternate;">🎵</span>
+<span style="font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">CAT SYMPHONY</span>
+<span id="music-status" style="font-size:1rem;">🔊</span>
 </div>
 <div id="meow-indicator" onclick="if(typeof randomMeow!=='undefined')randomMeow();" style="position:fixed;bottom:120px;right:10px;background:linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);padding:8px 12px;border-radius:15px;font-size:0.75rem;color:#fff;z-index:100;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(255,105,180,0.4);border:2px solid #fff;cursor:pointer;">
 <span style="font-size:1.2rem;">🐱</span>
@@ -888,6 +894,157 @@
         document.addEventListener('click', () => {
             if (meowContext.state === 'suspended') meowContext.resume();
         }, { once: true });
+        
+        // 🎵 PROCEDURAL CAT SYMPHONY - AUTO GENERATED MUSIC 🎵
+        const musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let musicPlaying = true;
+        let currentNotes = [];
+        
+        // Pentatonic scale for dreamy cat vibes (C major pentatonic)
+        const catScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+        const bassNotes = [130.81, 146.83, 164.81, 196.00]; // Lower octave
+        
+        function createDreamyPad(freq, duration, startTime) {
+            const osc1 = musicCtx.createOscillator();
+            const osc2 = musicCtx.createOscillator();
+            const gain = musicCtx.createGain();
+            const filter = musicCtx.createBiquadFilter();
+            
+            osc1.type = 'sine';
+            osc2.type = 'triangle';
+            osc1.frequency.value = freq;
+            osc2.frequency.value = freq * 1.002; // Slight detune for warmth
+            
+            filter.type = 'lowpass';
+            filter.frequency.value = 800 + Math.random() * 400;
+            filter.Q.value = 1;
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(filter);
+            filter.connect(musicCtx.destination);
+            
+            // Soft attack and release
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.06, startTime + 0.3);
+            gain.gain.linearRampToValueAtTime(0.04, startTime + duration * 0.7);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration);
+            
+            osc1.start(startTime);
+            osc2.start(startTime);
+            osc1.stop(startTime + duration);
+            osc2.stop(startTime + duration);
+        }
+        
+        function createBell(freq, startTime) {
+            const osc = musicCtx.createOscillator();
+            const gain = musicCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.value = freq * 2; // Higher octave for bells
+            
+            osc.connect(gain);
+            gain.connect(musicCtx.destination);
+            
+            gain.gain.setValueAtTime(0.08, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.5);
+            
+            osc.start(startTime);
+            osc.stop(startTime + 1.5);
+        }
+        
+        function createBass(freq, startTime) {
+            const osc = musicCtx.createOscillator();
+            const gain = musicCtx.createGain();
+            const filter = musicCtx.createBiquadFilter();
+            
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            
+            filter.type = 'lowpass';
+            filter.frequency.value = 200;
+            
+            osc.connect(gain);
+            gain.connect(filter);
+            filter.connect(musicCtx.destination);
+            
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.1, startTime + 0.1);
+            gain.gain.linearRampToValueAtTime(0.07, startTime + 1);
+            gain.gain.linearRampToValueAtTime(0, startTime + 2);
+            
+            osc.start(startTime);
+            osc.stop(startTime + 2);
+        }
+        
+        function generateMusicPhrase() {
+            if (!musicPlaying || musicCtx.state === 'suspended') return;
+            
+            const now = musicCtx.currentTime;
+            
+            // Bass note every 2 seconds
+            if (Math.random() < 0.4) {
+                createBass(bassNotes[Math.floor(Math.random() * bassNotes.length)], now);
+            }
+            
+            // Dreamy pad chord
+            const rootIdx = Math.floor(Math.random() * (catScale.length - 2));
+            createDreamyPad(catScale[rootIdx], 3 + Math.random() * 2, now);
+            
+            // Maybe add a harmony note
+            if (Math.random() < 0.6) {
+                createDreamyPad(catScale[rootIdx + 2], 2 + Math.random() * 1.5, now + 0.5);
+            }
+            
+            // Bell melody notes
+            if (Math.random() < 0.7) {
+                const bellDelay = Math.random() * 1.5;
+                createBell(catScale[Math.floor(Math.random() * catScale.length)], now + bellDelay);
+            }
+            
+            // Second bell sometimes
+            if (Math.random() < 0.4) {
+                createBell(catScale[Math.floor(Math.random() * catScale.length)], now + 1 + Math.random());
+            }
+        }
+        
+        function toggleCatMusic() {
+            musicPlaying = !musicPlaying;
+            const statusEl = document.getElementById('music-status');
+            const indicatorEl = document.getElementById('music-indicator');
+            
+            if (musicPlaying) {
+                statusEl.textContent = '🔊';
+                indicatorEl.style.opacity = '1';
+                if (musicCtx.state === 'suspended') musicCtx.resume();
+            } else {
+                statusEl.textContent = '🔇';
+                indicatorEl.style.opacity = '0.6';
+            }
+        }
+        
+        // Start the music loop
+        setInterval(generateMusicPhrase, 2500 + Math.random() * 1500);
+        setTimeout(generateMusicPhrase, 1000);
+        
+        // Resume audio context on click
+        document.addEventListener('click', () => {
+            if (musicCtx.state === 'suspended') musicCtx.resume();
+        }, { once: true });
+        
+        // Add music animation styles
+        const musicStyles = document.createElement('style');
+        musicStyles.textContent = `
+            @keyframes musicPulse {
+                0%, 100% { transform: scale(1); box-shadow: 0 3px 15px rgba(139,92,246,0.5), 0 0 25px rgba(139,92,246,0.3); }
+                50% { transform: scale(1.03); box-shadow: 0 3px 20px rgba(139,92,246,0.7), 0 0 40px rgba(139,92,246,0.5); }
+            }
+            @keyframes noteFloat {
+                0% { transform: translateY(0) rotate(-10deg); }
+                100% { transform: translateY(-3px) rotate(10deg); }
+            }
+        `;
+        document.head.appendChild(musicStyles);
         
         // Chat Mimic Cat - Echo!
         const echoBubble = document.getElementById('echo-bubble');
