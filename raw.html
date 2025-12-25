@@ -357,6 +357,57 @@
         .cat-paw { width: 8px; height: 6px; background: #94e2d5; border-radius: 50%; }
         @keyframes catDance { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
         @keyframes tailSwing { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+        /* Fake News Ticker */
+        .news-ticker {
+            background: linear-gradient(90deg, var(--bg-surface) 0%, var(--bg-overlay) 50%, var(--bg-surface) 100%);
+            border-radius: var(--radius);
+            margin-top: var(--gap);
+            padding: 8px 16px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border-left: 3px solid #f38ba8;
+        }
+        .news-label {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #f38ba8, #fab387);
+            color: var(--bg-dark);
+            font-weight: bold;
+            font-size: 0.7rem;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+        }
+        .news-scroll {
+            display: flex;
+            animation: scrollNews 30s linear infinite;
+            padding-left: 80px;
+        }
+        .news-item {
+            white-space: nowrap;
+            padding: 0 40px;
+            font-size: 0.8rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .news-item::before {
+            content: '⚡';
+            color: #f9e2af;
+        }
+        .news-item.urgent::before {
+            content: '🚨';
+            animation: blink 0.5s infinite;
+        }
+        @keyframes scrollNews {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
         /* Footer disclaimer */
         .site-footer { text-align: center; padding: 8px; color: var(--text-dim); font-size: 0.7rem; opacity: 0.6; position: relative; z-index: 1; }
         nav, main { position: relative; z-index: 1; }
@@ -476,6 +527,27 @@
 <div class="stickman-leg left"></div>
 <div class="stickman-leg right"></div>
 </div>
+</div>
+</div>
+<div class="news-ticker">
+<div class="news-label">📰 BREAKING</div>
+<div class="news-scroll">
+<span class="news-item urgent">LOCAL CAT CLAIMS TO BE MANAGER, DEMANDS TREATS</span>
+<span class="news-item">SCIENTISTS CONFIRM: TABS &gt; SPACES (CIVIL WAR IMMINENT)</span>
+<span class="news-item urgent">MAN INSTALLS ARCH LINUX, TELLS EVERYONE WITHIN 5 MILE RADIUS</span>
+<span class="news-item">HYPRLAND USER SPENDS 47 HOURS CONFIGURING CORNER RADIUS</span>
+<span class="news-item">BREAKING: CSS IS ACTUALLY A PROGRAMMING LANGUAGE (SOURCES: TRUST ME BRO)</span>
+<span class="news-item urgent">STICKMAN SPOTTED FIGHTING STORM, REFUSES TO GO INSIDE</span>
+<span class="news-item">NYAN CAT STILL RUNNING AFTER 14 YEARS, REFUSES TO PAY RENT</span>
+<span class="news-item">LOCAL CPU AT 247%: "I'M FINE" SAYS INCREASINGLY NERVOUS COMPUTER</span>
+<span class="news-item urgent">LOCAL CAT CLAIMS TO BE MANAGER, DEMANDS TREATS</span>
+<span class="news-item">SCIENTISTS CONFIRM: TABS &gt; SPACES (CIVIL WAR IMMINENT)</span>
+<span class="news-item urgent">MAN INSTALLS ARCH LINUX, TELLS EVERYONE WITHIN 5 MILE RADIUS</span>
+<span class="news-item">HYPRLAND USER SPENDS 47 HOURS CONFIGURING CORNER RADIUS</span>
+<span class="news-item">BREAKING: CSS IS ACTUALLY A PROGRAMMING LANGUAGE (SOURCES: TRUST ME BRO)</span>
+<span class="news-item urgent">STICKMAN SPOTTED FIGHTING STORM, REFUSES TO GO INSIDE</span>
+<span class="news-item">NYAN CAT STILL RUNNING AFTER 14 YEARS, REFUSES TO PAY RENT</span>
+<span class="news-item">LOCAL CPU AT 247%: "I'M FINE" SAYS INCREASINGLY NERVOUS COMPUTER</span>
 </div>
 </div>
 <div class="dancing-cats">
