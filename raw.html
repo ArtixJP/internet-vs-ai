@@ -533,15 +533,15 @@
             flake.className = 'snowflake';
             flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
             flake.style.left = Math.random() * 100 + 'vw';
-            flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            flake.style.animationDuration = (Math.random() * 10 + 12) + 's';
             flake.style.fontSize = (Math.random() * 0.8 + 0.4) + 'rem';
             flake.style.opacity = Math.random() * 0.4 + 0.15;
             snowfall.appendChild(flake);
             
-            setTimeout(() => flake.remove(), 10000);
+            setTimeout(() => flake.remove(), 22000);
         }
         
-        setInterval(createSnowflake, 400);
+        setInterval(createSnowflake, 800);
         for(let i = 0; i < 12; i++) setTimeout(createSnowflake, i * 200);
     </script>
 </body>
