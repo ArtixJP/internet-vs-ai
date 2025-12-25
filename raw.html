@@ -4,998 +4,211 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Hyprland Desktop</title>
+<title>Black Winter</title>
 <style>
-        :root {
-            --bg-dark: #1e1e2e;
-            --bg-surface: #313244;
-            --bg-overlay: #45475a;
-            --accent: #89dceb;
-            --accent-alt: #94e2d5;
-            --text: #cdd6f4;
-            --text-dim: #6c7086;
-            --gap: 8px;
-            --radius: 12px;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --frost: #a8d5e5;
+            --ice: #4a9ebb;
+            --shadow: #0a0a12;
+            --void: #050508;
+            --breath: rgba(200, 220, 240, 0.1);
+        }
+        
         body {
             min-height: 100vh;
-            background: var(--bg-dark);
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            color: var(--text);
-            padding: var(--gap);
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap);
-        }
-        /* Waybar-style top bar */
-        .waybar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-surface);
-            border-radius: var(--radius);
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-        .workspaces { display: flex; gap: 6px; }
-        .workspace {
-            width: 24px; height: 24px;
-            background: var(--bg-overlay);
-            border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.75rem;
-        }
-        .workspace:hover, .workspace.active {
-            background: var(--accent);
-            color: var(--bg-dark);
-            transform: scale(1.1);
-        }
-        .center-modules { display: flex; gap: 16px; color: var(--text-dim); }
-        .right-modules { display: flex; gap: 12px; align-items: center; }
-        .module { padding: 4px 10px; background: var(--bg-overlay); border-radius: 6px; }
-        /* Tiling container */
-        .tiles {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr;
-            grid-template-rows: 1fr 1fr 0.8fr;
-            gap: var(--gap);
-        }
-        .tile {
-            background: var(--bg-surface);
-            border-radius: var(--radius);
-            border: 2px solid transparent;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: border-color 0.3s ease, transform 0.2s ease;
-        }
-        .tile:hover { border-color: var(--accent); }
-        .tile.focused { border-color: var(--accent-alt); box-shadow: 0 0 20px rgba(137, 220, 235, 0.2); }
-        .tile-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px;
-            background: var(--bg-overlay);
-            font-size: 0.8rem;
-        }
-        .tile-title { display: flex; align-items: center; gap: 8px; }
-        .tile-controls { display: flex; gap: 6px; }
-        .control { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
-        .control.close { background: #f38ba8; }
-        .control.max { background: #a6e3a1; }
-        .control.min { background: #f9e2af; }
-        .tile-content { flex: 1; padding: 16px; overflow: auto; }
-        .tile.main { grid-row: span 2; }
-        /* Terminal styling */
-        .terminal-line { margin: 4px 0; font-size: 0.85rem; }
-        .prompt { color: var(--accent); }
-        .command { color: var(--accent-alt); }
-        /* Placeholder areas */
-        .placeholder {
-            border: 2px dashed var(--bg-overlay);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-        }
-        /* Animations */
-        @keyframes blink { 50% { opacity: 0; } }
-        .cursor { animation: blink 1s step-end infinite; }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .tile { animation: fadeSlide 0.5s ease forwards; }
-        .tile:nth-child(2) { animation-delay: 0.1s; }
-        .tile:nth-child(3) { animation-delay: 0.2s; }
-        .tile:nth-child(4) { animation-delay: 0.3s; }
-        .tile:nth-child(5) { animation-delay: 0.4s; }
-        /* Nyan cat styles */
-        .nyan-container { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(180deg, #1e1e2e 0%, #181825 100%); }
-        .nyan-cat { position: relative; animation: nyanBounce 0.4s ease-in-out infinite; }
-        .nyan-body { width: 60px; height: 40px; background: #f9e2af; border-radius: 8px; position: relative; }
-        .nyan-body::before { content: ''; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background: #fab387; border-radius: 50%; }
-        .nyan-face { position: absolute; right: 5px; top: 8px; width: 20px; height: 15px; }
-        .nyan-eye { width: 4px; height: 4px; background: #1e1e2e; border-radius: 50%; position: absolute; }
-        .nyan-eye.left { left: 2px; top: 2px; }
-        .nyan-eye.right { right: 2px; top: 2px; }
-        .nyan-mouth { width: 6px; height: 3px; border-bottom: 2px solid #f38ba8; border-radius: 0 0 50% 50%; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); }
-        .nyan-ears { position: absolute; top: -8px; left: 5px; }
-        .nyan-ear { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #f9e2af; display: inline-block; margin: 0 4px; }
-        .rainbow { position: absolute; left: -80px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; animation: rainbowStretch 0.2s linear infinite; }
-        .rainbow-stripe { height: 5px; width: 70px; border-radius: 2px; }
-        .rainbow-stripe:nth-child(1) { background: #f38ba8; }
-        .rainbow-stripe:nth-child(2) { background: #fab387; }
-        .rainbow-stripe:nth-child(3) { background: #f9e2af; }
-        .rainbow-stripe:nth-child(4) { background: #a6e3a1; }
-        .rainbow-stripe:nth-child(5) { background: #89dceb; }
-        .rainbow-stripe:nth-child(6) { background: #cba6f7; }
-        .stars { position: absolute; width: 100%; height: 100%; pointer-events: none; }
-        .star { position: absolute; color: #cdd6f4; animation: starTwinkle 1s ease-in-out infinite; font-size: 12px; }
-        @keyframes nyanBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        @keyframes rainbowStretch { 0%, 100% { width: 70px; } 50% { width: 75px; } }
-        @keyframes starTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .nyan-container { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); }
-        .nyan-cat { position: relative; animation: nyanFloat 0.3s ease-in-out infinite; }
-        .nyan-body { width: 70px; height: 45px; background: linear-gradient(135deg, #f9e2af 0%, #fab387 100%); border-radius: 10px; position: relative; box-shadow: inset -3px -3px 0 rgba(0,0,0,0.1); }
-        .poptart-sprinkles::before { content: '• • •'; position: absolute; top: 8px; left: 12px; color: #f38ba8; font-size: 8px; letter-spacing: 8px; }
-        .poptart-sprinkles::after { content: '• • •'; position: absolute; top: 22px; left: 18px; color: #89dceb; font-size: 8px; letter-spacing: 6px; }
-        .nyan-face { position: absolute; right: -20px; top: 5px; width: 30px; height: 25px; background: #94e2d5; border-radius: 8px; }
-        .nyan-eye { width: 5px; height: 6px; background: #1e1e2e; border-radius: 50%; position: absolute; top: 8px; }
-        .nyan-eye.left { left: 6px; }
-        .nyan-eye.right { right: 6px; }
-        .nyan-mouth { width: 8px; height: 4px; border-bottom: 2px solid #f38ba8; border-radius: 0 0 50% 50%; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); }
-        .nyan-cheek { width: 6px; height: 4px; background: #f38ba8; border-radius: 50%; position: absolute; bottom: 6px; opacity: 0.6; }
-        .nyan-cheek.left { left: 2px; }
-        .nyan-cheek.right { right: 2px; }
-        .nyan-ears { position: absolute; top: -12px; right: -15px; display: flex; gap: 12px; }
-        .nyan-ear { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid #94e2d5; }
-        .nyan-tail { position: absolute; left: -15px; top: 15px; width: 20px; height: 8px; background: #94e2d5; border-radius: 10px 0 0 10px; animation: tailWag 0.2s ease-in-out infinite; }
-        .nyan-legs { position: absolute; bottom: -10px; left: 5px; display: flex; gap: 12px; }
-        .nyan-leg { width: 8px; height: 12px; background: #94e2d5; border-radius: 0 0 4px 4px; animation: legRun 0.15s ease-in-out infinite alternate; }
-        .nyan-leg:nth-child(2), .nyan-leg:nth-child(4) { animation-delay: 0.075s; }
-        .rainbow { position: absolute; left: -90px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; }
-        .rainbow-stripe { height: 6px; width: 80px; border-radius: 3px; animation: rainbowWave 0.3s ease-in-out infinite; }
-        .rainbow-stripe:nth-child(1) { background: #f38ba8; animation-delay: 0s; }
-        .rainbow-stripe:nth-child(2) { background: #fab387; animation-delay: 0.05s; }
-        .rainbow-stripe:nth-child(3) { background: #f9e2af; animation-delay: 0.1s; }
-        .rainbow-stripe:nth-child(4) { background: #a6e3a1; animation-delay: 0.15s; }
-        .rainbow-stripe:nth-child(5) { background: #89dceb; animation-delay: 0.2s; }
-        .rainbow-stripe:nth-child(6) { background: #cba6f7; animation-delay: 0.25s; }
-        @keyframes nyanFloat { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
-        @keyframes tailWag { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-        @keyframes legRun { 0% { height: 8px; } 100% { height: 14px; } }
-        @keyframes rainbowWave { 0%, 100% { width: 80px; opacity: 0.9; } 50% { width: 90px; opacity: 1; } }
-        /* Ambient effects */
-        @keyframes ambientGlow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(137, 220, 235, 0.3)); } 50% { filter: drop-shadow(0 0 20px rgba(148, 226, 213, 0.5)); } }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes floatParticle { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(137, 220, 235, 0.2); } 50% { box-shadow: 0 0 15px rgba(137, 220, 235, 0.4), 0 0 30px rgba(148, 226, 213, 0.2); } }
-        @keyframes borderFlow { 0% { border-color: var(--accent); } 50% { border-color: var(--accent-alt); } 100% { border-color: var(--accent); } }
-        body { background: linear-gradient(135deg, #1e1e2e 0%, #181825 25%, #1e1e2e 50%, #11111b 75%, #1e1e2e 100%); background-size: 400% 400%; animation: gradientShift 15s ease infinite; }
-        .waybar { animation: pulseGlow 4s ease-in-out infinite; }
-        .tile.focused { animation: fadeSlide 0.5s ease forwards, borderFlow 3s ease-in-out infinite; }
-        .workspace.active { animation: pulseGlow 2s ease-in-out infinite; }
-        .module { transition: all 0.3s ease; }
-        .module:hover { background: var(--accent); color: var(--bg-dark); transform: scale(1.05); }
-        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; animation: floatParticle linear infinite; }
-        .particle:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; background: #f38ba8; }
-        .particle:nth-child(2) { left: 25%; animation-duration: 15s; animation-delay: 2s; background: #89dceb; }
-        .particle:nth-child(3) { left: 40%; animation-duration: 10s; animation-delay: 4s; background: #a6e3a1; }
-        .particle:nth-child(4) { left: 55%; animation-duration: 18s; animation-delay: 1s; background: #f9e2af; }
-        .particle:nth-child(5) { left: 70%; animation-duration: 14s; animation-delay: 3s; background: #cba6f7; }
-        .particle:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; background: #94e2d5; }
-        .particle:nth-child(7) { left: 5%; animation-duration: 16s; animation-delay: 6s; background: #fab387; }
-        .particle:nth-child(8) { left: 95%; animation-duration: 13s; animation-delay: 7s; background: #89b4fa; }
-        /* Stickman in storm */
-        .stickman-container {
-            position: relative;
-            height: 60px;
-            background: linear-gradient(180deg, transparent 0%, rgba(137, 220, 235, 0.05) 100%);
-            overflow: hidden;
-            margin-top: var(--gap);
-            border-radius: var(--radius);
-            z-index: 1;
-        }
-        .stickman {
-            position: absolute;
-            bottom: 10px;
-            left: -60px;
-            animation: hesitantWalk 12s ease-in-out infinite;
-        }
-        .stickman-body {
-            position: relative;
-            width: 40px;
-            height: 50px;
-        }
-        .stickman-head {
-            width: 14px;
-            height: 14px;
-            background: var(--text);
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .stickman-torso {
-            width: 2px;
-            height: 18px;
-            background: var(--text);
-            position: absolute;
-            top: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .stickman-arm {
-            width: 16px;
-            height: 2px;
-            background: var(--text);
-            position: absolute;
-            top: 18px;
-        }
-        .stickman-arm.left {
-            left: 2px;
-            transform: rotate(-45deg);
-            transform-origin: right center;
-            animation: armBrace 0.5s ease-in-out infinite;
-        }
-        .stickman-arm.right {
-            right: 2px;
-            transform: rotate(60deg);
-            transform-origin: left center;
-            animation: holdHat 0.3s ease-in-out infinite;
-        }
-        .stickman-hat {
-            position: absolute;
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: hatWobble 0.4s ease-in-out infinite;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
-        }
-        .hat-top {
-            width: 18px;
-            height: 22px;
-            background: linear-gradient(90deg, #1e1e2e 0%, #313244 30%, #45475a 50%, #313244 70%, #1e1e2e 100%);
-            border-radius: 4px 4px 0 0;
-            position: relative;
-            border: 1px solid #585b70;
-            box-shadow: inset 2px 0 4px rgba(137,220,235,0.2), inset -2px 0 4px rgba(0,0,0,0.3);
-        }
-        .hat-top::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(180deg, rgba(137,220,235,0.3) 0%, transparent 100%);
-            border-radius: 4px 4px 0 0;
-        }
-        .hat-top::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 14px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            border-radius: 2px;
-        }
-        .hat-brim {
-            width: 30px;
-            height: 5px;
-            background: linear-gradient(180deg, #45475a 0%, #1e1e2e 50%, #313244 100%);
-            border-radius: 50%;
-            margin-left: -6px;
-            border: 1px solid #585b70;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 2px rgba(137,220,235,0.2);
+            background: var(--void);
+            color: var(--frost);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
             position: relative;
         }
-        .hat-brim::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 3px;
-            right: 3px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(137,220,235,0.3), transparent);
-            border-radius: 50%;
-        }
-        .hat-ribbon {
-            position: absolute;
-            bottom: 3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 4px;
-            background: linear-gradient(90deg, #f38ba8 0%, #fab387 50%, #f38ba8 100%);
-            border-radius: 1px;
-            box-shadow: 0 0 4px rgba(243,139,168,0.5);
-        }
-        .hat-ribbon::before {
-            content: '';
-            position: absolute;
-            right: -3px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 6px;
-            background: #f38ba8;
-            border-radius: 0 2px 2px 0;
-            clip-path: polygon(0 0, 100% 20%, 100% 80%, 0 100%);
-        }
-        .hat-ribbon::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 3px;
-            height: 3px;
-            background: #f9e2af;
-            border-radius: 50%;
-            box-shadow: 0 0 3px #f9e2af;
-        }
-        .stickman-leg {
-            width: 2px;
-            height: 16px;
-            background: var(--text);
-            position: absolute;
-            top: 32px;
-            transform-origin: top center;
-        }
-        .stickman-leg.left {
-            left: 16px;
-            animation: legWalkLeft 0.6s ease-in-out infinite;
-        }
-        .stickman-leg.right {
-            right: 16px;
-            animation: legWalkRight 0.6s ease-in-out infinite;
-        }
-        .wind-lines {
-            position: absolute;
-            top: 20px;
-            pointer-events: none;
-        }
-        .wind-line {
-            width: 30px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(137, 220, 235, 0.4), transparent);
-            margin: 6px 0;
-            animation: windBlow 0.8s linear infinite;
-        }
-        .wind-line:nth-child(2) { animation-delay: 0.2s; width: 25px; }
-        .wind-line:nth-child(3) { animation-delay: 0.4s; width: 35px; }
-        .rain-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .raindrop {
-            position: absolute;
-            width: 1px;
-            height: 10px;
-            background: linear-gradient(180deg, transparent, rgba(137, 220, 235, 0.6));
-            animation: rainFall 0.5s linear infinite;
-            transform: rotate(20deg);
-        }
-        @keyframes hesitantWalk {
-            0% { left: -60px; }
-            15% { left: 15%; }
-            20% { left: 12%; } /* hesitate back */
-            35% { left: 35%; }
-            40% { left: 32%; } /* hesitate back */
-            55% { left: 55%; }
-            58% { left: 52%; } /* hesitate back */
-            75% { left: 75%; }
-            78% { left: 72%; } /* hesitate back */
-            100% { left: calc(100% + 60px); }
-        }
-        @keyframes holdHat { 0%, 100% { transform: rotate(55deg); } 50% { transform: rotate(65deg); } }
-        @keyframes armBrace { 0%, 100% { transform: rotate(-40deg); } 50% { transform: rotate(-50deg); } }
-        @keyframes hatWobble { 0%, 100% { transform: translateX(-50%) rotate(-5deg); } 50% { transform: translateX(-50%) rotate(5deg); } }
-        @keyframes legWalkLeft { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
-        @keyframes legWalkRight { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
-        @keyframes windBlow { 0% { transform: translateX(-50px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(50px); opacity: 0; } }
-        @keyframes rainFall { 0% { transform: translateY(-10px) rotate(20deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(70px) rotate(20deg); opacity: 0; } }
-        /* Floating heart window */
-        .heart-popup {
+        
+        .snowfall {
             position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
             z-index: 100;
-            background: var(--bg-surface);
-            border-radius: var(--radius);
-            border: 2px solid #f38ba8;
-            box-shadow: 0 0 30px rgba(243, 139, 168, 0.4);
-            animation: heartPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            overflow: hidden;
         }
-        .heart-popup.closing {
-            animation: heartPopOut 0.5s ease-in forwards;
+        
+        .snowflake {
+            position: absolute;
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(168,213,229,0.5);
         }
-        .heart-popup .tile-header {
-            background: linear-gradient(90deg, #f38ba8, #fab387);
-            padding: 6px 10px;
+        
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
         }
-        .heart-popup .tile-title {
-            color: var(--bg-dark);
-            font-size: 0.75rem;
-        }
-        .heart-popup-content {
-            padding: 15px;
+        
+        .frozen-world {
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 100px;
-            min-height: 80px;
+            padding: 2rem;
+            background: 
+                radial-gradient(ellipse at 50% 100%, rgba(10,20,40,0.8) 0%, transparent 70%),
+                linear-gradient(180deg, var(--void) 0%, #0d1520 50%, #0a1018 100%);
         }
-        .pixel-heart {
-            display: grid;
-            grid-template-columns: repeat(9, 8px);
-            grid-template-rows: repeat(8, 8px);
-            gap: 1px;
-            animation: heartBeat 0.6s ease-in-out infinite;
+        
+        .breath-mist {
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
+            background: var(--breath);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: breathe 4s ease-in-out infinite;
         }
-        .pixel-heart .px {
-            background: transparent;
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+            50% { opacity: 0.6; transform: translateX(-50%) translateY(-30px) scale(1.2); }
         }
-        .pixel-heart .px.filled {
-            background: #f38ba8;
-            box-shadow: 0 0 4px #f38ba8;
-            animation: pixelGlow 0.3s ease-in-out infinite alternate;
+        
+        .title-frozen {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 100;
+            letter-spacing: 1rem;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(180deg, #fff 0%, var(--frost) 50%, var(--ice) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(74,158,187,0.3);
+            animation: shiver 3s ease-in-out infinite;
+            margin-bottom: 1rem;
         }
-        .pixel-heart .px.light {
-            background: #fab387;
-            box-shadow: 0 0 4px #fab387;
+        
+        @keyframes shiver {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
         }
-        @keyframes heartPopIn {
-            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            letter-spacing: 0.5rem;
+            opacity: 0.5;
+            margin-bottom: 3rem;
         }
-        @keyframes heartPopOut {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            100% { transform: scale(0.5) translateY(-30px); opacity: 0; }
+        
+        .frozen-tree {
+            font-size: 4rem;
+            filter: grayscale(100%) brightness(0.7);
+            margin: 1rem;
+            animation: sway 8s ease-in-out infinite;
         }
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
         }
-        @keyframes pixelGlow {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.3); }
-        }
-        /* Dancing cats */
-        .dancing-cats { display: flex; justify-content: center; gap: 40px; padding: 12px 0; background: var(--bg-surface); border-radius: var(--radius); margin-top: var(--gap); position: relative; z-index: 1; }
-        .dancing-cat { width: 40px; height: 50px; position: relative; animation: catDance 0.5s ease-in-out infinite; }
-        .dancing-cat:nth-child(2) { animation-delay: 0.125s; }
-        .dancing-cat:nth-child(3) { animation-delay: 0.25s; }
-        .dancing-cat:nth-child(4) { animation-delay: 0.375s; }
-        .cat-head { width: 30px; height: 25px; background: #94e2d5; border-radius: 50% 50% 45% 45%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
-        .cat-ear { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #94e2d5; position: absolute; top: -6px; }
-        .cat-ear.left { left: 2px; transform: rotate(-15deg); }
-        .cat-ear.right { right: 2px; transform: rotate(15deg); }
-        .cat-eyes { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .cat-eye { width: 4px; height: 5px; background: #1e1e2e; border-radius: 50%; }
-        .cat-nose { width: 4px; height: 3px; background: #f38ba8; border-radius: 50%; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); }
-        .cat-body { width: 25px; height: 22px; background: #94e2d5; border-radius: 50% 50% 40% 40%; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); }
-        .cat-tail { width: 20px; height: 6px; background: #94e2d5; border-radius: 10px; position: absolute; top: 30px; left: -8px; transform-origin: right center; animation: tailSwing 0.5s ease-in-out infinite; }
-        .cat-paws { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
-        .cat-paw { width: 8px; height: 6px; background: #94e2d5; border-radius: 50%; }
-        @keyframes catDance { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-        @keyframes tailSwing { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
-        /* Fake News Ticker */
-        .news-ticker {
-            background: linear-gradient(90deg, var(--bg-surface) 0%, var(--bg-overlay) 50%, var(--bg-surface) 100%);
-            border-radius: var(--radius);
-            margin-top: var(--gap);
-            padding: 8px 16px;
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-            border-left: 3px solid #f38ba8;
-        }
-        .news-label {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, #f38ba8, #fab387);
-            color: var(--bg-dark);
-            font-weight: bold;
-            font-size: 0.7rem;
-            padding: 8px 12px;
+        
+        .landscape {
             display: flex;
-            align-items: center;
-            z-index: 2;
+            gap: 2rem;
+            margin: 2rem 0;
         }
-        .news-scroll {
-            display: flex;
-            animation: scrollNews 30s linear infinite;
-            padding-left: 80px;
+        
+        .ice-crystal {
+            width: 3px;
+            height: 60px;
+            background: linear-gradient(180deg, transparent, var(--frost), transparent);
+            animation: glint 2s ease-in-out infinite;
         }
-        .news-item {
-            white-space: nowrap;
-            padding: 0 40px;
+        
+        .ice-crystal:nth-child(2) { height: 80px; animation-delay: 0.3s; }
+        .ice-crystal:nth-child(3) { height: 50px; animation-delay: 0.6s; }
+        .ice-crystal:nth-child(4) { height: 70px; animation-delay: 0.9s; }
+        .ice-crystal:nth-child(5) { height: 45px; animation-delay: 1.2s; }
+        
+        @keyframes glint {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; box-shadow: 0 0 10px var(--frost); }
+        }
+        
+        .community-ground {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(168,213,229,0.2);
+            border-radius: 4px;
+            background: rgba(10,10,18,0.5);
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .community-ground h3 {
+            font-weight: 300;
             font-size: 0.8rem;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            letter-spacing: 0.3rem;
+            opacity: 0.6;
+            margin-bottom: 0.5rem;
         }
-        .news-item::before {
-            content: '⚡';
-            color: #f9e2af;
+        
+        .temperature {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: 100;
+            color: var(--ice);
+            text-shadow: 0 0 20px rgba(74,158,187,0.5);
         }
-        .news-item.urgent::before {
-            content: '🚨';
-            animation: blink 0.5s infinite;
-        }
-        @keyframes scrollNews {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        /* Footer disclaimer */
-        .site-footer { text-align: center; padding: 8px; color: var(--text-dim); font-size: 0.7rem; opacity: 0.6; position: relative; z-index: 1; }
-        nav, main { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
-<div class="particles">
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
+<div class="snowfall" id="snow"></div>
+<div class="breath-mist"></div>
+<div class="temperature">-42°</div>
+<div class="frozen-world">
+<h1 class="title-frozen">Black Winter</h1>
+<p class="subtitle">the cold is eternal</p>
+<div class="landscape">
+<span class="frozen-tree">🌲</span>
+<div class="ice-crystal"></div>
+<div class="ice-crystal"></div>
+<div class="ice-crystal"></div>
+<div class="ice-crystal"></div>
+<div class="ice-crystal"></div>
+<span class="frozen-tree">🌲</span>
 </div>
-<nav class="waybar">
-<div class="workspaces">
-<div class="workspace active">1</div>
-<div class="workspace">2</div>
-<div class="workspace">3</div>
-<div class="workspace">4</div>
-<div class="workspace">5</div>
-</div>
-<div class="center-modules">
-<span id="clock">12:00</span>
-</div>
-<div class="right-modules">
-<span class="module">󰍛 4.2G</span>
-<span class="module">󰂄 100%</span>
-<span class="module">󰤨 Connected</span>
-</div>
-</nav>
-<main class="tiles">
-<div class="tile">
-<div class="tile-header">
-<span class="tile-title">󰆍 neofetch</span>
-<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-</div>
-<div class="tile-content">
-<div class="terminal-line"><span class="prompt">user@hypr</span> ~ </div>
-<div class="terminal-line">OS: Twitch Plays Code</div>
-<div class="terminal-line">WM: Hyprland</div>
-<div class="terminal-line">Theme: Catppuccin</div>
-<div class="terminal-line">Viewers: ∞</div>
+<div class="community-ground">
+<h3>[ frozen earth awaits your mark ]</h3>
+<p style="opacity:0.4; font-size:0.8rem;">the community will build here...</p>
 </div>
 </div>
-<div class="tile main focused">
-<div class="tile-header">
-<span class="tile-title">󰈹 Welcome</span>
-<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-</div>
-<div class="tile-content">
-<h2 style="color: var(--accent); margin-bottom: 12px;">Welcome to Hyprland</h2>
-<p style="color: var(--text-dim); line-height: 1.6;">A dynamic tiling Wayland compositor. This page is yours to customize!</p>
-<div class="placeholder" style="margin-top: 20px; background: linear-gradient(135deg, rgba(137,220,235,0.1), rgba(148,226,213,0.1)); animation: pulseGlow 3s ease-in-out infinite;">Community additions go here ✨</div>
-<div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
-<span style="padding: 4px 12px; background: linear-gradient(90deg, #f38ba8, #fab387); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite;">✦ Catppuccin</span>
-<span style="padding: 4px 12px; background: linear-gradient(90deg, #89dceb, #94e2d5); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite 0.5s;">✦ Wayland</span>
-<span style="padding: 4px 12px; background: linear-gradient(90deg, #a6e3a1, #f9e2af); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite 1s;">✦ Tiling</span>
-</div>
-</div>
-</div>
-<div class="tile">
-<div class="tile-header">
-<span class="tile-title">󰙀 htop</span>
-<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-</div>
-<div class="tile-content" style="position: relative;">
-<div class="terminal-line">CPU: <span class="cpu-bar" style="color: #f38ba8; text-shadow: 0 0 12px rgba(243, 139, 168, 0.8); animation: overheat 0.3s ease-in-out infinite;">████████</span> <span style="color: #f38ba8; animation: blink 0.5s infinite;">247%</span> <span class="smoke-container">🔥<span class="smoke">💨</span><span class="smoke" style="animation-delay: 0.2s;">💨</span><span class="smoke" style="animation-delay: 0.4s;">💨</span></span></div>
-<div class="terminal-line">MEM: <span style="color: #fab387; text-shadow: 0 0 10px rgba(250, 179, 135, 0.7); animation: overheat 0.4s ease-in-out infinite 0.1s;">████████</span> <span style="color: #fab387;">189%</span> <span style="font-size: 0.7rem; color: #f38ba8;">⚠ SWAP FULL</span></div>
-<div class="terminal-line" style="margin-top: 8px; color: #f38ba8; font-size: 0.75rem; animation: blink 1s infinite;">⚠ THERMAL THROTTLING ⚠</div>
-<style>
-.smoke-container { position: relative; display: inline-block; }
-.smoke { position: absolute; animation: smokeRise 1s ease-out infinite; opacity: 0; font-size: 0.8rem; }
-@keyframes smokeRise { 0% { transform: translateY(0) translateX(0); opacity: 0.8; } 100% { transform: translateY(-20px) translateX(10px); opacity: 0; } }
-@keyframes overheat { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.3); } }
-</style>
-</div>
-</div>
-<div class="tile" id="nyan-tile">
-<div class="tile-header">
-<span class="tile-title">󰗃 youtube</span>
-<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-</div>
-<div class="tile-content" style="padding: 0; position: relative; overflow: hidden;">
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" height="100%" src="https://www.youtube.com/embed/9J62hGda9BQ?autoplay=1&amp;mute=0&amp;loop=1&amp;playlist=9J62hGda9BQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0 0 10px 10px;" title="YouTube video player" width="100%">
-</iframe>
-</div>
-</div>
-<div class="tile" id="chat-tile">
-<div class="tile-header">
-<span class="tile-title">󰋼 chat <span id="chat-status" style="font-size: 0.7rem; color: var(--text-dim);">connecting...</span></span>
-<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-</div>
-<div class="tile-content" id="chat-messages" style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; overflow-y: auto; max-height: 200px;">
-</div>
-</div>
-</main>
-<div class="stickman-container">
-<div class="rain-container" id="rain"></div>
-<div class="stickman">
-<div class="wind-lines">
-<div class="wind-line"></div>
-<div class="wind-line"></div>
-<div class="wind-line"></div>
-</div>
-<div class="stickman-body">
-<div class="stickman-hat">
-<div class="hat-top"><div class="hat-ribbon"></div></div>
-<div class="hat-brim"></div>
-</div>
-<div class="stickman-head"></div>
-<div class="stickman-torso"></div>
-<div class="stickman-arm left"></div>
-<div class="stickman-arm right"></div>
-<div class="stickman-leg left"></div>
-<div class="stickman-leg right"></div>
-</div>
-</div>
-</div>
-<div class="news-ticker">
-<div class="news-label">📰 BREAKING</div>
-<div class="news-scroll">
-<span class="news-item urgent">LOCAL CAT CLAIMS TO BE MANAGER, DEMANDS TREATS</span>
-<span class="news-item">SCIENTISTS CONFIRM: TABS &gt; SPACES (CIVIL WAR IMMINENT)</span>
-<span class="news-item urgent">MAN INSTALLS ARCH LINUX, TELLS EVERYONE WITHIN 5 MILE RADIUS</span>
-<span class="news-item">HYPRLAND USER SPENDS 47 HOURS CONFIGURING CORNER RADIUS</span>
-<span class="news-item">BREAKING: CSS IS ACTUALLY A PROGRAMMING LANGUAGE (SOURCES: TRUST ME BRO)</span>
-<span class="news-item urgent">STICKMAN SPOTTED FIGHTING STORM, REFUSES TO GO INSIDE</span>
-<span class="news-item">NYAN CAT STILL RUNNING AFTER 14 YEARS, REFUSES TO PAY RENT</span>
-<span class="news-item">LOCAL CPU AT 247%: "I'M FINE" SAYS INCREASINGLY NERVOUS COMPUTER</span>
-<span class="news-item urgent">MEMORY LEAK DISCOVERED: CHROME TABS STAGING HOSTILE TAKEOVER</span>
-<span class="news-item">CPU REQUESTS VACATION AFTER RUNNING ELECTRON APPS FOR 3 HOURS</span>
-<span class="news-item urgent">SWAP FILE SENDS DISTRESS SIGNAL: "THEY JUST KEEP COMING"</span>
-<span class="news-item">THERMAL PASTE APPLIES FOR EARLY RETIREMENT</span>
-<span class="news-item">RAM STICK WRITES AUTOBIOGRAPHY: "512 TABS AND COUNTING"</span>
-<span class="news-item urgent">INTEL CPU CATCHES FIRE, AMD FANS SAY "TOLD YOU SO"</span>
-<span class="news-item">LOCAL DEV OPENS DEVTOOLS, LAPTOP ACHIEVES LIFTOFF</span>
-<span class="news-item">HEATSINK FORMS UNION, DEMANDS BETTER WORKING CONDITIONS</span>
-<span class="news-item urgent">BREAKING: TASK MANAGER ITSELF BECOMES NOT RESPONDING</span>
-<span class="news-item">SYSTEM32 FOLDER ASKS TO SPEAK WITH MANAGER</span>
-<span class="news-item">LINUX USER COMPILES KERNEL FOR 47TH TIME "JUST TO BE SURE"</span>
-<span class="news-item urgent">EMERGENCY: PROGRAMMER DISCOVERS MEMORY LEAK WAS THEIR OWN CODE</span>
-<span class="news-item">FANS SPINNING AT 9000 RPM ACHIEVE HELICOPTER MODE</span>
-<span class="news-item">GPU MELTS THROUGH DESK, NVIDIA BLAMES COSMIC RAYS</span>
-<span class="news-item urgent">LOCAL CAT CLAIMS TO BE MANAGER, DEMANDS TREATS</span>
-<span class="news-item">SCIENTISTS CONFIRM: TABS &gt; SPACES (CIVIL WAR IMMINENT)</span>
-<span class="news-item urgent">MAN INSTALLS ARCH LINUX, TELLS EVERYONE WITHIN 5 MILE RADIUS</span>
-<span class="news-item">HYPRLAND USER SPENDS 47 HOURS CONFIGURING CORNER RADIUS</span>
-<span class="news-item">BREAKING: CSS IS ACTUALLY A PROGRAMMING LANGUAGE (SOURCES: TRUST ME BRO)</span>
-<span class="news-item urgent">STICKMAN SPOTTED FIGHTING STORM, REFUSES TO GO INSIDE</span>
-<span class="news-item">NYAN CAT STILL RUNNING AFTER 14 YEARS, REFUSES TO PAY RENT</span>
-<span class="news-item">LOCAL CPU AT 247%: "I'M FINE" SAYS INCREASINGLY NERVOUS COMPUTER</span>
-<span class="news-item urgent">MEMORY LEAK DISCOVERED: CHROME TABS STAGING HOSTILE TAKEOVER</span>
-<span class="news-item">CPU REQUESTS VACATION AFTER RUNNING ELECTRON APPS FOR 3 HOURS</span>
-<span class="news-item urgent">SWAP FILE SENDS DISTRESS SIGNAL: "THEY JUST KEEP COMING"</span>
-<span class="news-item">THERMAL PASTE APPLIES FOR EARLY RETIREMENT</span>
-<span class="news-item">RAM STICK WRITES AUTOBIOGRAPHY: "512 TABS AND COUNTING"</span>
-<span class="news-item urgent">INTEL CPU CATCHES FIRE, AMD FANS SAY "TOLD YOU SO"</span>
-<span class="news-item">LOCAL DEV OPENS DEVTOOLS, LAPTOP ACHIEVES LIFTOFF</span>
-<span class="news-item">HEATSINK FORMS UNION, DEMANDS BETTER WORKING CONDITIONS</span>
-<span class="news-item urgent">BREAKING: TASK MANAGER ITSELF BECOMES NOT RESPONDING</span>
-<span class="news-item">SYSTEM32 FOLDER ASKS TO SPEAK WITH MANAGER</span>
-<span class="news-item">LINUX USER COMPILES KERNEL FOR 47TH TIME "JUST TO BE SURE"</span>
-<span class="news-item urgent">EMERGENCY: PROGRAMMER DISCOVERS MEMORY LEAK WAS THEIR OWN CODE</span>
-<span class="news-item">FANS SPINNING AT 9000 RPM ACHIEVE HELICOPTER MODE</span>
-<span class="news-item">GPU MELTS THROUGH DESK, NVIDIA BLAMES COSMIC RAYS</span>
-</div>
-</div>
-<div class="dancing-cats">
-<div class="dancing-cat">
-<div class="cat-head">
-<div class="cat-ear left"></div>
-<div class="cat-ear right"></div>
-<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
-<div class="cat-nose"></div>
-</div>
-<div class="cat-body"></div>
-<div class="cat-tail"></div>
-<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
-</div>
-<div class="dancing-cat">
-<div class="cat-head">
-<div class="cat-ear left"></div>
-<div class="cat-ear right"></div>
-<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
-<div class="cat-nose"></div>
-</div>
-<div class="cat-body"></div>
-<div class="cat-tail"></div>
-<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
-</div>
-<div class="dancing-cat">
-<div class="cat-head">
-<div class="cat-ear left"></div>
-<div class="cat-ear right"></div>
-<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
-<div class="cat-nose"></div>
-</div>
-<div class="cat-body"></div>
-<div class="cat-tail"></div>
-<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
-</div>
-<div class="dancing-cat">
-<div class="cat-head">
-<div class="cat-ear left"></div>
-<div class="cat-ear right"></div>
-<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
-<div class="cat-nose"></div>
-</div>
-<div class="cat-body"></div>
-<div class="cat-tail"></div>
-<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
-</div>
-</div>
-<footer class="site-footer">⚠ This is actually a website, not Hyprland • Built with CSS magic ✨</footer>
 <script>
-        // Live clock
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
-        // Workspace switching
-        document.querySelectorAll('.workspace').forEach(ws => {
-            ws.addEventListener('click', () => {
-                document.querySelector('.workspace.active')?.classList.remove('active');
-                ws.classList.add('active');
-            });
-        });
-        // Tile focus
-        document.querySelectorAll('.tile').forEach(tile => {
-            tile.addEventListener('click', () => {
-                document.querySelector('.tile.focused')?.classList.remove('focused');
-                tile.classList.add('focused');
-            });
-        });
-
-        // Rare tile shuffle - like Hyprland's dynamic tiling
-        function shuffleTiles() {
-            const tilesContainer = document.querySelector('.tiles');
-            const tiles = Array.from(tilesContainer.querySelectorAll('.tile'));
-            if (tiles.length < 2) return;
+        const snowfall = document.getElementById('snow');
+        const flakes = ['❄', '❅', '❆', '·', '•'];
+        
+        function createSnowflake() {
+            const flake = document.createElement('div');
+            flake.className = 'snowflake';
+            flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+            flake.style.left = Math.random() * 100 + 'vw';
+            flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            flake.style.fontSize = (Math.random() * 0.8 + 0.4) + 'rem';
+            flake.style.opacity = Math.random() * 0.7 + 0.3;
+            snowfall.appendChild(flake);
             
-            // Pick two random tiles to swap (excluding main tile for stability)
-            const swappable = tiles.filter(t => !t.classList.contains('main') && t.id !== 'nyan-tile');
-            if (swappable.length < 2) return;
-            
-            const idx1 = Math.floor(Math.random() * swappable.length);
-            let idx2 = Math.floor(Math.random() * swappable.length);
-            while (idx2 === idx1) idx2 = Math.floor(Math.random() * swappable.length);
-            
-            const tile1 = swappable[idx1];
-            const tile2 = swappable[idx2];
-            
-            // Get current positions
-            const rect1 = tile1.getBoundingClientRect();
-            const rect2 = tile2.getBoundingClientRect();
-            
-            // Calculate the delta for each tile to move to the other's position
-            const deltaX1 = rect2.left - rect1.left;
-            const deltaY1 = rect2.top - rect1.top;
-            const deltaX2 = rect1.left - rect2.left;
-            const deltaY2 = rect1.top - rect2.top;
-            
-            // Add glow effect during swap
-            tile1.style.boxShadow = '0 0 30px rgba(137, 220, 235, 0.6), 0 0 60px rgba(148, 226, 213, 0.3)';
-            tile2.style.boxShadow = '0 0 30px rgba(243, 139, 168, 0.6), 0 0 60px rgba(250, 179, 135, 0.3)';
-            tile1.style.zIndex = '10';
-            tile2.style.zIndex = '10';
-            
-            // Animate tiles sliding to each other's position
-            tile1.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s';
-            tile2.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s';
-            
-            requestAnimationFrame(() => {
-                tile1.style.transform = `translate(${deltaX1}px, ${deltaY1}px) scale(1.02) rotate(1deg)`;
-                tile2.style.transform = `translate(${deltaX2}px, ${deltaY2}px) scale(1.02) rotate(-1deg)`;
-            });
-            
-            setTimeout(() => {
-                // Reset transforms before DOM swap
-                tile1.style.transition = 'none';
-                tile2.style.transition = 'none';
-                tile1.style.transform = '';
-                tile2.style.transform = '';
-                tile1.style.boxShadow = '';
-                tile2.style.boxShadow = '';
-                tile1.style.zIndex = '';
-                tile2.style.zIndex = '';
-                
-                // Actually swap in DOM
-                const parent = tile1.parentNode;
-                const sibling = tile1.nextSibling === tile2 ? tile1 : tile1.nextSibling;
-                tile2.parentNode.insertBefore(tile1, tile2);
-                parent.insertBefore(tile2, sibling);
-                
-                // Quick settle animation
-                requestAnimationFrame(() => {
-                    tile1.style.transition = 'transform 0.2s ease-out';
-                    tile2.style.transition = 'transform 0.2s ease-out';
-                    tile1.style.transform = 'scale(1.05)';
-                    tile2.style.transform = 'scale(1.05)';
-                    
-                    setTimeout(() => {
-                        tile1.style.transform = '';
-                        tile2.style.transform = '';
-                    }, 100);
-                });
-            }, 600);
+            setTimeout(() => flake.remove(), 10000);
         }
         
-        // Schedule rare shuffles (15-30 seconds interval)
-        function scheduleNextShuffle() {
-            const delay = 15000 + Math.random() * 15000; // 15-30 seconds
-            setTimeout(() => {
-                shuffleTiles();
-                scheduleNextShuffle();
-
-        // Generate rain for the storm
-        const rainContainer = document.getElementById('rain');
-        for (let i = 0; i < 20; i++) {
-            const drop = document.createElement('div');
-            drop.className = 'raindrop';
-            drop.style.left = Math.random() * 100 + '%';
-            drop.style.animationDelay = Math.random() * 0.5 + 's';
-            drop.style.animationDuration = (0.3 + Math.random() * 0.3) + 's';
-            rainContainer.appendChild(drop);
-        }
-            }, delay);
-        }
-        scheduleNextShuffle();
-
-        // Generate rain for the storm
-        const rainContainer = document.getElementById('rain');
-        for (let i = 0; i < 20; i++) {
-            const drop = document.createElement('div');
-            drop.className = 'raindrop';
-            drop.style.left = Math.random() * 100 + '%';
-            drop.style.animationDelay = Math.random() * 0.5 + 's';
-            drop.style.animationDuration = (0.3 + Math.random() * 0.3) + 's';
-            rainContainer.appendChild(drop);
-        }
-
-        // Live Twitch Chat Integration
-        const chatContainer = document.getElementById('chat-messages');
-        const chatStatus = document.getElementById('chat-status');
-        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
-                         location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
-        const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
-        
-        const userColors = ['#89dceb', '#94e2d5', '#f38ba8', '#a6e3a1', '#f9e2af', '#cba6f7', '#fab387'];
-        function getColor(username) {
-            let hash = 0;
-            for (let i = 0; i < username.length; i++) hash = username.charCodeAt(i) + ((hash << 5) - hash);
-            return userColors[Math.abs(hash) % userColors.length];
-        }
-        
-        function addMessage(username, message) {
-            const msgEl = document.createElement('div');
-            msgEl.className = 'terminal-line';
-            msgEl.innerHTML = `<span style="color: ${getColor(username)};">${username}:</span> ${message}`;
-            chatContainer.appendChild(msgEl);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            if (chatContainer.children.length > 50) chatContainer.removeChild(chatContainer.firstChild);
-        }
-        
-        chatWs.onopen = () => { chatStatus.textContent = '● live'; chatStatus.style.color = '#a6e3a1'; };
-        chatWs.onclose = () => { chatStatus.textContent = '○ offline'; chatStatus.style.color = '#f38ba8'; };
-        chatWs.onerror = () => { chatStatus.textContent = '○ error'; chatStatus.style.color = '#f38ba8'; };
-        chatWs.onmessage = (e) => {
-            const msg = JSON.parse(e.data);
-            if (msg.type === 'chat_message') addMessage(msg.username, msg.message);
-            if (msg.type === 'chat_history') msg.messages.forEach(m => addMessage(m.username, m.message));
-        };
-
-        // Heart popup window system
-        function createHeartPopup() {
-            const popup = document.createElement('div');
-            popup.className = 'heart-popup';
-            
-            // Random position within viewport
-            const x = 100 + Math.random() * (window.innerWidth - 250);
-            const y = 100 + Math.random() * (window.innerHeight - 200);
-            popup.style.left = x + 'px';
-            popup.style.top = y + 'px';
-            
-            popup.innerHTML = `
-                <div class="tile-header">
-                    <span class="tile-title">💕 love.exe</span>
-                    <div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
-                </div>
-                <div class="heart-popup-content">
-                    <div class="pixel-heart">
-                        <div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div><div class="px"></div><div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div>
-                        <div class="px filled"></div><div class="px light"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div>
-                        <div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div>
-                        <div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div>
-                        <div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div>
-                        <div class="px"></div><div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div><div class="px"></div>
-                        <div class="px"></div><div class="px"></div><div class="px"></div><div class="px filled"></div><div class="px filled"></div><div class="px filled"></div><div class="px"></div><div class="px"></div><div class="px"></div>
-                        <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div><div class="px filled"></div><div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(popup);
-            
-            // Hearts now stay forever! Click close button to dismiss
-            const closeBtn = popup.querySelector('.control.close');
-            closeBtn.style.cursor = 'pointer';
-            closeBtn.addEventListener('click', () => {
-                popup.classList.add('closing');
-                setTimeout(() => popup.remove(), 500);
-            });
-            
-            // Make draggable for fun
-            let isDragging = false, offsetX, offsetY;
-            popup.querySelector('.tile-header').addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('control')) return;
-                isDragging = true;
-                offsetX = e.clientX - popup.offsetLeft;
-                offsetY = e.clientY - popup.offsetTop;
-                popup.style.zIndex = 101 + document.querySelectorAll('.heart-popup').length;
-            });
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                popup.style.left = (e.clientX - offsetX) + 'px';
-                popup.style.top = (e.clientY - offsetY) + 'px';
-            });
-            document.addEventListener('mouseup', () => isDragging = false);
-        }
-        
-        // Schedule heart popups every 20-40 seconds
-        function scheduleHeartPopup() {
-            const delay = 20000 + Math.random() * 20000;
-            setTimeout(() => {
-                createHeartPopup();
-                scheduleHeartPopup();
-            }, delay);
-        }
-        
-        // Start after initial delay
-        setTimeout(() => {
-            createHeartPopup(); // First one appears sooner
-            scheduleHeartPopup();
-        }, 5000);
+        setInterval(createSnowflake, 150);
+        for(let i = 0; i < 30; i++) setTimeout(createSnowflake, i * 100);
     </script>
 </body>
 </html>
