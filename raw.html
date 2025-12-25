@@ -214,6 +214,53 @@
             text-align: center;
         }
         .community-zone h2 { color: #d4798b; margin-bottom: 10px; }
+        
+        .battle-arena {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255,100,100,0.2) 0%, rgba(100,100,255,0.2) 100%);
+            border-radius: 25px;
+            border: 4px solid #ff6b6b;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255,100,100,0.3);
+        }
+        .battle-arena h2 {
+            color: #c0392b;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #fff;
+            animation: battlePulse 1s ease-in-out infinite;
+        }
+        @keyframes battlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); text-shadow: 2px 2px 10px #ff6b6b; }
+        }
+        #battle-canvas {
+            background: linear-gradient(180deg, #87ceeb 0%, #98fb98 70%, #8b4513 100%);
+            border-radius: 15px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .battle-stats {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .cat-score { color: #e74c3c; }
+        .dog-score { color: #3498db; }
+        .vs-text {
+            color: #f39c12;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 0 #fff;
+            animation: vsFlash 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes vsFlash {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
         .community-zone p { color: #8b7d8b; }
         
         .game-zone {
@@ -312,6 +359,16 @@
 <p style="color:#8b7d8b;margin-bottom:15px;">🤖 Autoplay ON! Watch the cats chase the magical yarn! 🧶✨</p>
 <canvas height="300" id="game-canvas" width="650"></canvas>
 <p class="game-score">Yarn caught: <span id="score">0</span> times! 🎉</p>
+</div>
+<div class="battle-arena">
+<h2>⚔️ Cat vs Dog Battle Arena ⚔️</h2>
+<p style="color:#8b7d8b;margin-bottom:10px;">🐱 Cats defend the paradise! 🐕 Dogs invade! Watch the epic auto-battle! ⚔️</p>
+<canvas height="280" id="battle-canvas" width="650"></canvas>
+<div class="battle-stats">
+<span class="cat-score">🐱 Cats: <span id="cat-wins">0</span></span>
+<span class="vs-text">VS</span>
+<span class="dog-score">🐕 Dogs: <span id="dog-wins">0</span></span>
+</div>
 </div>
 <div class="community-zone">
 <h2>✨ Community Cat Corner ✨</h2>
@@ -542,6 +599,151 @@
                 }, 2000);
             }, 500);
         }
+        
+        // ===== CAT VS DOG BATTLE SYSTEM =====
+        const battleCanvas = document.getElementById('battle-canvas');
+        const battleCtx = battleCanvas.getContext('2d');
+        let catWins = 0;
+        let dogWins = 0;
+        
+        const catEmojis = ['😺', '😸', '🐱', '😻', '🐈', '😼'];
+        const dogEmojis = ['🐕', '🐶', '🐩', '🦮', '🐕‍🦺', '🐾'];
+        
+        class BattleUnit {
+            constructor(team, x) {
+                this.team = team;
+                this.x = x;
+                this.y = 100 + Math.random() * 120;
+                this.hp = 100;
+                this.maxHp = 100;
+                this.speed = 0.8 + Math.random() * 0.6;
+                this.attackPower = 15 + Math.random() * 10;
+                this.attackCooldown = 0;
+                this.emoji = team === 'cat' 
+                    ? catEmojis[Math.floor(Math.random() * catEmojis.length)]
+                    : dogEmojis[Math.floor(Math.random() * dogEmojis.length)];
+                this.size = 28 + Math.random() * 8;
+                this.bobOffset = Math.random() * Math.PI * 2;
+            }
+            
+            update(enemies) {
+                this.bobOffset += 0.1;
+                if (this.attackCooldown > 0) this.attackCooldown--;
+                
+                // Find nearest enemy
+                let nearest = null;
+                let nearestDist = Infinity;
+                enemies.forEach(e => {
+                    const dist = Math.abs(e.x - this.x);
+                    if (dist < nearestDist) {
+                        nearestDist = dist;
+                        nearest = e;
+                    }
+                });
+                
+                if (nearest) {
+                    if (nearestDist < 40) {
+                        // Attack!
+                        if (this.attackCooldown <= 0) {
+                            nearest.hp -= this.attackPower;
+                            this.attackCooldown = 30;
+                        }
+                    } else {
+                        // Move toward enemy
+                        this.x += (this.team === 'cat' ? this.speed : -this.speed);
+                    }
+                } else {
+                    // No enemies, advance!
+                    this.x += (this.team === 'cat' ? this.speed * 0.5 : -this.speed * 0.5);
+                }
+            }
+            
+            draw(ctx) {
+                const bobY = Math.sin(this.bobOffset) * 3;
+                
+                // Health bar
+                const barWidth = 30;
+                const barHeight = 4;
+                ctx.fillStyle = '#333';
+                ctx.fillRect(this.x - barWidth/2, this.y - 25 + bobY, barWidth, barHeight);
+                ctx.fillStyle = this.team === 'cat' ? '#e74c3c' : '#3498db';
+                ctx.fillRect(this.x - barWidth/2, this.y - 25 + bobY, barWidth * (this.hp / this.maxHp), barHeight);
+                
+                // Unit emoji
+                ctx.font = `${this.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.emoji, this.x, this.y + bobY);
+                
+                // Attack flash
+                if (this.attackCooldown > 25) {
+                    ctx.font = '15px Arial';
+                    ctx.fillText('💥', this.x + (this.team === 'cat' ? 20 : -20), this.y - 10 + bobY);
+                }
+            }
+        }
+        
+        let cats = [];
+        let dogs = [];
+        
+        function spawnUnits() {
+            if (cats.length < 4) cats.push(new BattleUnit('cat', 30 + Math.random() * 50));
+            if (dogs.length < 4) dogs.push(new BattleUnit('dog', battleCanvas.width - 30 - Math.random() * 50));
+        }
+        
+        // Initial spawn
+        for (let i = 0; i < 3; i++) {
+            cats.push(new BattleUnit('cat', 30 + i * 40));
+            dogs.push(new BattleUnit('dog', battleCanvas.width - 30 - i * 40));
+        }
+        
+        function battleLoop() {
+            battleCtx.clearRect(0, 0, battleCanvas.width, battleCanvas.height);
+            
+            // Draw battlefield grass
+            battleCtx.fillStyle = 'rgba(34, 139, 34, 0.3)';
+            for (let i = 0; i < 20; i++) {
+                battleCtx.fillRect(i * 35, battleCanvas.height - 20, 3, 15);
+            }
+            
+            // Update units
+            cats.forEach(c => c.update(dogs));
+            dogs.forEach(d => d.update(cats));
+            
+            // Remove dead units
+            const deadCats = cats.filter(c => c.hp <= 0).length;
+            const deadDogs = dogs.filter(d => d.hp <= 0).length;
+            cats = cats.filter(c => c.hp > 0);
+            dogs = dogs.filter(d => d.hp > 0);
+            
+            // Score updates
+            if (deadDogs > 0) {
+                catWins += deadDogs;
+                document.getElementById('cat-wins').textContent = catWins;
+            }
+            if (deadCats > 0) {
+                dogWins += deadCats;
+                document.getElementById('dog-wins').textContent = dogWins;
+            }
+            
+            // Draw all units
+            cats.forEach(c => c.draw(battleCtx));
+            dogs.forEach(d => d.draw(battleCtx));
+            
+            // Draw team labels
+            battleCtx.font = 'bold 14px Comic Sans MS';
+            battleCtx.fillStyle = '#e74c3c';
+            battleCtx.textAlign = 'left';
+            battleCtx.fillText('🐱 CAT ARMY', 10, 20);
+            battleCtx.fillStyle = '#3498db';
+            battleCtx.textAlign = 'right';
+            battleCtx.fillText('DOG INVADERS 🐕', battleCanvas.width - 10, 20);
+            
+            requestAnimationFrame(battleLoop);
+        }
+        
+        battleLoop();
+        setInterval(spawnUnits, 3000); // Spawn new units every 3 seconds
         
         // Start cat interactions every 25-45 seconds (ultra calm mode per community request)
         setInterval(catInteraction, 25000 + Math.random() * 20000);
