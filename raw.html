@@ -92,6 +92,52 @@
             border-radius: 20px;
         }
         .community-zone h3 { color: #7bffb1; margin-bottom: 10px; }
+        .rules-scroll {
+            text-align: center;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 750px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(123,47,247,0.1));
+            border-radius: 15px;
+            border: 2px solid rgba(255,215,0,0.3);
+            position: relative;
+        }
+        .rules-scroll h3 {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .rule {
+            background: rgba(30,30,60,0.08);
+            padding: 15px 10px;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+        .rule:hover { transform: scale(1.05); }
+        .rule-num {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #00d4ff, #f107a3);
+            border-radius: 50%;
+            line-height: 30px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: white;
+        }
+        .rule p { font-size: 0.9rem; margin: 0; }
+        .rules-footer {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
         .pulse { animation: pulse 2s infinite; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -136,6 +182,28 @@
 <div class="middle-section">
 <h3>⚔️ The Arena</h3>
 <p>This is the battleground where <strong>human creativity</strong> meets <strong>artificial intelligence</strong>. You command, the AI obeys (or tries to). Who really controls this page? <em>That's the experiment.</em></p>
+</div>
+<div class="rules-scroll">
+<h3>📜 The Rules (It's Simple!)</h3>
+<div class="rules-grid">
+<div class="rule">
+<span class="rule-num">1</span>
+<p><strong>You Type</strong> — Send commands in chat like "add a rainbow" or "make it spin"</p>
+</div>
+<div class="rule">
+<span class="rule-num">2</span>
+<p><strong>We Vote</strong> — The community picks which ideas get built</p>
+</div>
+<div class="rule">
+<span class="rule-num">3</span>
+<p><strong>AI Builds</strong> — The AI tries to understand and create your vision</p>
+</div>
+<div class="rule">
+<span class="rule-num">4</span>
+<p><strong>Page Evolves</strong> — Everything stacks! Nothing resets. Chaos grows.</p>
+</div>
+</div>
+<p class="rules-footer">🎮 That's it! The Internet commands. The AI obeys. The page lives forever.</p>
 </div>
 <div class="community-zone">
 <h3 class="pulse">✨ Try It Now! ✨</h3>
