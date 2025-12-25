@@ -51,7 +51,7 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Memory: Optimized</div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: Reduced for GPU compatibility</div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -259,9 +259,9 @@
             }
         }
         
-        // Street lights (Manhattan-style)
-        for (let i = -4; i <= 4; i++) {
-            for (let j = -5; j <= 5; j++) {
+        // Street lights (Manhattan-style) - Reduced for performance
+        for (let i = -2; i <= 2; i += 2) {
+            for (let j = -3; j <= 3; j += 2) {
                 // Corner lamp posts
                 const lampPost = new THREE.Mesh(
                     new THREE.CylinderGeometry(0.1, 0.12, 5, 8),
@@ -278,7 +278,7 @@
                 lampArm.position.set(j * gridSpacingX + avenueWidth/2 - 0.4, 5, i * gridSpacingZ + streetWidth/2 + 0.3);
                 scene.add(lampArm);
                 
-                const lamp = new THREE.PointLight(0xffdd88, 2, 12);
+                const lamp = new THREE.PointLight(0xffdd88, 1.5, 15);
                 lamp.position.set(j * gridSpacingX + avenueWidth/2 - 1, 4.8, i * gridSpacingZ + streetWidth/2 + 0.3);
                 scene.add(lamp);
             }
@@ -323,9 +323,9 @@
                     scene.add(building);
                     buildings.push(building);
                     
-                    // Neon signs
-                    if (Math.random() > 0.4) {
-                        const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 2, 10);
+                    // Neon signs - Reduced for performance (only 15% of buildings)
+                    if (Math.random() > 0.85) {
+                        const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 1.5, 8);
                         neon.position.copy(building.position);
                         neon.position.y = h * 0.6;
                         scene.add(neon);
@@ -609,7 +609,7 @@
         
         const manholeTexture = createManholeTexture();
         
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 20; i++) {
             const manholeGroup = new THREE.Group();
             
             // Manhole rim (slightly larger, recessed)
@@ -650,16 +650,11 @@
             
             manholeGroup.position.set(posX, 0.02, posZ);
             
-            // Add steam vent effect to some manholes
-            if (Math.random() > 0.6) {
+            // Add steam vent effect to some manholes - No lights, just visual marker
+            if (Math.random() > 0.7) {
                 manholeGroup.userData.hasSteam = true;
                 manholeGroup.userData.steamPhase = Math.random() * Math.PI * 2;
-                
-                // Steam glow light
-                const steamLight = new THREE.PointLight(0xaaaaff, 0.5, 3);
-                steamLight.position.y = 0.5;
-                manholeGroup.add(steamLight);
-                manholeGroup.userData.steamLight = steamLight;
+                // Steam visual only - no point light for performance
             }
             
             scene.add(manholeGroup);
@@ -879,14 +874,10 @@
                 }
             });
             
-            // Animate steam from manholes
+            // Steam manholes visual effect (no lights)
             manholes.forEach(mh => {
                 if (mh.userData.hasSteam) {
                     mh.userData.steamPhase += 0.05;
-                    const intensity = 0.3 + Math.sin(mh.userData.steamPhase) * 0.3;
-                    if (mh.userData.steamLight) {
-                        mh.userData.steamLight.intensity = intensity;
-                    }
                 }
             });
             
