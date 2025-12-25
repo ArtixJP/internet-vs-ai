@@ -180,7 +180,7 @@
 <div class="planet planet-2" title="Saturn"><span class="planet-emoji" id="emoji2"></span></div>
 <div class="planet planet-3" title="Neptune"><span class="planet-emoji" id="emoji3"></span></div>
 <div class="community-zone">
-<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 🔊 Touch planets for cosmic sounds!</span>
 </div>
 <div class="chat-command" id="chatCommand"></div>
 </div>
@@ -232,7 +232,10 @@
         }
         updateRocket();
         showCommand(user, direction);
-        setTimeout(() => rocket.className = 'rocket', 400);
+        setTimeout(() => {
+            rocket.className = 'rocket';
+            checkPlanetCollision();
+        }, 400);
     }
     
     updateRocket();
@@ -254,6 +257,81 @@
     
     chatWs.onerror = () => console.log('Chat connection error');
     chatWs.onclose = () => setTimeout(() => location.reload(), 5000);
+    
+    // Sound system for planet contact
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playPlanetSound(planetType) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const osc2 = audioCtx.createOscillator();
+        
+        osc.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        // Different sounds for different planets
+        const sounds = {
+            mars: { freq: 440, freq2: 550, type: 'sine' },
+            saturn: { freq: 330, freq2: 415, type: 'triangle' },
+            neptune: { freq: 523, freq2: 659, type: 'sine' }
+        };
+        
+        const sound = sounds[planetType] || sounds.mars;
+        osc.type = sound.type;
+        osc2.type = 'sine';
+        osc.frequency.setValueAtTime(sound.freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(sound.freq * 1.5, audioCtx.currentTime + 0.1);
+        osc.frequency.exponentialRampToValueAtTime(sound.freq * 0.5, audioCtx.currentTime + 0.3);
+        osc2.frequency.setValueAtTime(sound.freq2, audioCtx.currentTime);
+        osc2.frequency.exponentialRampToValueAtTime(sound.freq2 * 1.2, audioCtx.currentTime + 0.2);
+        
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        
+        osc.start(audioCtx.currentTime);
+        osc2.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.4);
+        osc2.stop(audioCtx.currentTime + 0.4);
+    }
+    
+    function checkPlanetCollision() {
+        const planets = [
+            { el: document.querySelector('.planet-1'), name: 'mars' },
+            { el: document.querySelector('.planet-2'), name: 'saturn' },
+            { el: document.querySelector('.planet-3'), name: 'neptune' }
+        ];
+        
+        const rocketRect = rocket.getBoundingClientRect();
+        const rocketCenterX = rocketRect.left + rocketRect.width / 2;
+        const rocketCenterY = rocketRect.top + rocketRect.height / 2;
+        
+        planets.forEach(planet => {
+            const planetRect = planet.el.getBoundingClientRect();
+            const planetCenterX = planetRect.left + planetRect.width / 2;
+            const planetCenterY = planetRect.top + planetRect.height / 2;
+            const planetRadius = planetRect.width / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(rocketCenterX - planetCenterX, 2) + 
+                Math.pow(rocketCenterY - planetCenterY, 2)
+            );
+            
+            if (distance < planetRadius + 40 && !planet.el.dataset.touched) {
+                planet.el.dataset.touched = 'true';
+                playPlanetSound(planet.name);
+                planet.el.style.animation = 'none';
+                planet.el.style.transform = 'scale(1.4)';
+                planet.el.style.boxShadow = '0 0 60px currentColor';
+                setTimeout(() => {
+                    planet.el.style.transform = '';
+                    planet.el.style.boxShadow = '';
+                    planet.el.style.animation = '';
+                    delete planet.el.dataset.touched;
+                }, 500);
+            }
+        });
+    }
     
     // Random planet emojis
     const marsEmojis = ['👽', '🦠', '🔴', '🏜️', '🌋', '👾'];
