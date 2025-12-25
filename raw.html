@@ -182,10 +182,17 @@
             animation: bubbleWiggle 0.5s ease-in-out;
         }
         #chat-cat {
-            opacity: 0;
-            transform: scale(0) rotate(-180deg);
+            position: fixed !important;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            pointer-events: auto;
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            pointer-events: none;
+            animation: echoGlow 2s ease-in-out infinite;
+            width: 160px !important;
+            padding: 15px !important;
         }
         #chat-cat.echo-visible {
             opacity: 1;
@@ -390,12 +397,6 @@
 <h3>Gizmo</h3>
 <p>Zoomie Champion</p>
 </div>
-<div class="cat-card weird-cat" id="chat-cat">
-<div class="emoji" style="filter: hue-rotate(180deg) saturate(1.5);">🙀</div>
-<h3>Echo</h3>
-<p>Chat Mimic</p>
-<div class="chat-bubble" id="echo-bubble">Waiting for chat...</div>
-</div>
 </div>
 <div class="community-zone">
 <h2>✨ Community Cat Corner ✨</h2>
@@ -430,6 +431,12 @@
 <span style="font-size:1.2rem;">🐱</span>
 <span style="font-weight:bold;">MEOWS ENABLED!</span>
 <span style="font-size:0.9rem;">🔊</span>
+</div>
+<div class="cat-card weird-cat" id="chat-cat" style="position:fixed;top:20px;right:20px;z-index:1000;width:160px;">
+<div class="emoji" style="filter: hue-rotate(180deg) saturate(1.5);font-size:3rem;">🙀</div>
+<h3>Echo</h3>
+<p>Chat Mimic</p>
+<div class="chat-bubble" id="echo-bubble">Waiting for chat...</div>
 </div>
 <div class="paw-prints">
 <span class="paw">🐾</span>
@@ -1093,15 +1100,9 @@
             // Clear any existing timeout
             if (echoTimeout) clearTimeout(echoTimeout);
             
-            // Make Echo dramatically appear!
-            chatCat.classList.add('echo-visible');
+            // Echo wiggles when receiving messages!
             chatCat.classList.add('visiting');
             setTimeout(() => chatCat.classList.remove('visiting'), 600);
-            
-            // Echo disappears after 5 seconds
-            echoTimeout = setTimeout(() => {
-                chatCat.classList.remove('echo-visible');
-            }, 5000);
         }
         
         // Connect to live chat WebSocket
