@@ -16,7 +16,7 @@ canvas{display:block}
 </style>
 </head>
 <body>
-<div id="ui">⛏️ MINECRAFT 3D<br/><span id="pos"></span><br/><span id="quake" style="color:#ff6b6b;font-size:10px"></span></div>
+<div id="ui">⛏️ MINECRAFT 3D<br/><span id="pos"></span><br/><span id="fly-mode" style="color:#87CEEB;font-size:10px"></span><br/><span id="quake" style="color:#ff6b6b;font-size:10px"></span></div>
 <div id="crosshair">+</div>
 <div id="controls">WASD: Move | SPACE: Jump | SHIFT: Down<br/>CLICK: Break block | RIGHT-CLICK: Place<br/>1-4: Select block type</div>
 <button id="mode-btn">🎮 MANUAL MODE</button>
@@ -159,14 +159,15 @@ function animate(){
   requestAnimationFrame(animate);
   
   if(autoMode){
-    autoTime+=0.005;
+    autoTime+=0.003;
     const cx=CHUNK*WORLD/2,cz=CHUNK*WORLD/2;
-    const radius=25+Math.sin(autoTime*0.5)*10;
+    const radius=30+Math.sin(autoTime*0.3)*15;
+    const flyHeight=25+autoTime*0.5%20;
     player.x=cx+Math.cos(autoTime)*radius;
     player.z=cz+Math.sin(autoTime)*radius;
-    player.y=20+Math.sin(autoTime*2)*5;
+    player.y=flyHeight;
     player.yaw=autoTime+Math.PI;
-    player.pitch=-0.2+Math.sin(autoTime*3)*0.1;
+    player.pitch=-0.15;
   }else{
     const speed=0.15,friction=0.85,gravity=0.02,smoothing=0.12;
     let targetDx=0,targetDz=0;
@@ -220,6 +221,7 @@ function animate(){
   
   document.getElementById('pos').textContent=`X:${player.x.toFixed(0)} Y:${player.y.toFixed(0)} Z:${player.z.toFixed(0)} [${blockTypes[selectedBlock].name}]`;
   document.getElementById('quake').textContent=shakeIntensity>0.1?'🌋 EARTHQUAKE!':'';
+  document.getElementById('fly-mode').textContent=autoMode?'✈️ FLYING MODE':'🚶 WALKING';
   
   renderer.render(scene,camera);
 }
