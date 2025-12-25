@@ -141,16 +141,16 @@
         }
         
         .forest-mid {
-            bottom: 1%;
-            font-size: 3.2rem;
+            bottom: 0%;
+            font-size: 3.5rem;
             opacity: 0.4;
             filter: grayscale(100%) brightness(0.5);
             z-index: 5;
         }
         
         .forest-front {
-            bottom: -2%;
-            font-size: 4.5rem;
+            bottom: -3%;
+            font-size: 5rem;
             opacity: 0.6;
             filter: grayscale(100%) brightness(0.6);
             z-index: 6;
@@ -222,9 +222,45 @@
         }
         
         .fire-logs {
-            font-size: 0.6rem;
-            opacity: 0.6;
-            filter: grayscale(80%);
+            font-size: 0.8rem;
+            opacity: 0.7;
+            filter: grayscale(60%) brightness(0.8);
+            letter-spacing: -0.3rem;
+        }
+        
+        .pit-stones {
+            font-size: 0.5rem;
+            letter-spacing: 0.1rem;
+            opacity: 0.5;
+            filter: grayscale(100%) brightness(0.4);
+        }
+        
+        .pit-stones.bottom {
+            margin-top: -5px;
+        }
+        
+        .firepit {
+            background: radial-gradient(ellipse at center, rgba(20,15,10,0.8) 0%, transparent 70%);
+            padding: 10px;
+            border-radius: 50%;
+        }
+        
+        .ember {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ff6600;
+            border-radius: 50%;
+            animation: float-ember 2s ease-out infinite;
+            box-shadow: 0 0 4px #ff4400;
+        }
+        
+        .ember.e2 { animation-delay: 0.7s; left: 10px; }
+        .ember.e3 { animation-delay: 1.4s; left: -10px; }
+        
+        @keyframes float-ember {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-40px) translateX(10px) scale(0); opacity: 0; }
         }
         
         .ground-glow {
@@ -326,7 +362,6 @@
 <body>
 <div class="snowfall" id="snow"></div>
 <div class="breath-mist"></div>
-
 <div class="forest-layer forest-back">
 <span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
 </div>
@@ -337,7 +372,7 @@
 <span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
 </div>
 <div class="forest-layer forest-front">
-<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
+<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
 </div>
 <div class="forest-mist"></div>
 <div class="temperature">-42°</div>
@@ -352,11 +387,16 @@
 <div class="ice-crystal"></div>
 <div class="ice-crystal"></div>
 <span class="frozen-tree">🌲</span>
-<div class="campfire-area">
+<div class="campfire-area firepit">
 <div class="fire-glow"></div>
 <div class="ground-glow"></div>
+<div class="pit-stones">🪨 🪨 🪨</div>
 <span class="fire">🔥</span>
-<span class="fire-logs">🪵</span>
+<span class="fire-logs">🪵🪵</span>
+<div class="pit-stones bottom">🪨 🪨 🪨</div>
+<div class="ember"></div>
+<div class="ember e2"></div>
+<div class="ember e3"></div>
 </div>
 </div>
 <div class="community-ground">
@@ -368,9 +408,18 @@
 <div class="frost-corner" style="position:absolute; top:0; left:0; width:150px; height:150px; background:radial-gradient(ellipse at top left, rgba(168,213,229,0.08) 0%, transparent 70%); pointer-events:none;"></div>
 <div class="frost-corner" style="position:absolute; bottom:0; right:0; width:200px; height:200px; background:radial-gradient(ellipse at bottom right, rgba(74,158,187,0.06) 0%, transparent 70%); pointer-events:none;"></div>
 </div>
-<div class="audio-hint" onclick="this.style.display='none'" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-size:0.7rem; opacity:0.4; letter-spacing:0.2rem; cursor:pointer; transition: opacity 0.3s;">
-🔊 wind loading... (click if silent)
+<div class="audio-overlay" id="audioOverlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,5,8,0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition: opacity 0.5s;">
+<div style="font-size:4rem; margin-bottom:1rem; animation: pulse-glow 2s ease-in-out infinite;">❄️</div>
+<div style="font-size:1.5rem; letter-spacing:0.5rem; color:#a8d5e5; margin-bottom:0.5rem;">BLACK WINTER</div>
+<div style="font-size:0.8rem; letter-spacing:0.3rem; opacity:0.6; margin-bottom:2rem;">click anywhere to enter the cold</div>
+<div style="font-size:0.6rem; opacity:0.3;">🔊 audio experience</div>
 </div>
+<style>
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 20px rgba(168,213,229,0.3); transform: scale(1); }
+    50% { text-shadow: 0 0 40px rgba(168,213,229,0.6); transform: scale(1.05); }
+}
+</style>
 </div>
 <script>
         // Procedural Wind Audio
@@ -456,14 +505,29 @@
             setTimeout(tryAutoplay, 500);
         });
         
+        // Start audio on overlay click
+        const overlay = document.getElementById('audioOverlay');
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                if (!isAudioStarted) {
+                    createWind();
+                    isAudioStarted = true;
+                }
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 500);
+            });
+        }
+        
         // Fallback: Start audio on first interaction (browser autoplay policy)
         ['click', 'touchstart', 'keydown'].forEach(event => {
             document.body.addEventListener(event, function startAudio() {
                 if (!isAudioStarted) {
                     createWind();
                     isAudioStarted = true;
-                    const hint = document.querySelector('.audio-hint');
-                    if (hint) hint.style.display = 'none';
+                }
+                if (overlay && overlay.parentNode) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 500);
                 }
             }, { once: true });
         });
