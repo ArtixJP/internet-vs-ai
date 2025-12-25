@@ -313,6 +313,58 @@
             from { transform: rotate(0deg) translateX(10px) rotate(0deg); }
             to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
         }
+        
+        .space-chicken {
+            position: absolute;
+            font-size: 50px;
+            z-index: 25;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255, 200, 100, 0.6));
+            animation: chickenFly 8s linear forwards;
+        }
+        .space-chicken::before {
+            content: '🪶';
+            position: absolute;
+            font-size: 15px;
+            left: -20px;
+            top: 10px;
+            opacity: 0.7;
+            animation: featherTrail 0.3s ease-out infinite;
+        }
+        .space-chicken::after {
+            content: '🪶';
+            position: absolute;
+            font-size: 12px;
+            left: -35px;
+            top: 20px;
+            opacity: 0.5;
+            animation: featherTrail 0.4s ease-out infinite 0.15s;
+        }
+        @keyframes chickenFly {
+            0% { left: -80px; top: 30%; transform: scaleX(-1) rotate(5deg); }
+            25% { top: 35%; transform: scaleX(-1) rotate(-5deg); }
+            50% { top: 25%; transform: scaleX(-1) rotate(5deg); }
+            75% { top: 40%; transform: scaleX(-1) rotate(-3deg); }
+            100% { left: 110%; top: 35%; transform: scaleX(-1) rotate(5deg); }
+        }
+        @keyframes featherTrail {
+            0% { transform: translateX(0) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateX(-15px) translateY(10px) rotate(45deg); opacity: 0; }
+        }
+        .chicken-cluck {
+            position: absolute;
+            font-size: 14px;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8), 0 0 10px rgba(255,215,0,0.5);
+            animation: cluckFloat 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 26;
+        }
+        @keyframes cluckFloat {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-30px); }
+        }
     </style>
 </head>
 <body>
@@ -337,7 +389,7 @@
 <div class="spacex-ship">🛸</div>
 <div class="elon-label" style="animation-delay: 0s;">👋 Elon says: "To Mars!"</div>
 <div class="community-zone">
-<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 🛸 SpaceX passing by!</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 🛸 SpaceX passing by! 🐔 Watch for chickens!</span>
 </div>
 <div class="chat-command" id="chatCommand"></div>
 </div>
@@ -675,6 +727,71 @@
     };
     
     meteorSystem.createMeteor();
+    
+    // Chicken Invaders Easter Egg System
+    const chickenSystem = {
+        clucks: ['BAWK!', 'CLUCK!', 'BOK BOK!', '🥚', 'REVENGE!'],
+        
+        spawnChicken() {
+            if (gameOver) return;
+            
+            const chicken = document.createElement('div');
+            chicken.className = 'space-chicken';
+            chicken.textContent = '🐔';
+            
+            // Random starting height
+            const startY = 20 + Math.random() * 50;
+            chicken.style.top = startY + '%';
+            
+            document.querySelector('.space-scene').appendChild(chicken);
+            
+            // Add random clucks during flight
+            const cluckInterval = setInterval(() => {
+                if (!document.body.contains(chicken)) {
+                    clearInterval(cluckInterval);
+                    return;
+                }
+                const cluck = document.createElement('div');
+                cluck.className = 'chicken-cluck';
+                cluck.textContent = this.clucks[Math.floor(Math.random() * this.clucks.length)];
+                cluck.style.left = chicken.offsetLeft + 'px';
+                cluck.style.top = (chicken.offsetTop - 20) + 'px';
+                document.querySelector('.space-scene').appendChild(cluck);
+                setTimeout(() => cluck.remove(), 1000);
+            }, 1500);
+            
+            // Remove chicken after animation
+            setTimeout(() => {
+                chicken.remove();
+                clearInterval(cluckInterval);
+            }, 8000);
+            
+            // Play chicken sound
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
+            osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        },
+        
+        start() {
+            // First chicken after 10-20 seconds
+            setTimeout(() => {
+                this.spawnChicken();
+                // Then spawn every 25-45 seconds
+                setInterval(() => this.spawnChicken(), 25000 + Math.random() * 20000);
+            }, 10000 + Math.random() * 10000);
+        }
+    };
+    
+    chickenSystem.start();
 })();
 </script>
 </body>
