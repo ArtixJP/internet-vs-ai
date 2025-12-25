@@ -136,6 +136,47 @@
             100% { opacity: 0; transform: translateY(-20px); }
         }
         
+        .screamer-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        .screamer-overlay.active {
+            display: flex;
+            animation: screamer-flash 0.8s ease-out forwards;
+        }
+        
+        .screamer-face {
+            font-size: 40vmin;
+            color: #ff0000;
+            text-shadow: 0 0 50px #ff0000, 0 0 100px #880000;
+            animation: screamer-shake 0.1s infinite;
+            filter: drop-shadow(0 0 30px #ff0000);
+        }
+        
+        @keyframes screamer-flash {
+            0% { background: #ff0000; }
+            10% { background: #000; }
+            20% { background: #ff0000; }
+            30% { background: #220000; }
+            100% { background: #000; opacity: 0; }
+        }
+        
+        @keyframes screamer-shake {
+            0% { transform: translate(-5px, -5px) rotate(-2deg); }
+            25% { transform: translate(5px, -3px) rotate(2deg); }
+            50% { transform: translate(-3px, 5px) rotate(-1deg); }
+            75% { transform: translate(3px, 3px) rotate(1deg); }
+            100% { transform: translate(-5px, -5px) rotate(-2deg); }
+        }
+        
     </style>
 </head>
 <body>
@@ -146,6 +187,9 @@
 <div class="audio-btn" id="audioBtn">🔊</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
 <div id="whisperContainer"></div>
+<div class="screamer-overlay" id="screamerOverlay">
+<div class="screamer-face">👹</div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
         // Scene setup
@@ -619,8 +663,24 @@
                 p.material.color.setHSL(0.05 + Math.random() * 0.05, 1, 0.5 + Math.random() * 0.2);
             });
             
-            // Wolf chasing snowman
-            wolfAngle += 0.012; // Wolf is faster!
+            // Wolf chasing snowman - dynamic speed based on catch mechanic
+            const catchDistance = 1.2;
+            const wolfPos = wolfGroup.position;
+            const snowmanPos = snowmanGroup.position;
+            const distToSnowman = Math.sqrt(
+                Math.pow(wolfPos.x - snowmanPos.x, 2) + 
+                Math.pow(wolfPos.z - snowmanPos.z, 2)
+            );
+            
+            // Wolf catches snowman!
+            if (distToSnowman < catchDistance && !window.screamerCooldown) {
+                triggerScreamer();
+            }
+            
+            // Wolf speed varies - sometimes catches up!
+            const wolfSpeedBase = 0.012;
+            const wolfSpeedBoost = Math.sin(time * 0.3) > 0.7 ? 0.006 : 0;
+            wolfAngle += wolfSpeedBase + wolfSpeedBoost; // Wolf is faster!
             const wolfRadius = 6.5;
             wolfGroup.position.x = Math.cos(wolfAngle) * wolfRadius;
             wolfGroup.position.z = Math.sin(wolfAngle) * wolfRadius;
@@ -919,6 +979,73 @@
         
         // Modify the existing animate loop to include horror
         setInterval(animateWithHorror, 16);
+        
+        // SCREAMER SYSTEM
+        window.screamerCooldown = false;
+        
+        function triggerScreamer() {
+            if (window.screamerCooldown) return;
+            window.screamerCooldown = true;
+            
+            const overlay = document.getElementById('screamerOverlay');
+            overlay.classList.add('active');
+            
+            // Create screamer audio
+            if (audioCtx) {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.5);
+                gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                oscillator.connect(gainNode).connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.8);
+                
+                // Second layer - high shriek
+                const shriek = audioCtx.createOscillator();
+                const shriekGain = audioCtx.createGain();
+                shriek.type = 'square';
+                shriek.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                shriek.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.3);
+                shriekGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                shriekGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                shriek.connect(shriekGain).connect(audioCtx.destination);
+                shriek.start();
+                shriek.stop(audioCtx.currentTime + 0.4);
+            }
+            
+            // Multiple glitches
+            triggerGlitch();
+            setTimeout(triggerGlitch, 50);
+            setTimeout(triggerGlitch, 100);
+            setTimeout(triggerGlitch, 150);
+            
+            // Teleport snowman ahead to continue chase
+            setTimeout(() => {
+                snowmanAngle += Math.PI * 0.7; // Jump ahead
+                overlay.classList.remove('active');
+            }, 800);
+            
+            // Cooldown before next catch
+            setTimeout(() => {
+                window.screamerCooldown = false;
+            }, 15000);
+            
+            // Show whisper
+            setTimeout(() => {
+                const container = document.getElementById('whisperContainer');
+                const whisper = document.createElement('div');
+                whisper.className = 'whisper';
+                whisper.textContent = '...it almost had you...';
+                whisper.style.left = '50%';
+                whisper.style.top = '50%';
+                whisper.style.fontSize = '1.5rem';
+                container.appendChild(whisper);
+                setTimeout(() => whisper.remove(), 3000);
+            }, 1200);
+        }
         
         // Occasional temperature drop effect
         setInterval(() => {
