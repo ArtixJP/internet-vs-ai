@@ -49,7 +49,8 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">[ Community additions appear here ]</div>
+<div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step!</div>
+<div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Buildings: 60 | NPCs: 30<br/>Renderer: WebGL</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -250,6 +251,106 @@
         }
         document.getElementById('count').textContent = crowd.length;
         
+        // Manholes scattered around the city
+        const manholes = [];
+        const manholeGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.05, 16);
+        const manholeMat = new THREE.MeshStandardMaterial({ 
+            color: 0x333344,
+            metalness: 0.8,
+            roughness: 0.3
+        });
+        for (let i = 0; i < 25; i++) {
+            const manhole = new THREE.Mesh(manholeGeo, manholeMat);
+            manhole.position.set(
+                Math.round((Math.random() - 0.5) * 60 / 4) * 4,
+                0.03,
+                Math.round((Math.random() - 0.5) * 60 / 4) * 4
+            );
+            // Add manhole cover detail ring
+            const ringGeo = new THREE.RingGeometry(0.35, 0.45, 16);
+            const ringMat = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x003333, side: THREE.DoubleSide });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = 0.03;
+            manhole.add(ring);
+            scene.add(manhole);
+            manholes.push(manhole);
+        }
+        
+        // Conversation system
+        const conversations = {
+            weather: [
+                "Looks like digital rain tonight...",
+                "The fog density is at 0.012 today!",
+                "Perfect neon glow weather, huh?",
+                "My sensors say 72% humidity.",
+                "Remember when we had real clouds?"
+            ],
+            coffee: [
+                "That synth-coffee was pure static!",
+                "I need my morning byte-brew.",
+                "Espresso.exe has stopped working...",
+                "Coffee: the original debugging tool.",
+                "404: Sleep not found. Need caffeine."
+            ],
+            nerdJokes: [
+                "Why do programmers hate nature? Too many bugs.",
+                "There are 10 types of people...",
+                "I'd tell you a UDP joke but you might not get it.",
+                "A SQL query walks into a bar, joins two tables...",
+                "!false - it's funny because it's true.",
+                "Recursion: see Recursion.",
+                "I'm not anti-social, I'm just not user-friendly."
+            ]
+        };
+        
+        let activeConversation = null;
+        let conversationTimer = 0;
+        const bubbleEl = document.getElementById('speech-bubble');
+        const bubbleText = document.getElementById('bubble-text');
+        
+        function startConversation(npc1, npc2) {
+            const topics = Object.keys(conversations);
+            const topic = topics[Math.floor(Math.random() * topics.length)];
+            const lines = conversations[topic];
+            const line = lines[Math.floor(Math.random() * lines.length)];
+            
+            activeConversation = {
+                npc1: npc1,
+                npc2: npc2,
+                originalDir1: npc1.userData.direction,
+                originalDir2: npc2.userData.direction,
+                text: line,
+                duration: 180 + Math.random() * 120
+            };
+            
+            // Make them face each other
+            const angle = Math.atan2(npc2.position.z - npc1.position.z, npc2.position.x - npc1.position.x);
+            npc1.userData.direction = -10; // Stop moving
+            npc2.userData.direction = -10;
+            npc1.rotation.y = -angle + Math.PI/2;
+            npc2.rotation.y = -angle - Math.PI/2;
+            
+            bubbleText.textContent = line;
+            bubbleEl.style.display = 'block';
+            conversationTimer = activeConversation.duration;
+        }
+        
+        function checkForConversations() {
+            if (activeConversation) return;
+            if (Math.random() > 0.005) return; // Random chance per frame
+            
+            for (let i = 0; i < crowd.length; i++) {
+                for (let j = i + 1; j < crowd.length; j++) {
+                    const dist = crowd[i].position.distanceTo(crowd[j].position);
+                    if (dist < 3 && dist > 1) {
+                        startConversation(crowd[i], crowd[j]);
+                        return;
+                    }
+                }
+            }
+        }
+        
         // Animation
         let time = 0;
         function animate() {
@@ -296,6 +397,46 @@
                 walker.userData.limbs.rightThigh.rotation.x = -walkerSwing;
                 walker.userData.limbs.leftUpperArm.rotation.x = -walkerSwing * 0.6;
                 walker.userData.limbs.rightUpperArm.rotation.x = walkerSwing * 0.6;
+            }
+            
+            // Check for NPC conversations
+            checkForConversations();
+            
+            // Update active conversation
+            if (activeConversation) {
+                conversationTimer--;
+                
+                // Position bubble above the NPCs
+                const midPoint = new THREE.Vector3().addVectors(
+                    activeConversation.npc1.position,
+                    activeConversation.npc2.position
+                ).multiplyScalar(0.5);
+                midPoint.y = 2.5;
+                
+                const screenPos = midPoint.clone().project(camera);
+                const x = (screenPos.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-screenPos.y * 0.5 + 0.5) * window.innerHeight;
+                
+                bubbleEl.style.left = (x - 100) + 'px';
+                bubbleEl.style.top = (y - 60) + 'px';
+                
+                // Stop walking animation during conversation
+                if (activeConversation.npc1.userData.limbs) {
+                    activeConversation.npc1.userData.limbs.leftThigh.rotation.x = 0;
+                    activeConversation.npc1.userData.limbs.rightThigh.rotation.x = 0;
+                }
+                if (activeConversation.npc2.userData.limbs) {
+                    activeConversation.npc2.userData.limbs.leftThigh.rotation.x = 0;
+                    activeConversation.npc2.userData.limbs.rightThigh.rotation.x = 0;
+                }
+                
+                if (conversationTimer <= 0) {
+                    // End conversation, resume walking
+                    activeConversation.npc1.userData.direction = Math.random() * Math.PI * 2;
+                    activeConversation.npc2.userData.direction = Math.random() * Math.PI * 2;
+                    bubbleEl.style.display = 'none';
+                    activeConversation = null;
+                }
             }
             
             renderer.render(scene, camera);
