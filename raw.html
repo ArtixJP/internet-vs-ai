@@ -236,18 +236,198 @@
 </div>
 <div class="cabinet-label">GALAXY WARS</div>
 </div>
-<div class="cabinet">
+<div class="cabinet" id="pacman-cabinet">
 <div class="cabinet-screen">
-<div class="screen-content">PAC<br/>● ● ●<br/>READY!</div>
+<canvas height="130" id="pacman-game" width="170"></canvas>
 </div>
 <div class="cabinet-controls">
-<div class="joystick"></div>
+<div class="joystick" id="pac-joystick"></div>
 <div class="buttons">
 <div class="btn btn-red"></div>
 </div>
 </div>
 <div class="cabinet-label">MAZE CHOMPER</div>
 </div>
+<script>
+(function() {
+    const canvas = document.getElementById('pacman-game');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const CELL = 10;
+    const COLS = 17, ROWS = 13;
+    
+    // Simple maze (1=wall, 0=path, 2=pellet)
+    let maze = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,1],
+        [1,2,1,1,2,1,1,2,1,2,1,1,2,1,1,2,1],
+        [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+        [1,2,1,1,2,1,2,1,1,1,2,1,2,1,1,2,1],
+        [1,2,2,2,2,1,2,2,1,2,2,1,2,2,2,2,1],
+        [1,1,1,1,2,1,1,0,0,0,1,1,2,1,1,1,1],
+        [1,2,2,2,2,1,0,0,0,0,0,1,2,2,2,2,1],
+        [1,2,1,1,2,1,0,0,0,0,0,1,2,1,1,2,1],
+        [1,2,2,2,2,0,0,0,0,0,0,0,2,2,2,2,1],
+        [1,2,1,1,2,1,1,1,1,1,1,1,2,1,1,2,1],
+        [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+    let pellets = JSON.parse(JSON.stringify(maze));
+    
+    let pacman = {x: 8, y: 9, dir: 0, mouth: 0};
+    let ghosts = [
+        {x: 7, y: 7, color: '#ff0000', dir: 0},
+        {x: 9, y: 7, color: '#00ffff', dir: 2},
+        {x: 8, y: 6, color: '#ffb8ff', dir: 1}
+    ];
+    let score = 0;
+    const dirs = [[1,0],[0,1],[-1,0],[0,-1]];
+    
+    function canMove(x, y) {
+        if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return false;
+        return maze[y][x] !== 1;
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, W, H);
+        
+        // Draw maze & pellets
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                if (maze[y][x] === 1) {
+                    ctx.fillStyle = '#2233aa';
+                    ctx.fillRect(x*CELL, y*CELL, CELL-1, CELL-1);
+                }
+                if (pellets[y][x] === 2) {
+                    ctx.fillStyle = '#ffff00';
+                    ctx.beginPath();
+                    ctx.arc(x*CELL+CELL/2, y*CELL+CELL/2, 2, 0, Math.PI*2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        // Draw Pac-Man
+        ctx.fillStyle = '#ffff00';
+        ctx.beginPath();
+        let px = pacman.x*CELL+CELL/2, py = pacman.y*CELL+CELL/2;
+        let mouthAngle = 0.3 + Math.sin(pacman.mouth)*0.2;
+        let startAngle = pacman.dir * Math.PI/2 + mouthAngle;
+        let endAngle = pacman.dir * Math.PI/2 - mouthAngle + Math.PI*2;
+        ctx.arc(px, py, CELL/2-1, startAngle, endAngle);
+        ctx.lineTo(px, py);
+        ctx.fill();
+        
+        // Draw ghosts
+        ghosts.forEach(g => {
+            ctx.fillStyle = g.color;
+            let gx = g.x*CELL+CELL/2, gy = g.y*CELL+CELL/2;
+            ctx.beginPath();
+            ctx.arc(gx, gy-2, CELL/2-1, Math.PI, 0);
+            ctx.lineTo(gx+CELL/2-1, gy+CELL/2-2);
+            for (let i = 0; i < 3; i++) {
+                ctx.lineTo(gx+CELL/2-1-i*(CELL-2)/3, gy+CELL/2-4+((i%2)*3));
+            }
+            ctx.lineTo(gx-CELL/2+1, gy+CELL/2-2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(gx-2, gy-2, 2, 0, Math.PI*2);
+            ctx.arc(gx+2, gy-2, 2, 0, Math.PI*2);
+            ctx.fill();
+        });
+        
+        // Score
+        ctx.fillStyle = '#fff';
+        ctx.font = '6px monospace';
+        ctx.fillText(score.toString().padStart(4,'0'), 2, 8);
+    }
+    
+    function update() {
+        pacman.mouth += 0.5;
+        
+        // Auto-pilot Pac-Man
+        let validDirs = [];
+        dirs.forEach((d, i) => {
+            let nx = pacman.x + d[0], ny = pacman.y + d[1];
+            if (canMove(nx, ny)) validDirs.push(i);
+        });
+        
+        // Prefer pellets, avoid ghosts
+        let bestDir = pacman.dir;
+        let bestScore = -999;
+        validDirs.forEach(d => {
+            let nx = pacman.x + dirs[d][0], ny = pacman.y + dirs[d][1];
+            let score = pellets[ny] && pellets[ny][nx] === 2 ? 10 : 0;
+            ghosts.forEach(g => {
+                let dist = Math.abs(g.x - nx) + Math.abs(g.y - ny);
+                if (dist < 3) score -= (3 - dist) * 5;
+            });
+            if (d !== (pacman.dir + 2) % 4 || validDirs.length === 1) score += 1;
+            if (score > bestScore) { bestScore = score; bestDir = d; }
+        });
+        pacman.dir = bestDir;
+        
+        let nx = pacman.x + dirs[pacman.dir][0];
+        let ny = pacman.y + dirs[pacman.dir][1];
+        if (canMove(nx, ny)) { pacman.x = nx; pacman.y = ny; }
+        
+        // Eat pellet
+        if (pellets[pacman.y][pacman.x] === 2) {
+            pellets[pacman.y][pacman.x] = 0;
+            score += 10;
+        }
+        
+        // Move ghosts
+        ghosts.forEach(g => {
+            let validG = [];
+            dirs.forEach((d, i) => {
+                let gx = g.x + d[0], gy = g.y + d[1];
+                if (canMove(gx, gy) && i !== (g.dir + 2) % 4) validG.push(i);
+            });
+            if (validG.length === 0) validG = [(g.dir + 2) % 4];
+            if (Math.random() < 0.3) {
+                // Chase Pac-Man
+                let closest = validG[0];
+                let minDist = 999;
+                validG.forEach(d => {
+                    let gx = g.x + dirs[d][0], gy = g.y + dirs[d][1];
+                    let dist = Math.abs(pacman.x - gx) + Math.abs(pacman.y - gy);
+                    if (dist < minDist) { minDist = dist; closest = d; }
+                });
+                g.dir = closest;
+            } else {
+                g.dir = validG[Math.floor(Math.random() * validG.length)];
+            }
+            g.x += dirs[g.dir][0];
+            g.y += dirs[g.dir][1];
+        });
+        
+        // Reset if caught
+        ghosts.forEach(g => {
+            if (g.x === pacman.x && g.y === pacman.y) {
+                pacman.x = 8; pacman.y = 9;
+                score = Math.max(0, score - 50);
+            }
+        });
+        
+        // Reset pellets if all eaten
+        let remaining = pellets.flat().filter(p => p === 2).length;
+        if (remaining === 0) pellets = JSON.parse(JSON.stringify(maze));
+        
+        // Animate joystick
+        const joystick = document.getElementById('pac-joystick');
+        if (joystick) {
+            const transforms = ['rotate(15deg)', 'rotate(0deg) translateY(-3px)', 'rotate(-15deg)', 'rotate(0deg) translateY(3px)'];
+            joystick.style.transform = transforms[pacman.dir];
+        }
+    }
+    
+    setInterval(() => { update(); draw(); }, 150);
+    draw();
+})();
+</script>
 <div class="cabinet">
 <div class="cabinet-screen">
 <div class="screen-content">TETRIS<br/>▢ ▢ ▢<br/>LVL 01</div>
