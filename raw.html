@@ -168,14 +168,18 @@ function animate(){
     player.yaw=autoTime+Math.PI;
     player.pitch=-0.2+Math.sin(autoTime*3)*0.1;
   }else{
-    const speed=0.15,friction=0.8,gravity=0.02;
-    let dx=0,dz=0;
-    if(keys['KeyW']){dx-=Math.sin(player.yaw)*speed;dz-=Math.cos(player.yaw)*speed;}
-    if(keys['KeyS']){dx+=Math.sin(player.yaw)*speed;dz+=Math.cos(player.yaw)*speed;}
-    if(keys['KeyA']){dx-=Math.cos(player.yaw)*speed;dz+=Math.sin(player.yaw)*speed;}
-    if(keys['KeyD']){dx+=Math.cos(player.yaw)*speed;dz-=Math.sin(player.yaw)*speed;}
+    const speed=0.15,friction=0.85,gravity=0.02,smoothing=0.12;
+    let targetDx=0,targetDz=0;
+    if(keys['KeyW']){targetDx-=Math.sin(player.yaw)*speed;targetDz-=Math.cos(player.yaw)*speed;}
+    if(keys['KeyS']){targetDx+=Math.sin(player.yaw)*speed;targetDz+=Math.cos(player.yaw)*speed;}
+    if(keys['KeyA']){targetDx-=Math.cos(player.yaw)*speed;targetDz+=Math.sin(player.yaw)*speed;}
+    if(keys['KeyD']){targetDx+=Math.cos(player.yaw)*speed;targetDz-=Math.sin(player.yaw)*speed;}
     
-    velocity.x=dx;velocity.z=dz;
+    // Smooth lerp towards target velocity
+    velocity.x+=(targetDx-velocity.x)*smoothing;
+    velocity.z+=(targetDz-velocity.z)*smoothing;
+    // Apply friction when no input
+    if(!keys['KeyW']&&!keys['KeyS']&&!keys['KeyA']&&!keys['KeyD']){velocity.x*=friction;velocity.z*=friction;}
     velocity.y-=gravity;
     
     if(keys['Space']&&onGround)velocity.y=0.25;
