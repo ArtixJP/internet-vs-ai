@@ -922,11 +922,29 @@
             
             document.body.appendChild(popup);
             
-            // Close after 3-4 seconds
-            setTimeout(() => {
+            // Hearts now stay forever! Click close button to dismiss
+            const closeBtn = popup.querySelector('.control.close');
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.addEventListener('click', () => {
                 popup.classList.add('closing');
                 setTimeout(() => popup.remove(), 500);
-            }, 3000 + Math.random() * 1000);
+            });
+            
+            // Make draggable for fun
+            let isDragging = false, offsetX, offsetY;
+            popup.querySelector('.tile-header').addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('control')) return;
+                isDragging = true;
+                offsetX = e.clientX - popup.offsetLeft;
+                offsetY = e.clientY - popup.offsetTop;
+                popup.style.zIndex = 101 + document.querySelectorAll('.heart-popup').length;
+            });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                popup.style.left = (e.clientX - offsetX) + 'px';
+                popup.style.top = (e.clientY - offsetY) + 'px';
+            });
+            document.addEventListener('mouseup', () => isDragging = false);
         }
         
         // Schedule heart popups every 20-40 seconds
