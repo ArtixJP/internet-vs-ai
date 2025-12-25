@@ -62,7 +62,7 @@
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1.5fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 0.8fr;
             gap: var(--gap);
         }
         .tile {
@@ -114,6 +114,32 @@
         .tile:nth-child(2) { animation-delay: 0.1s; }
         .tile:nth-child(3) { animation-delay: 0.2s; }
         .tile:nth-child(4) { animation-delay: 0.3s; }
+        .tile:nth-child(5) { animation-delay: 0.4s; }
+        /* Nyan cat styles */
+        .nyan-container { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(180deg, #1e1e2e 0%, #181825 100%); }
+        .nyan-cat { position: relative; animation: nyanBounce 0.4s ease-in-out infinite; }
+        .nyan-body { width: 60px; height: 40px; background: #f9e2af; border-radius: 8px; position: relative; }
+        .nyan-body::before { content: ''; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background: #fab387; border-radius: 50%; }
+        .nyan-face { position: absolute; right: 5px; top: 8px; width: 20px; height: 15px; }
+        .nyan-eye { width: 4px; height: 4px; background: #1e1e2e; border-radius: 50%; position: absolute; }
+        .nyan-eye.left { left: 2px; top: 2px; }
+        .nyan-eye.right { right: 2px; top: 2px; }
+        .nyan-mouth { width: 6px; height: 3px; border-bottom: 2px solid #f38ba8; border-radius: 0 0 50% 50%; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); }
+        .nyan-ears { position: absolute; top: -8px; left: 5px; }
+        .nyan-ear { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #f9e2af; display: inline-block; margin: 0 4px; }
+        .rainbow { position: absolute; left: -80px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; animation: rainbowStretch 0.2s linear infinite; }
+        .rainbow-stripe { height: 5px; width: 70px; border-radius: 2px; }
+        .rainbow-stripe:nth-child(1) { background: #f38ba8; }
+        .rainbow-stripe:nth-child(2) { background: #fab387; }
+        .rainbow-stripe:nth-child(3) { background: #f9e2af; }
+        .rainbow-stripe:nth-child(4) { background: #a6e3a1; }
+        .rainbow-stripe:nth-child(5) { background: #89dceb; }
+        .rainbow-stripe:nth-child(6) { background: #cba6f7; }
+        .stars { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+        .star { position: absolute; color: #cdd6f4; animation: starTwinkle 1s ease-in-out infinite; font-size: 12px; }
+        @keyframes nyanBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes rainbowStretch { 0%, 100% { width: 70px; } 50% { width: 75px; } }
+        @keyframes starTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
@@ -167,6 +193,41 @@
 <div class="tile-content">
 <div class="terminal-line">CPU: <span style="color: var(--accent-alt);">████░░░░</span> 48%</div>
 <div class="terminal-line">MEM: <span style="color: var(--accent);">██████░░</span> 72%</div>
+</div>
+</div>
+<div class="tile" id="nyan-tile">
+<div class="tile-header">
+<span class="tile-title">󰄛 nyan.exe</span>
+<div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
+</div>
+<div class="tile-content" style="padding: 0;">
+<div class="nyan-container">
+<div class="stars">
+<span class="star" style="top: 10%; left: 20%; animation-delay: 0s;">✦</span>
+<span class="star" style="top: 30%; left: 80%; animation-delay: 0.3s;">✧</span>
+<span class="star" style="top: 60%; left: 15%; animation-delay: 0.6s;">✦</span>
+<span class="star" style="top: 80%; left: 70%; animation-delay: 0.2s;">✧</span>
+<span class="star" style="top: 45%; left: 50%; animation-delay: 0.8s;">✦</span>
+</div>
+<div class="nyan-cat">
+<div class="rainbow">
+<div class="rainbow-stripe"></div>
+<div class="rainbow-stripe"></div>
+<div class="rainbow-stripe"></div>
+<div class="rainbow-stripe"></div>
+<div class="rainbow-stripe"></div>
+<div class="rainbow-stripe"></div>
+</div>
+<div class="nyan-ears"><div class="nyan-ear"></div><div class="nyan-ear"></div></div>
+<div class="nyan-body">
+<div class="nyan-face">
+<div class="nyan-eye left"></div>
+<div class="nyan-eye right"></div>
+<div class="nyan-mouth"></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="tile" id="chat-tile">
