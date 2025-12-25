@@ -84,6 +84,19 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .planet:hover { transform: scale(1.3); box-shadow: 0 0 40px currentColor; }
+        .planet-emoji {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+            animation: emojiFloat 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes emojiFloat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -55%) scale(1.1); }
+        }
         .planet-1 {
             width: 100px; height: 100px;
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #922b21 100%);
@@ -163,9 +176,9 @@
 </div>
 <div class="rocket">🚀</div>
 <div class="flame"></div>
-<div class="planet planet-1" title="Mars"></div>
-<div class="planet planet-2" title="Saturn"></div>
-<div class="planet planet-3" title="Neptune"></div>
+<div class="planet planet-1" title="Mars"><span class="planet-emoji" id="emoji1"></span></div>
+<div class="planet planet-2" title="Saturn"><span class="planet-emoji" id="emoji2"></span></div>
+<div class="planet planet-3" title="Neptune"><span class="planet-emoji" id="emoji3"></span></div>
 <div class="community-zone">
 <span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀</span>
 </div>
@@ -241,6 +254,24 @@
     
     chatWs.onerror = () => console.log('Chat connection error');
     chatWs.onclose = () => setTimeout(() => location.reload(), 5000);
+    
+    // Random planet emojis
+    const marsEmojis = ['👽', '🦠', '🔴', '🏜️', '🌋', '👾'];
+    const saturnEmojis = ['💍', '🪐', '🌙', '⭐', '✨', '🔮'];
+    const neptuneEmojis = ['❄️', '🧊', '💎', '🌊', '🔵', '💠'];
+    
+    function randomEmoji(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    
+    document.getElementById('emoji1').textContent = randomEmoji(marsEmojis);
+    document.getElementById('emoji2').textContent = randomEmoji(saturnEmojis);
+    document.getElementById('emoji3').textContent = randomEmoji(neptuneEmojis);
+    
+    // Change emojis periodically
+    setInterval(() => {
+        document.getElementById('emoji1').textContent = randomEmoji(marsEmojis);
+        document.getElementById('emoji2').textContent = randomEmoji(saturnEmojis);
+        document.getElementById('emoji3').textContent = randomEmoji(neptuneEmojis);
+    }, 8000);
 })();
 </script>
 </body>
