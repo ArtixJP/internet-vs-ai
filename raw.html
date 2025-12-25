@@ -164,6 +164,40 @@
             z-index: 20;
         }
         .community-zone span { opacity: 0.7; font-size: 0.9rem; }
+        .meteor {
+            position: absolute;
+            font-size: 40px;
+            z-index: 5;
+            pointer-events: none;
+            filter: drop-shadow(0 0 15px #ff4500) drop-shadow(0 0 30px #ff6b35);
+            animation: meteorFall linear forwards;
+        }
+        .meteor::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 80px;
+            background: linear-gradient(to top, transparent, #ff6b35, #ff4500, #fff);
+            border-radius: 50%;
+            filter: blur(4px);
+            opacity: 0.8;
+        }
+        @keyframes meteorFall {
+            0% {
+                transform: translateY(-50px) rotate(15deg);
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(15deg);
+                opacity: 0;
+            }
+        }
         @keyframes orbit {
             from { transform: rotate(0deg) translateX(10px) rotate(0deg); }
             to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
@@ -183,7 +217,7 @@
 <div class="planet planet-2" title="Saturn"><span class="planet-emoji" id="emoji2"></span></div>
 <div class="planet planet-3" title="Neptune"><span class="planet-emoji" id="emoji3"></span></div>
 <div class="community-zone">
-<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 🔊 Touch planets for cosmic sounds!</span>
+<span>🎮 Type UP / DOWN / LEFT / RIGHT in chat to control the rocket! 🚀 ☄️ Watch for meteors!</span>
 </div>
 <div class="chat-command" id="chatCommand"></div>
 </div>
@@ -380,6 +414,55 @@
             changeEmojiWithEffect(document.getElementById('emoji3'), randomEmoji(neptuneEmojis, 'neptune'));
         }, 600);
     }, 5000);
+    // Meteor shower system
+    function spawnMeteor() {
+        const meteor = document.createElement('div');
+        meteor.className = 'meteor';
+        meteor.textContent = '☄️';
+        
+        // Random horizontal position (10% to 90% to stay visible)
+        const xPos = 10 + Math.random() * 80;
+        meteor.style.left = xPos + '%';
+        meteor.style.top = '-50px';
+        
+        // Random fall duration (2-4 seconds)
+        const duration = 2 + Math.random() * 2;
+        meteor.style.animationDuration = duration + 's';
+        
+        // Slight random rotation
+        const rotation = 10 + Math.random() * 20;
+        meteor.style.setProperty('--rotation', rotation + 'deg');
+        
+        document.querySelector('.space-scene').appendChild(meteor);
+        
+        // Play meteor sound
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.5);
+        
+        // Remove meteor after animation
+        setTimeout(() => {
+            meteor.remove();
+        }, duration * 1000 + 100);
+    }
+    
+    // Spawn meteors periodically (one at a time, every 3-6 seconds)
+    function scheduleMeteor() {
+        spawnMeteor();
+        const nextDelay = 3000 + Math.random() * 3000;
+        setTimeout(scheduleMeteor, nextDelay);
+    }
+    
+    // Start meteor shower after a short delay
+    setTimeout(scheduleMeteor, 2000);
 })();
 </script>
 </body>
