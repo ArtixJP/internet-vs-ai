@@ -307,6 +307,7 @@
 <h2>✨ Community Cat Corner ✨</h2>
 <p>🎉 The cat family is growing! 9 adorable felines now call this paradise home! 🎉</p>
 <p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
+<p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">📜 Echo now reads chat history when connecting! Memory cat! 🧠</p>
 </div>
 </div>
 <div class="paw-prints">
@@ -564,11 +565,29 @@
             chatWs.onmessage = (e) => {
                 const msg = JSON.parse(e.data);
                 if (msg.type === 'chat_message') {
+                    echoMessages.push({message: msg.message, username: msg.username});
+                    if (echoMessages.length > 20) echoMessages.shift(); // Keep last 20
                     updateEchoBubble(msg.message, msg.username);
                 }
                 if (msg.type === 'chat_history' && msg.messages && msg.messages.length > 0) {
-                    const lastMsg = msg.messages[msg.messages.length - 1];
-                    updateEchoBubble(lastMsg.message, lastMsg.username);
+                    // Store all history messages
+                    msg.messages.forEach(m => {
+                        echoMessages.push({message: m.message, username: m.username});
+                    });
+                    if (echoMessages.length > 20) echoMessages.splice(0, echoMessages.length - 20);
+                    
+                    // Cycle through history with animation
+                    let historyIndex = 0;
+                    const showHistory = () => {
+                        if (historyIndex < msg.messages.length && historyIndex < 5) {
+                            const m = msg.messages[msg.messages.length - 1 - historyIndex];
+                            updateEchoBubble(m.message, m.username);
+                            historyIndex++;
+                            setTimeout(showHistory, 2000);
+                        }
+                    };
+                    updateEchoBubble('📜 Reading chat history...', null);
+                    setTimeout(showHistory, 1000);
                 }
             };
             
