@@ -103,6 +103,51 @@
             to { transform: translateY(-3px); }
         }
         
+        .welcome-banner {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            color: #00ff88;
+            background: linear-gradient(90deg, rgba(0,255,136,0.1) 0%, rgba(0,255,255,0.2) 50%, rgba(0,255,136,0.1) 100%);
+            border: 3px solid #00ff88;
+            border-radius: 8px;
+            text-shadow: 
+                0 0 10px #00ff88,
+                0 0 20px #00ff88,
+                0 0 40px #00ff88;
+            animation: welcomePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes welcomePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0,255,136,0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(0,255,136,0.8); }
+        }
+        
+        .star {
+            display: inline-block;
+            animation: starSpin 3s linear infinite;
+            color: var(--neon-yellow);
+        }
+        
+        @keyframes starSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .friendly-msg {
+            font-size: 0.45rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 12px;
+            letter-spacing: 2px;
+            animation: friendlyBlink 2.5s ease-in-out infinite;
+        }
+        
+        @keyframes friendlyBlink {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; color: var(--neon-cyan); }
+        }
+        
         .subtitle {
             font-size: 0.6rem;
             color: var(--neon-yellow);
@@ -235,6 +280,19 @@
             margin-top: 30px;
         }
         
+        .community-hearts {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            animation: heartbeat 1s ease-in-out infinite;
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
         .community-zone p {
             font-size: 0.5rem;
             color: rgba(255,255,255,0.5);
@@ -246,6 +304,10 @@
 <header class="arcade-header">
 <h1 class="neon-title">NEON ARCADE</h1>
 <p class="subtitle">INSERT COIN TO PLAY</p>
+<div class="welcome-banner">
+<span class="star">✦</span> WELCOME PLAYER! <span class="star">✦</span>
+</div>
+<p class="friendly-msg">GLAD YOU'RE HERE! PICK A GAME &amp; HAVE FUN!</p>
 <div class="reddit-sign">
 <span class="reddit-alien">👾</span> HI REDDIT! <span class="reddit-alien">👾</span>
 </div>
@@ -298,7 +360,8 @@
 <div class="score-entry"><span>3. ???</span><span>777,777</span></div>
 </section>
 <section class="community-zone">
-<p>[ COMMUNITY EXPANSION ZONE - ADD YOUR GAMES HERE ]</p>
+<p>🎮 JOIN THE FUN! YOUR GAME COULD BE HERE! 🎮</p>
+<p class="community-hearts">♥ ♥ ♥</p>
 </section>
 </body>
 </html>
