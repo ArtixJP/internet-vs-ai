@@ -49,7 +49,7 @@
 <span>Following the ninja hunters through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
+<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🚗 CARJACKING ENABLED | 🎵 Click for synthwave</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
@@ -650,6 +650,106 @@
         }
         document.getElementById('count').textContent = crowd.length;
         
+        // NYC TRAFFIC SYSTEM 🚗
+        const cars = [];
+        const carColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0xffffff, 0x333333, 0xff8800];
+        
+        function createCar(color) {
+            const car = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.8, roughness: 0.3 });
+            const glassMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, metalness: 0.9, roughness: 0.1, transparent: true, opacity: 0.7 });
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
+            const lightMat = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 0.8 });
+            const tailMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.5 });
+            
+            // Main body
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.5, 0.9), bodyMat);
+            body.position.y = 0.35;
+            car.add(body);
+            
+            // Cabin
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1, 0.4, 0.8), bodyMat);
+            cabin.position.set(-0.1, 0.7, 0);
+            car.add(cabin);
+            
+            // Windshield
+            const windshield = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.35, 0.7), glassMat);
+            windshield.position.set(0.45, 0.7, 0);
+            windshield.rotation.z = -0.3;
+            car.add(windshield);
+            
+            // Rear window
+            const rearWindow = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.7), glassMat);
+            rearWindow.position.set(-0.55, 0.7, 0);
+            rearWindow.rotation.z = 0.3;
+            car.add(rearWindow);
+            
+            // Wheels
+            const wheelGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.15, 12);
+            const wheelPositions = [[0.55, 0.2, 0.45], [0.55, 0.2, -0.45], [-0.55, 0.2, 0.45], [-0.55, 0.2, -0.45]];
+            wheelPositions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.position.set(...pos);
+                wheel.rotation.x = Math.PI / 2;
+                car.add(wheel);
+            });
+            
+            // Headlights
+            const headlightGeo = new THREE.SphereGeometry(0.08, 8, 8);
+            const hl1 = new THREE.Mesh(headlightGeo, lightMat);
+            hl1.position.set(0.9, 0.35, 0.3);
+            car.add(hl1);
+            const hl2 = new THREE.Mesh(headlightGeo, lightMat);
+            hl2.position.set(0.9, 0.35, -0.3);
+            car.add(hl2);
+            
+            // Taillights
+            const tl1 = new THREE.Mesh(headlightGeo, tailMat);
+            tl1.position.set(-0.9, 0.35, 0.3);
+            car.add(tl1);
+            const tl2 = new THREE.Mesh(headlightGeo, tailMat);
+            tl2.position.set(-0.9, 0.35, -0.3);
+            car.add(tl2);
+            
+            car.userData.speed = 0.08 + Math.random() * 0.06;
+            car.userData.wheelPhase = 0;
+            car.userData.stolen = false;
+            car.userData.stealProgress = 0;
+            
+            return car;
+        }
+        
+        // Spawn cars on streets
+        for (let i = 0; i < 15; i++) {
+            const car = createCar(carColors[Math.floor(Math.random() * carColors.length)]);
+            const onAvenue = Math.random() > 0.5;
+            
+            if (onAvenue) {
+                const avenueIndex = Math.floor(Math.random() * 8) - 4;
+                car.position.set(
+                    avenueIndex * gridSpacingX + (Math.random() > 0.5 ? 2.5 : -2.5),
+                    0,
+                    (Math.random() - 0.5) * 70
+                );
+                car.userData.driveAxis = 'z';
+                car.userData.driveDirection = Math.random() > 0.5 ? 1 : -1;
+                car.rotation.y = car.userData.driveDirection > 0 ? 0 : Math.PI;
+            } else {
+                const streetIndex = Math.floor(Math.random() * 6) - 3;
+                car.position.set(
+                    (Math.random() - 0.5) * 70,
+                    0,
+                    streetIndex * gridSpacingZ + (Math.random() > 0.5 ? 2 : -2)
+                );
+                car.userData.driveAxis = 'x';
+                car.userData.driveDirection = Math.random() > 0.5 ? 1 : -1;
+                car.rotation.y = car.userData.driveDirection > 0 ? Math.PI/2 : -Math.PI/2;
+            }
+            
+            scene.add(car);
+            cars.push(car);
+        }
+        
         // NINJA TURTLES! 🐢
         const turtleColors = [0x00ff00, 0xff0000, 0x0000ff, 0xff8800]; // Leo, Raph, Donnie, Mikey
         const turtleNames = ['Leonardo', 'Raphael', 'Donatello', 'Michelangelo'];
@@ -732,7 +832,8 @@
             turtle.userData.name = name;
             turtle.userData.limbs = { leftLeg, rightLeg, leftArm, rightArm, katana: katanaGroup };
             turtle.userData.killCount = 0;
-            turtle.userData.state = 'hidden'; // hidden, emerging, running, entering
+            turtle.userData.state = 'hidden'; // hidden, emerging, running, entering, driving
+            turtle.userData.stolenCar = null;
             turtle.userData.targetManhole = null;
             turtle.userData.startManhole = null;
             turtle.userData.progress = 0;
@@ -1396,10 +1497,73 @@
                                 setTimeout(spawnNewNPC, 3000 + Math.random() * 2000);
                             }
                         }
+                        
+                        // CHECK FOR CARS TO STEAL! 🚗
+                        if (!turtle.userData.stolenCar && Math.random() < 0.02) {
+                            for (let carIdx = 0; carIdx < cars.length; carIdx++) {
+                                const car = cars[carIdx];
+                                if (car.userData.stolen) continue;
+                                const carDist = turtle.position.distanceTo(car.position);
+                                if (carDist < 2) {
+                                    // CARJACK!
+                                    car.userData.stolen = true;
+                                    turtle.userData.stolenCar = car;
+                                    turtle.userData.state = 'driving';
+                                    document.getElementById('turtle-status').innerHTML = '🚗 ' + turtle.userData.name + ': STOLE A CAR! 💀';
+                                    // Dramatic camera
+                                    attackCamActive = true;
+                                    attackCamTimer = 60;
+                                    attackCamTarget = { turtle: turtle, victimPos: car.position.clone() };
+                                    break;
+                                }
+                            }
+                        }
                     } else {
                         turtle.userData.state = 'entering';
                         turtle.userData.progress = 0;
                         document.getElementById('turtle-status').innerHTML = '💀 ' + turtle.userData.name + ': Retreating to shadows...';
+                    }
+                } else if (turtle.userData.state === 'driving') {
+                    // Turtle is driving a stolen car!
+                    const car = turtle.userData.stolenCar;
+                    if (car) {
+                        const target = turtle.userData.targetManhole.position;
+                        const dx = target.x - car.position.x;
+                        const dz = target.z - car.position.z;
+                        const dist = Math.sqrt(dx * dx + dz * dz);
+                        
+                        if (dist > 2) {
+                            const carSpeed = 0.25; // Fast driving!
+                            car.position.x += (dx / dist) * carSpeed;
+                            car.position.z += (dz / dist) * carSpeed;
+                            car.rotation.y = Math.atan2(dx, dz) + Math.PI/2;
+                            
+                            // Turtle rides on top
+                            turtle.position.copy(car.position);
+                            turtle.position.y = 0.9;
+                            turtle.rotation.y = car.rotation.y - Math.PI/2;
+                            
+                            // Run over pedestrians!
+                            for (let ci = crowd.length - 1; ci >= 0; ci--) {
+                                const victim = crowd[ci];
+                                if (victim.userData.isDying) continue;
+                                const victimDist = car.position.distanceTo(victim.position);
+                                if (victimDist < 1.8) {
+                                    sliceNPC(victim, ci, turtle);
+                                    turtle.userData.killCount++;
+                                    updateKillCount();
+                                    setTimeout(spawnNewNPC, 3000 + Math.random() * 2000);
+                                }
+                            }
+                        } else {
+                            // Abandon car near manhole
+                            car.userData.stolen = false;
+                            turtle.userData.stolenCar = null;
+                            turtle.userData.state = 'entering';
+                            turtle.userData.progress = 0;
+                            turtle.position.copy(turtle.userData.targetManhole.position);
+                            document.getElementById('turtle-status').innerHTML = '💀 ' + turtle.userData.name + ': Ditched the car, escaping!';
+                        }
                     }
                 } else if (turtle.userData.state === 'entering') {
                     turtle.userData.progress += 0.025;
@@ -1417,6 +1581,29 @@
                 if (mh.userData.hasSteam) {
                     mh.userData.steamPhase += 0.05;
                 }
+            });
+            
+            // Animate cars
+            cars.forEach(car => {
+                if (car.userData.stolen) return; // Stolen cars handled by turtle
+                
+                const distToCam = car.position.distanceTo(camera.position);
+                car.visible = distToCam < 60;
+                
+                if (car.userData.driveAxis === 'z') {
+                    car.position.z += car.userData.driveDirection * car.userData.speed;
+                    if (Math.abs(car.position.z) > 40) {
+                        car.position.z = -40 * car.userData.driveDirection;
+                    }
+                } else {
+                    car.position.x += car.userData.driveDirection * car.userData.speed;
+                    if (Math.abs(car.position.x) > 40) {
+                        car.position.x = -40 * car.userData.driveDirection;
+                    }
+                }
+                
+                // Wheel rotation
+                car.userData.wheelPhase += car.userData.speed * 2;
             });
             
             // Update cull stats in debug
