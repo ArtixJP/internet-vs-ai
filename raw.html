@@ -685,7 +685,7 @@
             document.querySelector('.space-scene').appendChild(meteor);
             this.active = meteor;
             
-            const duration = 12000;
+            const duration = 3500 + Math.random() * 1500; // 3.5-5 seconds - much faster!
             const startTime = Date.now();
             const startY = -50;
             const endY = window.innerHeight + 50;
@@ -718,7 +718,7 @@
                 } else {
                     meteor.remove();
                     this.active = null;
-                    setTimeout(() => this.createMeteor(), 500);
+                    setTimeout(() => this.createMeteor(), 800 + Math.random() * 700); // Spawn next meteor quickly
                 }
             };
             
