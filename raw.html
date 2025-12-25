@@ -169,13 +169,12 @@
 <div class="terminal-line">MEM: <span style="color: var(--accent);">██████░░</span> 72%</div>
 </div>
 </div>
-<div class="tile">
+<div class="tile" id="chat-tile">
 <div class="tile-header">
-<span class="tile-title">󰋼 chat</span>
+<span class="tile-title">󰋼 chat <span id="chat-status" style="font-size: 0.7rem; color: var(--text-dim);">connecting...</span></span>
 <div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
 </div>
-<div class="tile-content">
-<div class="placeholder">Twitch chat integration area</div>
+<div class="tile-content" id="chat-messages" style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; overflow-y: auto; max-height: 200px;">
 </div>
 </div>
 </main>
@@ -201,6 +200,39 @@
                 tile.classList.add('focused');
             });
         });
+
+        // Live Twitch Chat Integration
+        const chatContainer = document.getElementById('chat-messages');
+        const chatStatus = document.getElementById('chat-status');
+        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
+                         location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
+        const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
+        
+        const userColors = ['#89dceb', '#94e2d5', '#f38ba8', '#a6e3a1', '#f9e2af', '#cba6f7', '#fab387'];
+        function getColor(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            return userColors[Math.abs(hash) % userColors.length];
+        }
+        
+        function addMessage(username, message) {
+            const msgEl = document.createElement('div');
+            msgEl.className = 'terminal-line';
+            msgEl.innerHTML = `<span style="color: ${getColor(username)};">${username}:</span> ${message}`;
+            chatContainer.appendChild(msgEl);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            if (chatContainer.children.length > 50) chatContainer.removeChild(chatContainer.firstChild);
+        }
+        
+        chatWs.onopen = () => { chatStatus.textContent = '● live'; chatStatus.style.color = '#a6e3a1'; };
+        chatWs.onclose = () => { chatStatus.textContent = '○ offline'; chatStatus.style.color = '#f38ba8'; };
+        chatWs.onerror = () => { chatStatus.textContent = '○ error'; chatStatus.style.color = '#f38ba8'; };
+        chatWs.onmessage = (e) => {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'chat_message') addMessage(msg.username, msg.message);
+            if (msg.type === 'chat_history') msg.messages.forEach(m => addMessage(m.username, m.message));
+        };
     </script>
 </body>
 </html>
