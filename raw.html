@@ -303,6 +303,71 @@
         100% { transform: translateX(calc(100vw + 100px)); }
     }
     body.night .clouds { opacity: 0.2; }
+    .rainbow {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 150px;
+        border-radius: 150px 150px 0 0;
+        background: 
+            linear-gradient(180deg, transparent 0%, transparent 40%,
+            #ff0000 40%, #ff0000 45%,
+            #ff7f00 45%, #ff7f00 50%,
+            #ffff00 50%, #ffff00 55%,
+            #00ff00 55%, #00ff00 60%,
+            #0000ff 60%, #0000ff 65%,
+            #4b0082 65%, #4b0082 70%,
+            #9400d3 70%, #9400d3 75%,
+            transparent 75%);
+        opacity: 0.7;
+        pointer-events: none;
+        animation: rainbowFade 4s ease-in-out infinite;
+        z-index: 5;
+    }
+    @keyframes rainbowFade {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 0.8; }
+    }
+    body.night .rainbow { opacity: 0.15; }
+    .sunshine {
+        position: fixed;
+        top: 15px;
+        right: 60px;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(circle, #fff700 0%, #ffcc00 40%, #ff9500 70%, transparent 70%);
+        border-radius: 50%;
+        box-shadow: 0 0 30px #ffcc00, 0 0 60px #ff9500, 0 0 90px rgba(255,200,0,0.5);
+        animation: sunPulse 3s ease-in-out infinite, sunRays 10s linear infinite;
+        pointer-events: none;
+        z-index: 4;
+    }
+    .sunshine::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255,220,0,0.3) 10deg 20deg);
+        animation: sunRays 8s linear infinite reverse;
+        border-radius: 50%;
+    }
+    @keyframes sunPulse {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.1); filter: brightness(1.2); }
+    }
+    @keyframes sunRays {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    body.night .sunshine {
+        opacity: 0;
+        transition: opacity 2s;
+    }
     .experiment-info {
         background: rgba(60,40,20,0.9);
         border: 3px solid #5a8f52;
@@ -321,6 +386,8 @@
 </style>
 </head>
 <body>
+<div class="rainbow"></div>
+<div class="sunshine"></div>
 <div class="clouds">
 <div class="cloud" style="width:80px;height:30px;top:10px;left:10%;animation-delay:0s;"></div>
 <div class="cloud" style="width:120px;height:40px;top:25px;left:40%;animation-delay:-10s;"></div>
@@ -605,7 +672,7 @@
                      location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
     const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
 
-    chatWs.onopen = () => { log.innerHTML = '🟢 World online!'; };
+    chatWs.onopen = () => { log.innerHTML = '🟢 World online! 🌈☀️'; };
     chatWs.onmessage = (e) => {
         const msg = JSON.parse(e.data);
         if (msg.type === 'chat_message') {
