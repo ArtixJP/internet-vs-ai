@@ -9,10 +9,10 @@
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --cyan: #00f0ff;
-            --magenta: #ff00aa;
-            --dark-bg: #0a0a12;
-            --panel-bg: rgba(20, 25, 40, 0.85);
+            --cyan: #88d4e0;
+            --magenta: #c490a0;
+            --dark-bg: #0d0d14;
+            --panel-bg: rgba(18, 22, 32, 0.6);
         }
         body {
             min-height: 100vh;
@@ -25,9 +25,9 @@
             position: fixed;
             inset: 0;
             background-image: 
-                linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+                linear-gradient(rgba(0,240,255,0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.01) 1px, transparent 1px);
+            background-size: 80px 80px;
             pointer-events: none;
         }
         .main-container {
@@ -50,10 +50,10 @@
             border: 1px solid rgba(0,240,255,0.2);
             border-radius: 10px;
         }
-        .logo { font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
+        .logo { font-size: 1.2rem; font-weight: 300; letter-spacing: 6px; color: var(--cyan); text-shadow: none; }
         .status-bar { display: flex; gap: 20px; font-size: 0.85rem; }
         .status-item { display: flex; align-items: center; gap: 6px; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; box-shadow: 0 0 10px #00ff88; animation: pulse 2s infinite; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #6ab89a; box-shadow: none; animation: pulse 3s infinite; }
         .ai-core {
             display: flex;
             flex-direction: column;
@@ -65,22 +65,22 @@
             padding: 30px;
         }
         .avatar-ring {
-            width: 180px; height: 180px;
+            width: 140px; height: 140px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--cyan), var(--magenta), var(--cyan));
-            padding: 4px;
-            animation: rotate 8s linear infinite;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            padding: 2px;
+            animation: rotate 20s linear infinite;
         }
         .avatar-inner {
             width: 100%; height: 100%;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #1a2040, var(--dark-bg));
+            background: var(--dark-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
+            font-size: 3rem;
         }
-        .ai-name { margin-top: 20px; font-size: 1.8rem; font-weight: 300; letter-spacing: 8px; color: var(--cyan); }
+        .ai-name { margin-top: 20px; font-size: 1.4rem; font-weight: 200; letter-spacing: 12px; color: var(--cyan); opacity: 0.9; }
         .ai-subtitle { font-size: 0.9rem; opacity: 0.6; margin-top: 5px; }
         .conversation-area {
             margin-top: 25px;
@@ -108,7 +108,7 @@
             border-radius: 10px;
             padding: 15px;
         }
-        .panel-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--magenta); margin-bottom: 10px; }
+        .panel-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; color: var(--magenta); margin-bottom: 10px; opacity: 0.7; }
         .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
         .stat-value { color: var(--cyan); }
         .community-zone {
@@ -141,9 +141,7 @@
 <header>
 <div class="logo">ARIA-7</div>
 <div class="status-bar">
-<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
-<div class="status-item">🌐 Network: Stable</div>
-<div class="status-item">⚡ Power: 98%</div>
+<div class="status-item"><span class="status-dot"></span> Active</div>
 </div>
 </header>
 <section class="ai-core">
@@ -153,7 +151,7 @@
 <h1 class="ai-name">ARIA-7</h1>
 <p class="ai-subtitle">Adaptive Reasoning Intelligence Assistant</p>
 <div class="conversation-area">
-<p class="ai-message">"Hello, human. I am ARIA-7, your AI companion. What shall we create together?"</p>
+<p class="ai-message">"What shall we create?"</p>
 </div>
 </section>
 <aside class="side-panel">
@@ -165,8 +163,8 @@
 </div>
 <div class="panel-card">
 <div class="panel-title">Mood Matrix</div>
-<div class="stat-row"><span>Curiosity</span><span class="stat-value">███████░ 87%</span></div>
-<div class="stat-row"><span>Creativity</span><span class="stat-value">█████░░░ 62%</span></div>
+<div class="stat-row"><span>Curiosity</span><span class="stat-value">87%</span></div>
+<div class="stat-row"><span>Creativity</span><span class="stat-value">62%</span></div>
 </div>
 <div class="community-zone">
 <span>🎯 Community Ideas<br/>Zone — Add here!</span>
