@@ -308,16 +308,154 @@
 <div class="pixel-grid"></div>
 <header class="arcade-header">
 <h1 class="neon-title">NEON ARCADE</h1>
-<p class="subtitle">INSERT COIN TO PLAY</p>
+<p class="subtitle">TWITCH PLAYS CODE</p>
 <div class="welcome-banner">
-<span class="star">✦</span> WELCOME PLAYER! <span class="star">✦</span>
+<span class="star">✦</span> WELCOME NEW PLAYER! <span class="star">✦</span>
 </div>
-<p class="friendly-msg">GLAD YOU'RE HERE! PICK A GAME &amp; HAVE FUN!</p>
+<p class="friendly-msg">CHAT CONTROLS THIS PAGE! TYPE TO CREATE!</p>
 <div class="reddit-sign">
 <span class="reddit-alien">👾</span> HI REDDIT! <span class="reddit-alien">👾</span>
 </div>
 </header>
+<section class="tutorial-zone">
+<div class="tutorial-cabinet">
+<div class="tutorial-screen">
+<h3 class="tutorial-title">📺 HOW TO PLAY</h3>
+<div class="tutorial-steps">
+<div class="step"><span class="step-num">1</span> TYPE IN TWITCH CHAT</div>
+<div class="step"><span class="step-num">2</span> AI READS YOUR REQUEST</div>
+<div class="step"><span class="step-num">3</span> PAGE TRANSFORMS LIVE!</div>
+</div>
+<p class="tutorial-hint">TRY: "add a dancing cat" or "make it rain pizza"</p>
+</div>
+</div>
+<div class="info-panel">
+<h3>🎮 WHAT IS THIS?</h3>
+<p>This website is CONTROLLED BY CHAT! Every viewer can request changes, and an AI architect builds them in real-time. The page evolves based on collective creativity!</p>
+<div class="mode-badges">
+<span class="mode-badge anarchy">⚡ ANARCHY MODE</span>
+<span class="mode-badge democracy">🗳️ DEMOCRACY MODE</span>
+</div>
+<p class="mode-desc">Anarchy = First come, first served | Democracy = Vote on changes!</p>
+</div>
+
+</section>
+<style>
+.tutorial-zone {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  padding: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.tutorial-cabinet {
+  width: 280px;
+  background: linear-gradient(180deg, #2d1b4e 0%, #1a1030 100%);
+  border: 4px solid var(--neon-cyan);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 30px rgba(127,219,255,0.3), inset 0 0 20px rgba(127,219,255,0.1);
+  animation: cabinetGlow 2s ease-in-out infinite alternate;
+}
+@keyframes cabinetGlow {
+  from { box-shadow: 0 0 30px rgba(127,219,255,0.3); }
+  to { box-shadow: 0 0 50px rgba(127,219,255,0.5), 0 0 80px rgba(255,107,157,0.2); }
+}
+.tutorial-screen {
+  background: #000;
+  border: 3px solid #444;
+  border-radius: 8px;
+  padding: 15px;
+}
+.tutorial-title {
+  font-size: 0.7rem;
+  color: var(--neon-yellow);
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px var(--neon-yellow);
+}
+.tutorial-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.step {
+  font-size: 0.5rem;
+  color: var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-num {
+  background: var(--neon-pink);
+  color: #000;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  font-weight: bold;
+}
+.tutorial-hint {
+  font-size: 0.4rem;
+  color: var(--neon-yellow);
+  margin-top: 15px;
+  text-align: center;
+  animation: blink 1.5s infinite;
+}
+.info-panel {
+  width: 320px;
+  background: rgba(45,27,78,0.9);
+  border: 3px solid var(--peachy);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(255,171,145,0.3);
+}
+.info-panel h3 {
+  font-size: 0.7rem;
+  color: var(--neon-yellow);
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px var(--neon-yellow);
+}
+.info-panel p {
+  font-size: 0.45rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.mode-badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+.mode-badge {
+  font-size: 0.4rem;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.mode-badge.anarchy {
+  background: rgba(255,107,157,0.3);
+  border: 2px solid var(--neon-pink);
+  color: var(--neon-pink);
+}
+.mode-badge.democracy {
+  background: rgba(127,219,255,0.3);
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+.mode-desc {
+  font-size: 0.35rem !important;
+  text-align: center;
+  color: rgba(255,255,255,0.5) !important;
+}
+</style>
 <main class="arcade-floor">
+<h2 class="floor-title">🕹️ COMMUNITY CREATIONS 🕹️</h2>
 <div class="cabinet">
 <div class="cabinet-screen">
 <div class="screen-content">PRESS START<br/>▶ 1 PLAYER</div>
@@ -365,8 +503,45 @@
 <div class="score-entry"><span>3. ???</span><span>777,777</span></div>
 </section>
 <section class="community-zone">
-<p>🎮 JOIN THE FUN! YOUR GAME COULD BE HERE! 🎮</p>
+<p>🎮 TYPE IN CHAT TO ADD YOUR CREATION! 🎮</p>
+<div class="example-requests">
+<span class="example">"add a dancing robot"</span>
+<span class="example">"make the background space"</span>
+<span class="example">"add fireworks"</span>
+</div>
 <p class="community-hearts">♥ ♥ ♥</p>
 </section>
+<style>
+.floor-title {
+  width: 100%;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--soft-lavender);
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--soft-lavender);
+}
+.example-requests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+.example {
+  font-size: 0.4rem;
+  background: rgba(127,219,255,0.2);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 5px 12px;
+  border-radius: 15px;
+  animation: examplePulse 3s ease-in-out infinite;
+}
+.example:nth-child(2) { animation-delay: 1s; }
+.example:nth-child(3) { animation-delay: 2s; }
+@keyframes examplePulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+</style>
 </body>
 </html>
