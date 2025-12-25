@@ -13,18 +13,19 @@ canvas{display:block}
 #controls{position:absolute;bottom:10px;left:10px;color:#fff;font-family:'Courier New',monospace;background:rgba(0,0,0,0.6);padding:10px;border-radius:4px;font-size:12px}
 #mode-btn{position:absolute;top:10px;right:10px;padding:10px 20px;background:#5d8c3e;color:#fff;border:none;font-family:'Courier New',monospace;cursor:pointer;font-size:14px;border-radius:4px}
 #mode-btn:hover{background:#4a7030}
+@keyframes fadeOut{0%{opacity:1;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5);}}
 </style>
 </head>
 <body>
 <div id="ui">⛏️ MINECRAFT 3D<br/><span id="pos"></span><br/><span id="fly-mode" style="color:#87CEEB;font-size:10px"></span><br/><span id="quake" style="color:#ff6b6b;font-size:10px"></span></div>
 <div id="crosshair">+</div>
-<div id="controls">WASD: Move | SPACE: Jump | SHIFT: Down<br/>CLICK: Break block | RIGHT-CLICK: Place<br/>1-4: Select block type</div>
+<div id="controls">WASD: Move | SPACE: Jump/Up | SHIFT: Down<br/>CLICK: Break block | RIGHT-CLICK: Place<br/>1-4: Select block | F: Toggle Flight ✈️</div>
 <button id="mode-btn">🎮 MANUAL MODE</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const CHUNK=16,WORLD=4,BLOCK=1;
 let scene,camera,renderer,blocks={},player,velocity={x:0,y:0,z:0},onGround=false;
-let keys={},selectedBlock=1,autoMode=false,autoTime=0,shakeIntensity=0,shakeTime=0;
+let keys={},selectedBlock=1,autoMode=false,autoTime=0,shakeIntensity=0,shakeTime=0,flyingMode=false;
 const blockTypes={1:{color:0x5d8c3e,name:'Grass'},2:{color:0x8b5a2b,name:'Dirt'},3:{color:0x808080,name:'Stone'},4:{color:0x8B4513,name:'Wood'}};
 
 function init(){
@@ -54,10 +55,12 @@ function init(){
   document.addEventListener('click',onClick);
   document.addEventListener('contextmenu',e=>{e.preventDefault();placeBlock();});
   document.addEventListener('mousemove',onMouse);
-  document.addEventListener('keydown',e=>{if(e.key>='1'&&e.key<='4')selectedBlock=+e.key;});
+  document.addEventListener('keydown',e=>{if(e.key>='1'&&e.key<='4')selectedBlock=+e.key;if(e.code==='KeyF'){flyingMode=!flyingMode;showFlyMessage();}});
   document.getElementById('mode-btn').onclick=toggleMode;
   
   renderer.domElement.onclick=()=>renderer.domElement.requestPointerLock();
+  
+  function showFlyMessage(){const msg=document.createElement('div');msg.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:32px;font-family:Courier New;text-shadow:3px 3px 0 #000;z-index:1000;animation:fadeOut 2s forwards;';msg.textContent=flyingMode?'✈️ FLIGHT ON':'🚶 FLIGHT OFF';document.body.appendChild(msg);setTimeout(()=>msg.remove(),2000);}
   window.onresize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);};
   
   animate();
@@ -183,21 +186,32 @@ function animate(){
     if(!keys['KeyW']&&!keys['KeyS']&&!keys['KeyA']&&!keys['KeyD']){velocity.x*=friction;velocity.z*=friction;}
     velocity.y-=gravity;
     
-    if(keys['Space']&&onGround)velocity.y=0.25;
-    if(keys['ShiftLeft'])velocity.y=-0.2;
+    if(flyingMode){
+      velocity.y=0;
+      if(keys['Space'])velocity.y=0.2;
+      if(keys['ShiftLeft'])velocity.y=-0.2;
+    }else{
+      if(keys['Space']&&onGround)velocity.y=0.25;
+      if(keys['ShiftLeft'])velocity.y=-0.2;
+    }
     
     if(!collide(player.x+velocity.x,player.y,player.z))player.x+=velocity.x;
     if(!collide(player.x,player.y,player.z+velocity.z))player.z+=velocity.z;
     
-    const groundCheck=getBlock(player.x,player.y-0.1,player.z);
-    const groundY=groundCheck?Math.floor(player.y)+1:null;
-    if(groundCheck&&velocity.y<=0){
-      velocity.y=0;
-      onGround=true;
-      if(player.y<groundY)player.y=groundY;
-    }else{
-      onGround=false;
+    if(flyingMode){
       player.y+=velocity.y;
+      onGround=false;
+    }else{
+      const groundCheck=getBlock(player.x,player.y-0.1,player.z);
+      const groundY=groundCheck?Math.floor(player.y)+1:null;
+      if(groundCheck&&velocity.y<=0){
+        velocity.y=0;
+        onGround=true;
+        if(player.y<groundY)player.y=groundY;
+      }else{
+        onGround=false;
+        player.y+=velocity.y;
+      }
     }
     
     if(player.y<-10){player.y=30;velocity.y=0;}
@@ -221,7 +235,7 @@ function animate(){
   
   document.getElementById('pos').textContent=`X:${player.x.toFixed(0)} Y:${player.y.toFixed(0)} Z:${player.z.toFixed(0)} [${blockTypes[selectedBlock].name}]`;
   document.getElementById('quake').textContent=shakeIntensity>0.1?'🌋 EARTHQUAKE!':'';
-  document.getElementById('fly-mode').textContent=autoMode?'✈️ FLYING MODE':'🚶 WALKING';
+  document.getElementById('fly-mode').textContent=autoMode?'✈️ AUTO-EXPLORE':flyingMode?'✈️ CREATIVE FLIGHT':'🚶 SURVIVAL';
   
   renderer.render(scene,camera);
 }
