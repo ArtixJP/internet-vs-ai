@@ -455,18 +455,18 @@
         const leftSide = document.querySelector('.left-side');
         const rightSide = document.querySelector('.right-side');
         
-        // Distribute cards: 3 top, 2 left, 2 right, 2 bottom
+        // Distribute cards: 2 top, 3 left, 3 right, 1 bottom (more visible on sides!)
         const cardArray = Array.from(catCards);
         cardArray.forEach((card, i) => {
-            card.style.width = '140px';
-            card.style.padding = '12px';
-            card.querySelector('.emoji').style.fontSize = '2.5rem';
-            card.querySelector('h3').style.fontSize = '0.9rem';
-            card.querySelector('p').style.fontSize = '0.7rem';
+            card.style.width = '130px';
+            card.style.padding = '10px';
+            card.querySelector('.emoji').style.fontSize = '2.2rem';
+            card.querySelector('h3').style.fontSize = '0.85rem';
+            card.querySelector('p').style.fontSize = '0.65rem';
             
-            if (i < 3) topRow.appendChild(card);
+            if (i < 2) topRow.appendChild(card);
             else if (i < 5) leftSide.appendChild(card);
-            else if (i < 7) rightSide.appendChild(card);
+            else if (i < 8) rightSide.appendChild(card);
             else bottomRow.appendChild(card);
         });
         
@@ -485,8 +485,17 @@
                 75% { transform: translateY(-3px) rotate(3deg); }
             }
             .arena-container { max-width: 95vw; }
-            .side-spectators .cat-card { width: 120px !important; }
-            .side-spectators .emoji { font-size: 2rem !important; }
+            .side-spectators .cat-card { 
+                width: 125px !important; 
+                background: rgba(255,255,255,0.95) !important;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+            }
+            .side-spectators .emoji { font-size: 2.2rem !important; }
+            .left-side, .right-side {
+                padding: 10px;
+                background: rgba(255,182,193,0.2);
+                border-radius: 15px;
+            }
         `;
         document.head.appendChild(spectatorStyle);
         
