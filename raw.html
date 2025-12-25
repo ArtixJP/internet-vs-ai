@@ -87,6 +87,13 @@
             background: rgba(20,40,60,0.9);
             border-color: rgba(168,213,229,0.4);
         }
+        .audio-btn {
+            animation: pulse-audio 2s ease-in-out infinite;
+        }
+        @keyframes pulse-audio {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(74,158,187,0.4); }
+        }
         
         .glitch-overlay {
             position: fixed;
@@ -134,7 +141,7 @@
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">🐺 THE HUNT • a wolf stalks the snowman through the frozen darkness...</div>
+<div class="hint">🐺 THE HUNT • a wolf stalks the snowman through the frozen darkness... 🌬️ click for wind</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
@@ -683,9 +690,25 @@
             if (!isAudioStarted) {
                 createWind();
                 isAudioStarted = true;
-                this.style.opacity = '0.5';
+                this.textContent = '🎵';
+                this.style.boxShadow = '0 0 15px rgba(74,158,187,0.5)';
             }
         });
+        
+        // Auto-start wind on first interaction
+        function autoStartWind() {
+            if (!isAudioStarted) {
+                createWind();
+                isAudioStarted = true;
+                const btn = document.getElementById('audioBtn');
+                btn.textContent = '🎵';
+                btn.style.boxShadow = '0 0 15px rgba(74,158,187,0.5)';
+            }
+            document.removeEventListener('click', autoStartWind);
+            document.removeEventListener('touchstart', autoStartWind);
+        }
+        document.addEventListener('click', autoStartWind);
+        document.addEventListener('touchstart', autoStartWind);
         
         // HORROR ELEMENTS
         
