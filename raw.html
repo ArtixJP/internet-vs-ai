@@ -1,41 +1,174 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>City Walker</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+        body { overflow: hidden; background: #0a0a12; }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            text-shadow: 0 0 10px #00ffff;
+            z-index: 100;
             text-align: center;
+            pointer-events: none;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        #info h1 { font-size: 24px; margin-bottom: 5px; }
+        #population {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #ff00ff;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-shadow: 0 0 8px #ff00ff;
+            z-index: 100;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        #community-zone {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #ffff00;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            opacity: 0.7;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div id="info">
+<h1>🌃 CITY WALKER</h1>
+<span>Follow the journey through neon streets</span>
+</div>
+<div id="population">CITIZENS: <span id="count">0</span></div>
+<div id="community-zone">[ Community additions appear here ]</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0a0a12, 0.02);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x0a0a12);
+        document.body.appendChild(renderer.domElement);
+        
+        // Ground
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(200, 200),
+            new THREE.MeshStandardMaterial({ color: 0x1a1a2e })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
+        
+        // Lights
+        scene.add(new THREE.AmbientLight(0x404040, 0.5));
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        mainLight.position.set(10, 20, 10);
+        scene.add(mainLight);
+        
+        // Buildings
+        const buildings = [];
+        const neonColors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff00, 0xff6600];
+        for (let i = 0; i < 60; i++) {
+            const h = 5 + Math.random() * 25;
+            const w = 2 + Math.random() * 4;
+            const building = new THREE.Mesh(
+                new THREE.BoxGeometry(w, h, w),
+                new THREE.MeshStandardMaterial({ color: 0x1a1a3e })
+            );
+            building.position.set(
+                (Math.random() - 0.5) * 80,
+                h / 2,
+                (Math.random() - 0.5) * 80
+            );
+            scene.add(building);
+            buildings.push(building);
+            
+            // Neon signs
+            if (Math.random() > 0.5) {
+                const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 2, 10);
+                neon.position.copy(building.position);
+                neon.position.y = h * 0.6;
+                scene.add(neon);
+            }
+        }
+        
+        // Main character (the walker)
+        const walker = new THREE.Group();
+        const body = new THREE.Mesh(
+            new THREE.CapsuleGeometry(0.3, 1, 4, 8),
+            new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x003333 })
+        );
+        body.position.y = 1;
+        walker.add(body);
+        scene.add(walker);
+        
+        // Crowd (NPCs)
+        const crowd = [];
+        for (let i = 0; i < 30; i++) {
+            const npc = new THREE.Mesh(
+                new THREE.CapsuleGeometry(0.25, 0.8, 4, 8),
+                new THREE.MeshStandardMaterial({ color: neonColors[Math.floor(Math.random() * neonColors.length)] })
+            );
+            npc.position.set(
+                (Math.random() - 0.5) * 40,
+                0.65,
+                (Math.random() - 0.5) * 40
+            );
+            npc.userData.speed = 0.01 + Math.random() * 0.02;
+            npc.userData.direction = Math.random() * Math.PI * 2;
+            scene.add(npc);
+            crowd.push(npc);
+        }
+        document.getElementById('count').textContent = crowd.length;
+        
+        // Animation
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            // Walker movement (figure-8 path)
+            walker.position.x = Math.sin(time * 0.3) * 15;
+            walker.position.z = Math.sin(time * 0.6) * 10;
+            walker.rotation.y = Math.atan2(
+                Math.cos(time * 0.3) * 15 * 0.3,
+                Math.cos(time * 0.6) * 10 * 0.6
+            );
+            
+            // Camera follows walker
+            camera.position.x = walker.position.x - 8;
+            camera.position.y = 5;
+            camera.position.z = walker.position.z + 8;
+            camera.lookAt(walker.position.x, 1.5, walker.position.z);
+            
+            // Animate crowd
+            crowd.forEach(npc => {
+                npc.position.x += Math.cos(npc.userData.direction) * npc.userData.speed;
+                npc.position.z += Math.sin(npc.userData.direction) * npc.userData.speed;
+                if (Math.abs(npc.position.x) > 30 || Math.abs(npc.position.z) > 30) {
+                    npc.userData.direction += Math.PI;
+                }
+            });
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
