@@ -121,6 +121,61 @@
             display: flex;
             gap: 2rem;
             margin: 2rem 0;
+            position: relative;
+        }
+        
+        .campfire-area {
+            position: absolute;
+            bottom: -30px;
+            right: -60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .fire {
+            font-size: 1.5rem;
+            animation: flicker 0.15s infinite alternate;
+            filter: drop-shadow(0 0 20px #ff4500) drop-shadow(0 0 40px #ff2200) drop-shadow(0 0 60px rgba(255,100,0,0.5));
+            z-index: 10;
+        }
+        
+        .fire-glow {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background: radial-gradient(ellipse at center bottom, rgba(255,80,0,0.4) 0%, rgba(255,50,0,0.2) 30%, rgba(200,30,0,0.1) 50%, transparent 70%);
+            border-radius: 50%;
+            bottom: -20px;
+            filter: blur(15px);
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+        
+        .fire-logs {
+            font-size: 0.6rem;
+            opacity: 0.6;
+            filter: grayscale(80%);
+        }
+        
+        .ground-glow {
+            position: absolute;
+            width: 150px;
+            height: 40px;
+            background: radial-gradient(ellipse at center, rgba(255,100,50,0.15) 0%, transparent 70%);
+            bottom: -40px;
+            filter: blur(10px);
+            animation: glow-pulse 3s ease-in-out infinite reverse;
+        }
+        
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); opacity: 0.9; }
+            50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+            100% { transform: scale(0.95) rotate(2deg); opacity: 0.85; }
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
         }
         
         .ice-crystal {
@@ -184,6 +239,12 @@
 <div class="ice-crystal"></div>
 <div class="ice-crystal"></div>
 <span class="frozen-tree">🌲</span>
+<div class="campfire-area">
+<div class="fire-glow"></div>
+<div class="ground-glow"></div>
+<span class="fire">🔥</span>
+<span class="fire-logs">🪵</span>
+</div>
 </div>
 <div class="community-ground">
 <h3>[ frozen earth awaits your mark ]</h3>
