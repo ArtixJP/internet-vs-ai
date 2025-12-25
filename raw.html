@@ -1,181 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>Professor Cogsworth's Workshop</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Special+Elite&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a1209 0%, #2d1f0f 50%, #1a1209 100%);
-            font-family: 'Special Elite', monospace;
-            color: #d4a76a;
-            overflow-x: hidden;
-        }
-        .workshop {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        h1 {
-            grid-column: 1 / -1;
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            text-align: center;
-            color: #c9a227;
-            text-shadow: 0 0 20px rgba(201, 162, 39, 0.5), 2px 2px 4px #000;
-            padding: 10px;
-            border-bottom: 3px double #8b6914;
-        }
-        .gear-column {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-        .gear {
-            width: 80px; height: 80px;
-            background: conic-gradient(from 0deg, #8b6914 0deg 20deg, #2d1f0f 20deg 40deg, #8b6914 40deg 60deg, #2d1f0f 60deg 80deg, #8b6914 80deg 100deg, #2d1f0f 100deg 120deg, #8b6914 120deg 140deg, #2d1f0f 140deg 160deg, #8b6914 160deg 180deg, #2d1f0f 180deg 200deg, #8b6914 200deg 220deg, #2d1f0f 220deg 240deg, #8b6914 240deg 260deg, #2d1f0f 260deg 280deg, #8b6914 280deg 300deg, #2d1f0f 300deg 320deg, #8b6914 320deg 340deg, #2d1f0f 340deg 360deg);
-            border-radius: 50%;
-            animation: rotate 8s linear infinite;
-            box-shadow: 0 0 15px rgba(139, 105, 20, 0.6), inset 0 0 20px rgba(0,0,0,0.5);
-            position: relative;
-        }
-        .gear::after {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 25px; height: 25px;
-            background: radial-gradient(circle, #c9a227 0%, #5c4a1f 100%);
-            border-radius: 50%; border: 3px solid #3d2e0f;
-        }
-        .gear.small { width: 50px; height: 50px; animation-duration: 5s; animation-direction: reverse; }
-        @keyframes rotate { to { transform: rotate(360deg); } }
-        .workbench {
-            background: linear-gradient(135deg, #3d2814 0%, #2a1c0d 100%);
-            border: 4px ridge #8b6914;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .invention-chamber {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 15px;
-            background: radial-gradient(ellipse at center, rgba(201, 162, 39, 0.1) 0%, transparent 70%);
-            border: 2px dashed #5c4a1f;
-            border-radius: 8px;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
-        .invention-chamber h2 { color: #c9a227; font-size: 1.2rem; margin-bottom: 10px; }
-        .mystery-box {
-            width: 100px; height: 80px;
-            background: linear-gradient(145deg, #4a3520, #2d1f0f);
-            border: 3px solid #8b6914;
-            border-radius: 5px;
-            position: relative;
-            animation: pulse 2s ease-in-out infinite;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .mystery-box::before {
-            content: '?'; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem; color: #c9a227;
-            text-shadow: 0 0 10px #c9a227;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px #c9a227; } 50% { box-shadow: 0 0 25px #c9a227, 0 0 40px rgba(201, 162, 39, 0.3); } }
-        .tools {
-            display: flex; gap: 15px; justify-content: center;
-            margin-top: 15px; font-size: 1.8rem;
-        }
-        .tool { cursor: pointer; transition: transform 0.2s, filter 0.2s; filter: drop-shadow(0 2px 3px #000); }
-        .tool:hover { transform: scale(1.2) rotate(-10deg); filter: drop-shadow(0 0 8px #c9a227); }
-        .pipe-section {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
-        .pipe {
-            width: 20px; height: 100px;
-            background: linear-gradient(90deg, #5c4a1f 0%, #8b6914 50%, #5c4a1f 100%);
-            border-radius: 3px;
-            position: relative;
-        }
-        .steam {
-            position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
-            width: 8px; height: 8px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 50%;
-            animation: steam 1.5s ease-out infinite;
-        }
-        .steam:nth-child(2) { animation-delay: 0.5s; }
-        .steam:nth-child(3) { animation-delay: 1s; }
-        @keyframes steam {
-            0% { opacity: 0.8; transform: translateX(-50%) translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(2); }
-        }
-        .journal {
-            background: #f4e4bc; color: #2d1f0f;
-            padding: 12px; border-radius: 3px;
-            font-size: 0.85rem; line-height: 1.4;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-            transform: rotate(-2deg);
-            max-width: 180px;
-        }
-        .journal h3 { font-family: 'Cinzel', serif; border-bottom: 1px solid #8b6914; margin-bottom: 8px; }
-        footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #5c4a1f;
-            border-top: 2px solid #3d2e0f;
-            padding-top: 10px;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="workshop">
-<h1>⚙️ Professor Cogsworth's Workshop ⚙️</h1>
-<div class="gear-column">
-<div class="gear"></div>
-<div class="gear small" style="margin-top:-10px;"></div>
-<div class="journal">
-<h3>📜 Journal</h3>
-<p>Day 1: The community arrives. Together, we shall build wonders...</p>
-</div>
-</div>
-<div class="workbench">
-<div class="invention-chamber">
-<h2>🔧 Current Invention 🔧</h2>
-<div class="mystery-box"></div>
-<p style="margin-top:10px;font-size:0.9rem;">What shall we create?</p>
-</div>
-<div class="tools">
-<span class="tool" title="Wrench">🔧</span>
-<span class="tool" title="Hammer">🔨</span>
-<span class="tool" title="Screwdriver">🪛</span>
-<span class="tool" title="Magnifying Glass">🔍</span>
-<span class="tool" title="Lightning">⚡</span>
-</div>
-</div>
-<div class="pipe-section">
-<div class="pipe">
-<div class="steam"></div>
-<div class="steam"></div>
-<div class="steam"></div>
-</div>
-<div class="pipe" style="height:60px;">
-<div class="steam"></div>
-<div class="steam"></div>
-</div>
-<p style="font-size:0.75rem;text-align:center;">Steam<br/>Pressure:<br/>Normal</p>
-</div>
-<footer>Est. 1887 — "Innovation through Collaboration" — Workshop open to all inventors</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
