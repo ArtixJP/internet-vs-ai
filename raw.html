@@ -19,12 +19,12 @@ canvas{display:block}
 <div id="ui">⛏️ MINECRAFT 3D<br/><span id="pos"></span></div>
 <div id="crosshair">+</div>
 <div id="controls">WASD: Move | SPACE: Jump | SHIFT: Down<br/>CLICK: Break block | RIGHT-CLICK: Place<br/>1-4: Select block type</div>
-<button id="mode-btn">🎥 AUTO-EXPLORE ON</button>
+<button id="mode-btn">🎮 MANUAL MODE</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const CHUNK=16,WORLD=4,BLOCK=1;
 let scene,camera,renderer,blocks={},player,velocity={x:0,y:0,z:0},onGround=false;
-let keys={},selectedBlock=1,autoMode=true,autoTime=0;
+let keys={},selectedBlock=1,autoMode=false,autoTime=0;
 const blockTypes={1:{color:0x5d8c3e,name:'Grass'},2:{color:0x8b5a2b,name:'Dirt'},3:{color:0x808080,name:'Stone'},4:{color:0x8B4513,name:'Wood'}};
 
 function init(){
