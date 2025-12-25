@@ -85,7 +85,7 @@
         fillLight.position.set(-10, 20, -10);
         scene.add(fillLight);
         
-        // Window texture generator
+        // Window texture generator - Large industrial windows (2-3 per face)
         function createWindowTexture(color) {
             const canvas = document.createElement('canvas');
             canvas.width = 64;
@@ -94,13 +94,27 @@
             ctx.fillStyle = '#0a0a1a';
             ctx.fillRect(0, 0, 64, 128);
             const windowColors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600', '#ffffff'];
-            for (let row = 0; row < 16; row++) {
-                for (let col = 0; col < 4; col++) {
-                    if (Math.random() > 0.3) {
-                        const wColor = windowColors[Math.floor(Math.random() * windowColors.length)];
-                        ctx.fillStyle = wColor;
-                        ctx.globalAlpha = 0.5 + Math.random() * 0.5;
-                        ctx.fillRect(col * 16 + 2, row * 8 + 1, 12, 6);
+            
+            // 2-3 large windows per building face
+            const numWindows = 2 + Math.floor(Math.random() * 2);
+            const windowHeight = Math.floor(100 / numWindows);
+            const windowWidth = 50;
+            const margin = 7;
+            
+            for (let i = 0; i < numWindows; i++) {
+                if (Math.random() > 0.15) { // Most windows lit
+                    const wColor = windowColors[Math.floor(Math.random() * windowColors.length)];
+                    ctx.fillStyle = wColor;
+                    ctx.globalAlpha = 0.6 + Math.random() * 0.4;
+                    const yPos = margin + i * (windowHeight + 4);
+                    ctx.fillRect(margin, yPos, windowWidth, windowHeight - 8);
+                    
+                    // Window frame/divider
+                    ctx.fillStyle = '#1a1a3e';
+                    ctx.globalAlpha = 1;
+                    ctx.fillRect(margin + windowWidth/2 - 1, yPos, 2, windowHeight - 8);
+                    if (numWindows <= 2) {
+                        ctx.fillRect(margin, yPos + (windowHeight-8)/2 - 1, windowWidth, 2);
                     }
                 }
             }
@@ -118,7 +132,7 @@
             const h = 5 + Math.random() * 25;
             const w = 2 + Math.random() * 4;
             const windowTex = createWindowTexture();
-            windowTex.repeat.set(Math.ceil(w/2), Math.ceil(h/3));
+            windowTex.repeat.set(Math.ceil(w/3), 1); // One texture per building height for big windows
             const buildingMat = new THREE.MeshStandardMaterial({ 
                 color: 0x1a1a3e,
                 map: windowTex,
