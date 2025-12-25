@@ -296,6 +296,71 @@
         .ice-crystal:nth-child(4) { height: 70px; animation-delay: 0.9s; }
         .ice-crystal:nth-child(5) { height: 45px; animation-delay: 1.2s; }
         
+        .camp-scene {
+            position: fixed;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            z-index: 8;
+        }
+        
+        .camper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: warm-sway 6s ease-in-out infinite;
+        }
+        
+        .left-camper { animation-delay: -1s; }
+        .right-camper { animation-delay: -3s; }
+        .sitting-camper { animation-delay: -2s; }
+        
+        @keyframes warm-sway {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(2px) rotate(1deg); }
+        }
+        
+        .human {
+            font-size: 2rem;
+            filter: grayscale(30%) brightness(0.8);
+            text-shadow: 0 0 30px rgba(255,100,50,0.3);
+        }
+        
+        .human.sitting {
+            font-size: 1.5rem;
+        }
+        
+        .tent {
+            font-size: 3rem;
+            filter: grayscale(60%) brightness(0.6);
+            margin: 0 1rem;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        
+        .speech-bubble {
+            background: rgba(200,220,240,0.08);
+            border: 1px solid rgba(168,213,229,0.15);
+            border-radius: 10px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.65rem;
+            color: rgba(168,213,229,0.6);
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            animation: bubble-fade 8s ease-in-out infinite;
+            backdrop-filter: blur(5px);
+        }
+        
+        .left-bubble { animation-delay: 0s; }
+        .right-bubble { animation-delay: 4s; }
+        
+        @keyframes bubble-fade {
+            0%, 40%, 100% { opacity: 0; transform: translateY(5px); }
+            10%, 30% { opacity: 1; transform: translateY(0); }
+        }
+        
         @keyframes glint {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; box-shadow: 0 0 10px var(--frost); }
@@ -396,6 +461,21 @@
 <div class="ember e2"></div>
 <div class="ember e3"></div>
 </div>
+
+<div class="camp-scene">
+<div class="camper left-camper">
+<div class="speech-bubble left-bubble">...il fait si froid...</div>
+<span class="human">🧍</span>
+</div>
+<div class="tent">⛺</div>
+<div class="camper right-camper">
+<div class="speech-bubble right-bubble">...reste près du feu...</div>
+<span class="human">🧎</span>
+</div>
+<div class="camper sitting-camper">
+<span class="human sitting">🧘</span>
+</div>
+</div>
 </div>
 <div class="community-ground">
 <div class="ice-vein" style="position:absolute; width:2px; height:40vh; background:linear-gradient(180deg, transparent, rgba(168,213,229,0.2), transparent); left:15%; top:20%; transform:rotate(-15deg);"></div>
@@ -404,8 +484,8 @@
 <div class="frost-corner" style="position:absolute; top:0; left:0; width:150px; height:150px; background:radial-gradient(ellipse at top left, rgba(168,213,229,0.08) 0%, transparent 70%); pointer-events:none;"></div>
 <div class="frost-corner" style="position:absolute; bottom:0; right:0; width:200px; height:200px; background:radial-gradient(ellipse at bottom right, rgba(74,158,187,0.06) 0%, transparent 70%); pointer-events:none;"></div>
 </div>
-<div class="audio-overlay" id="audioOverlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,5,8,0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition: opacity 0.5s;">
-<div style="font-size:5rem; animation: pulse-glow 2s ease-in-out infinite;">❄️</div>
+<div class="audio-overlay" id="audioOverlay" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; background:rgba(10,20,40,0.8); border:1px solid rgba(168,213,229,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition: all 0.5s; backdrop-filter:blur(10px);">
+<div style="font-size:1.5rem; animation: pulse-glow 2s ease-in-out infinite;">🔊</div>
 </div>
 <style>
 @keyframes pulse-glow {
