@@ -156,7 +156,55 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-    .fireworks-canvas {
+    .flying-cat {
+            position: fixed;
+            font-size: 2.5rem;
+            z-index: 100;
+            pointer-events: none;
+            animation: flyAcross 12s linear infinite;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cat-body {
+            animation: catBob 0.5s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 10px rgba(212, 165, 116, 0.8));
+        }
+        .cat-wings {
+            position: absolute;
+            left: -20px;
+            top: -15px;
+            font-size: 1.5rem;
+            animation: wingFlap 0.2s ease-in-out infinite alternate;
+            transform-origin: center;
+        }
+        .cat-trail {
+            position: absolute;
+            right: 40px;
+            font-size: 1rem;
+            animation: sparkle 0.3s ease-in-out infinite alternate;
+            opacity: 0.8;
+        }
+        @keyframes flyAcross {
+            0% { left: -100px; top: 20%; transform: scaleX(1); }
+            45% { left: 110%; top: 35%; transform: scaleX(1); }
+            50% { left: 110%; top: 35%; transform: scaleX(-1); }
+            95% { left: -100px; top: 25%; transform: scaleX(-1); }
+            100% { left: -100px; top: 20%; transform: scaleX(1); }
+        }
+        @keyframes catBob {
+            from { transform: translateY(-5px) rotate(-5deg); }
+            to { transform: translateY(5px) rotate(5deg); }
+        }
+        @keyframes wingFlap {
+            from { transform: rotate(-15deg) scale(1); }
+            to { transform: rotate(15deg) scale(1.1); }
+        }
+        @keyframes sparkle {
+            from { opacity: 0.4; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1.2); }
+        }
+        .fireworks-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -195,6 +243,7 @@
 <span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🍪 Cookies of Code</span>
 <span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🎂 Layers of Logic</span>
 <span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🥖 Baguettes of Beauty</span>
+<span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🐱 Flying Cat Delivery</span>
 </div>
 </div>
 <div class="bread-float" style="top: 10%; left: 5%;">🥐</div>
@@ -202,6 +251,11 @@
 <div class="bread-float" style="top: 60%; left: 3%; animation-delay: -4s;">🥖</div>
 <div class="bread-float" style="top: 80%; right: 5%; animation-delay: -6s;">🧁</div>
 <div class="bread-float" style="top: 45%; right: 2%; animation-delay: -3s;">🍰</div>
+<div class="flying-cat" id="pastry-cat">
+<span class="cat-body">🐱</span>
+<span class="cat-wings">🥐</span>
+<span class="cat-trail">✨</span>
+</div>
 <canvas class="fireworks-canvas" id="fireworks"></canvas>
 <script>
 (function() {
