@@ -193,6 +193,151 @@
         .particle:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; background: #94e2d5; }
         .particle:nth-child(7) { left: 5%; animation-duration: 16s; animation-delay: 6s; background: #fab387; }
         .particle:nth-child(8) { left: 95%; animation-duration: 13s; animation-delay: 7s; background: #89b4fa; }
+        /* Stickman in storm */
+        .stickman-container {
+            position: relative;
+            height: 60px;
+            background: linear-gradient(180deg, transparent 0%, rgba(137, 220, 235, 0.05) 100%);
+            overflow: hidden;
+            margin-top: var(--gap);
+            border-radius: var(--radius);
+            z-index: 1;
+        }
+        .stickman {
+            position: absolute;
+            bottom: 10px;
+            left: -60px;
+            animation: hesitantWalk 12s ease-in-out infinite;
+        }
+        .stickman-body {
+            position: relative;
+            width: 40px;
+            height: 50px;
+        }
+        .stickman-head {
+            width: 14px;
+            height: 14px;
+            background: var(--text);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .stickman-torso {
+            width: 2px;
+            height: 18px;
+            background: var(--text);
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .stickman-arm {
+            width: 16px;
+            height: 2px;
+            background: var(--text);
+            position: absolute;
+            top: 18px;
+        }
+        .stickman-arm.left {
+            left: 2px;
+            transform: rotate(-45deg);
+            transform-origin: right center;
+            animation: armBrace 0.5s ease-in-out infinite;
+        }
+        .stickman-arm.right {
+            right: 2px;
+            transform: rotate(60deg);
+            transform-origin: left center;
+            animation: holdHat 0.3s ease-in-out infinite;
+        }
+        .stickman-hat {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: hatWobble 0.4s ease-in-out infinite;
+        }
+        .hat-top {
+            width: 12px;
+            height: 10px;
+            background: #313244;
+            border-radius: 50% 50% 0 0;
+        }
+        .hat-brim {
+            width: 20px;
+            height: 3px;
+            background: #313244;
+            border-radius: 2px;
+            margin-left: -4px;
+        }
+        .stickman-leg {
+            width: 2px;
+            height: 16px;
+            background: var(--text);
+            position: absolute;
+            top: 32px;
+            transform-origin: top center;
+        }
+        .stickman-leg.left {
+            left: 16px;
+            animation: legWalkLeft 0.6s ease-in-out infinite;
+        }
+        .stickman-leg.right {
+            right: 16px;
+            animation: legWalkRight 0.6s ease-in-out infinite;
+        }
+        .wind-lines {
+            position: absolute;
+            top: 20px;
+            pointer-events: none;
+        }
+        .wind-line {
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(137, 220, 235, 0.4), transparent);
+            margin: 6px 0;
+            animation: windBlow 0.8s linear infinite;
+        }
+        .wind-line:nth-child(2) { animation-delay: 0.2s; width: 25px; }
+        .wind-line:nth-child(3) { animation-delay: 0.4s; width: 35px; }
+        .rain-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .raindrop {
+            position: absolute;
+            width: 1px;
+            height: 10px;
+            background: linear-gradient(180deg, transparent, rgba(137, 220, 235, 0.6));
+            animation: rainFall 0.5s linear infinite;
+            transform: rotate(20deg);
+        }
+        @keyframes hesitantWalk {
+            0% { left: -60px; }
+            15% { left: 15%; }
+            20% { left: 12%; } /* hesitate back */
+            35% { left: 35%; }
+            40% { left: 32%; } /* hesitate back */
+            55% { left: 55%; }
+            58% { left: 52%; } /* hesitate back */
+            75% { left: 75%; }
+            78% { left: 72%; } /* hesitate back */
+            100% { left: calc(100% + 60px); }
+        }
+        @keyframes holdHat { 0%, 100% { transform: rotate(55deg); } 50% { transform: rotate(65deg); } }
+        @keyframes armBrace { 0%, 100% { transform: rotate(-40deg); } 50% { transform: rotate(-50deg); } }
+        @keyframes hatWobble { 0%, 100% { transform: translateX(-50%) rotate(-5deg); } 50% { transform: translateX(-50%) rotate(5deg); } }
+        @keyframes legWalkLeft { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+        @keyframes legWalkRight { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
+        @keyframes windBlow { 0% { transform: translateX(-50px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(50px); opacity: 0; } }
+        @keyframes rainFall { 0% { transform: translateY(-10px) rotate(20deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(70px) rotate(20deg); opacity: 0; } }
         /* Dancing cats */
         .dancing-cats { display: flex; justify-content: center; gap: 40px; padding: 12px 0; background: var(--bg-surface); border-radius: var(--radius); margin-top: var(--gap); position: relative; z-index: 1; }
         .dancing-cat { width: 40px; height: 50px; position: relative; animation: catDance 0.5s ease-in-out infinite; }
@@ -311,6 +456,28 @@
 </div>
 </div>
 </main>
+<div class="stickman-container">
+<div class="rain-container" id="rain"></div>
+<div class="stickman">
+<div class="wind-lines">
+<div class="wind-line"></div>
+<div class="wind-line"></div>
+<div class="wind-line"></div>
+</div>
+<div class="stickman-body">
+<div class="stickman-hat">
+<div class="hat-top"></div>
+<div class="hat-brim"></div>
+</div>
+<div class="stickman-head"></div>
+<div class="stickman-torso"></div>
+<div class="stickman-arm left"></div>
+<div class="stickman-arm right"></div>
+<div class="stickman-leg left"></div>
+<div class="stickman-leg right"></div>
+</div>
+</div>
+</div>
 <div class="dancing-cats">
 <div class="dancing-cat">
 <div class="cat-head">
@@ -426,9 +593,31 @@
             setTimeout(() => {
                 shuffleTiles();
                 scheduleNextShuffle();
+
+        // Generate rain for the storm
+        const rainContainer = document.getElementById('rain');
+        for (let i = 0; i < 20; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'raindrop';
+            drop.style.left = Math.random() * 100 + '%';
+            drop.style.animationDelay = Math.random() * 0.5 + 's';
+            drop.style.animationDuration = (0.3 + Math.random() * 0.3) + 's';
+            rainContainer.appendChild(drop);
+        }
             }, delay);
         }
         scheduleNextShuffle();
+
+        // Generate rain for the storm
+        const rainContainer = document.getElementById('rain');
+        for (let i = 0; i < 20; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'raindrop';
+            drop.style.left = Math.random() * 100 + '%';
+            drop.style.animationDelay = Math.random() * 0.5 + 's';
+            drop.style.animationDuration = (0.3 + Math.random() * 0.3) + 's';
+            rainContainer.appendChild(drop);
+        }
 
         // Live Twitch Chat Integration
         const chatContainer = document.getElementById('chat-messages');
