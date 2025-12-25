@@ -94,6 +94,45 @@
             transform: translateY(-10px) scale(1.05);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
+        .cat-card.visiting {
+            animation: visitBounce 0.6s ease-in-out;
+        }
+        .cat-card .interaction-bubble {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            animation: bubblePop 2s forwards;
+            z-index: 10;
+        }
+        .heart-trail {
+            position: absolute;
+            font-size: 1.2rem;
+            pointer-events: none;
+            animation: heartFloat 1.5s ease-out forwards;
+        }
+        @keyframes visitBounce {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            25% { transform: translateY(-8px) rotate(-3deg); }
+            75% { transform: translateY(-5px) rotate(3deg); }
+        }
+        @keyframes bubblePop {
+            0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+            15% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+            25% { transform: translateX(-50%) scale(1); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+        @keyframes heartFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+        }
         .cat-card .emoji { font-size: 4rem; }
         .cat-card h3 { color: #5d4e60; margin: 10px 0 5px; }
         .cat-card p { font-size: 0.9rem; color: #999; }
@@ -215,7 +254,7 @@
 </div>
 <div class="game-zone">
 <h2>🧶 Cat Chase Game 🧶</h2>
-<p style="color:#8b7d8b;margin-bottom:15px;">Move your mouse! Cats will chase the yarn ball!</p>
+<p style="color:#8b7d8b;margin-bottom:15px;">🤖 Autoplay ON! Watch the cats chase the magical yarn! 🧶✨</p>
 <canvas height="300" id="game-canvas" width="650"></canvas>
 <p class="game-score">Yarn caught: <span id="score">0</span> times! 🎉</p>
 </div>
@@ -276,6 +315,31 @@
             mouseY = e.clientY - rect.top;
         });
         
+        // Autoplay mode - yarn moves on its own!
+        let autoplayAngle = 0;
+        let autoplayRadius = 80;
+        let autoplayCenterX = canvas.width / 2;
+        let autoplayCenterY = canvas.height / 2;
+        let autoplayMode = true;
+        
+        function updateAutoplay() {
+            if (!autoplayMode) return;
+            
+            autoplayAngle += 0.03;
+            autoplayRadius = 60 + Math.sin(autoplayAngle * 0.5) * 40;
+            
+            // Slowly drift center
+            autoplayCenterX += Math.sin(autoplayAngle * 0.2) * 0.5;
+            autoplayCenterY += Math.cos(autoplayAngle * 0.3) * 0.3;
+            
+            // Keep center in bounds
+            autoplayCenterX = Math.max(100, Math.min(canvas.width - 100, autoplayCenterX));
+            autoplayCenterY = Math.max(80, Math.min(canvas.height - 80, autoplayCenterY));
+            
+            mouseX = autoplayCenterX + Math.cos(autoplayAngle) * autoplayRadius;
+            mouseY = autoplayCenterY + Math.sin(autoplayAngle * 1.3) * autoplayRadius * 0.7;
+        }
+        
         function drawYarn(x, y) {
             ctx.beginPath();
             ctx.arc(x, y, yarn.radius, 0, Math.PI * 2);
@@ -294,6 +358,7 @@
         }
         
         function gameLoop() {
+            updateAutoplay();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Smooth yarn movement
@@ -328,6 +393,69 @@
             requestAnimationFrame(gameLoop);
         }
         gameLoop();
+        
+        // Cat Card Interactions System
+        const catCards = document.querySelectorAll('.cat-card');
+        const interactions = [
+            ['💕', '😻 So cute!'],
+            ['🐟', 'Want some fish?'],
+            ['💭', 'Thinking of you~'],
+            ['🧶', "Let's play!"],
+            ['😴', 'Nap together?'],
+            ['🐾', '*paw bump*'],
+            ['💖', 'Best friends!'],
+            ['🌟', 'You shine!']
+        ];
+        
+        function createHeartTrail(fromCard, toCard) {
+            const fromRect = fromCard.getBoundingClientRect();
+            const toRect = toCard.getBoundingClientRect();
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('span');
+                    heart.className = 'heart-trail';
+                    heart.textContent = '💕';
+                    heart.style.left = (fromRect.left + fromRect.width/2 + (toRect.left - fromRect.left) * (i/3)) + 'px';
+                    heart.style.top = (fromRect.top + (toRect.top - fromRect.top) * (i/3)) + 'px';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 1500);
+                }, i * 200);
+            }
+        }
+        
+        function catInteraction() {
+            const cards = Array.from(catCards);
+            const fromIdx = Math.floor(Math.random() * cards.length);
+            let toIdx = Math.floor(Math.random() * cards.length);
+            while (toIdx === fromIdx) toIdx = Math.floor(Math.random() * cards.length);
+            
+            const fromCard = cards[fromIdx];
+            const toCard = cards[toIdx];
+            const [emoji, message] = interactions[Math.floor(Math.random() * interactions.length)];
+            
+            fromCard.classList.add('visiting');
+            setTimeout(() => fromCard.classList.remove('visiting'), 600);
+            
+            createHeartTrail(fromCard, toCard);
+            
+            setTimeout(() => {
+                toCard.classList.add('visiting');
+                const bubble = document.createElement('div');
+                bubble.className = 'interaction-bubble';
+                bubble.textContent = emoji + ' ' + message;
+                toCard.style.position = 'relative';
+                toCard.appendChild(bubble);
+                setTimeout(() => {
+                    bubble.remove();
+                    toCard.classList.remove('visiting');
+                }, 2000);
+            }, 500);
+        }
+        
+        // Start cat interactions every 3-5 seconds
+        setInterval(catInteraction, 3000 + Math.random() * 2000);
+        setTimeout(catInteraction, 1000); // First interaction after 1 second
     </script>
 </body>
 </html>
