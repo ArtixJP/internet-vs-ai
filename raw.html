@@ -193,6 +193,27 @@
         .particle:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; background: #94e2d5; }
         .particle:nth-child(7) { left: 5%; animation-duration: 16s; animation-delay: 6s; background: #fab387; }
         .particle:nth-child(8) { left: 95%; animation-duration: 13s; animation-delay: 7s; background: #89b4fa; }
+        /* Dancing cats */
+        .dancing-cats { display: flex; justify-content: center; gap: 40px; padding: 12px 0; background: var(--bg-surface); border-radius: var(--radius); margin-top: var(--gap); position: relative; z-index: 1; }
+        .dancing-cat { width: 40px; height: 50px; position: relative; animation: catDance 0.5s ease-in-out infinite; }
+        .dancing-cat:nth-child(2) { animation-delay: 0.125s; }
+        .dancing-cat:nth-child(3) { animation-delay: 0.25s; }
+        .dancing-cat:nth-child(4) { animation-delay: 0.375s; }
+        .cat-head { width: 30px; height: 25px; background: #94e2d5; border-radius: 50% 50% 45% 45%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+        .cat-ear { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #94e2d5; position: absolute; top: -6px; }
+        .cat-ear.left { left: 2px; transform: rotate(-15deg); }
+        .cat-ear.right { right: 2px; transform: rotate(15deg); }
+        .cat-eyes { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .cat-eye { width: 4px; height: 5px; background: #1e1e2e; border-radius: 50%; }
+        .cat-nose { width: 4px; height: 3px; background: #f38ba8; border-radius: 50%; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); }
+        .cat-body { width: 25px; height: 22px; background: #94e2d5; border-radius: 50% 50% 40% 40%; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); }
+        .cat-tail { width: 20px; height: 6px; background: #94e2d5; border-radius: 10px; position: absolute; top: 30px; left: -8px; transform-origin: right center; animation: tailSwing 0.5s ease-in-out infinite; }
+        .cat-paws { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .cat-paw { width: 8px; height: 6px; background: #94e2d5; border-radius: 50%; }
+        @keyframes catDance { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+        @keyframes tailSwing { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+        /* Footer disclaimer */
+        .site-footer { text-align: center; padding: 8px; color: var(--text-dim); font-size: 0.7rem; opacity: 0.6; position: relative; z-index: 1; }
         nav, main { position: relative; z-index: 1; }
     </style>
 </head>
@@ -283,6 +304,53 @@
 </div>
 </div>
 </main>
+<div class="dancing-cats">
+<div class="dancing-cat">
+<div class="cat-head">
+<div class="cat-ear left"></div>
+<div class="cat-ear right"></div>
+<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
+<div class="cat-nose"></div>
+</div>
+<div class="cat-body"></div>
+<div class="cat-tail"></div>
+<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
+</div>
+<div class="dancing-cat">
+<div class="cat-head">
+<div class="cat-ear left"></div>
+<div class="cat-ear right"></div>
+<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
+<div class="cat-nose"></div>
+</div>
+<div class="cat-body"></div>
+<div class="cat-tail"></div>
+<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
+</div>
+<div class="dancing-cat">
+<div class="cat-head">
+<div class="cat-ear left"></div>
+<div class="cat-ear right"></div>
+<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
+<div class="cat-nose"></div>
+</div>
+<div class="cat-body"></div>
+<div class="cat-tail"></div>
+<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
+</div>
+<div class="dancing-cat">
+<div class="cat-head">
+<div class="cat-ear left"></div>
+<div class="cat-ear right"></div>
+<div class="cat-eyes"><div class="cat-eye"></div><div class="cat-eye"></div></div>
+<div class="cat-nose"></div>
+</div>
+<div class="cat-body"></div>
+<div class="cat-tail"></div>
+<div class="cat-paws"><div class="cat-paw"></div><div class="cat-paw"></div></div>
+</div>
+</div>
+<footer class="site-footer">⚠ This is actually a website, not Hyprland • Built with CSS magic ✨</footer>
 <script>
         // Live clock
         function updateClock() {
