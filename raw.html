@@ -3,22 +3,23 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Test Lab</title>
+<title>Minecraft World</title>
 <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { min-height: 100vh; background: #0a0a0f; color: #00ff88; font-family: monospace; padding: 40px; }
-        h1 { font-size: 3rem; border-bottom: 2px dashed #00ff88; padding-bottom: 10px; }
-        .status { color: #888; margin: 20px 0; }
-        .zone { border: 1px dashed #333; padding: 30px; margin: 20px 0; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-        .zone:hover { border-color: #00ff88; }
-        .placeholder { color: #444; font-style: italic; }
-        footer { position: fixed; bottom: 20px; color: #333; }
-    </style>
+*{margin:0;padding:0;box-sizing:border-box;image-rendering:pixelated}
+body{min-height:100vh;background:#87CEEB;font-family:'Courier New',monospace;overflow:hidden}
+.sky{height:60vh;background:linear-gradient(#87CEEB,#a8d8ff)}
+.ground{height:40vh;display:flex;flex-direction:column}
+.grass{height:20px;background:#5d8c3e}
+.dirt{flex:1;background:#8b5a2b;display:flex;align-items:center;justify-content:center}
+.block{width:64px;height:64px;background:#6b8c42;border:4px solid #4a6b2a;box-shadow:inset 4px 4px 0 #7da84f}
+.title{position:absolute;top:20%;left:50%;transform:translateX(-50%);font-size:3rem;color:#3d3d3d;text-shadow:4px 4px 0 #222}
+.hint{position:absolute;bottom:20%;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,0.5);padding:8px 16px}
+</style>
 </head>
 <body>
-<h1>⚗️ TEST_LAB</h1>
-<p class="status">STATUS: awaiting experiments...</p>
-<div class="zone"><span class="placeholder">[experiment zone - add anything here]</span></div>
-<footer>v0.0.1 | ...</footer>
+<div class="sky"></div>
+<div class="ground"><div class="grass"></div><div class="dirt"><div class="block"></div></div></div>
+<h1 class="title">⛏️ MINECRAFT</h1>
+<p class="hint">[Community builds here...]</p>
 </body>
 </html>
