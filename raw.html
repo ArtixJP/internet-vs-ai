@@ -141,7 +141,7 @@
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">🐺 THE HUNT • a wolf stalks the snowman through the frozen darkness... 🌬️ click for wind</div>
+<div class="hint">🐺 THE HUNT • camera follows the fleeing snowman... 🌬️ click for wind • drag to look around</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
@@ -486,14 +486,16 @@
         let previousMousePosition = { x: 0, y: 0 };
         let cameraAngle = { x: 0, y: 0 };
         
-        // AUTO-MODE: Cinematic camera tour
+        // AUTO-MODE: Follow the snowman
         let autoMode = true;
+        let followMode = true; // NEW: Camera follows snowman
         let autoAngleSpeed = 0.003;
         let autoHeightTarget = 0;
         let autoHeightCurrent = 0;
         let autoRadiusTarget = 8;
         let autoRadiusCurrent = 8;
         let autoChangeTimer = 0;
+        let cameraOffset = { x: 0, y: 3, z: 6 }; // Camera offset from snowman
         
         document.addEventListener('mousedown', (e) => {
             isDragging = true;
@@ -544,39 +546,63 @@
             requestAnimationFrame(animate);
             time += 0.016;
             
-            // Camera orbit with AUTO-MODE
-            if (autoMode) {
-                // Smooth automatic rotation
-                cameraAngle.x += autoAngleSpeed;
+            // Camera follows the snowman
+            if (followMode && autoMode) {
+                // Calculate camera position relative to snowman
+                const followDistance = 5;
+                const followHeight = 2.5;
                 
-                // Occasionally change camera behavior
+                // Camera orbits slightly around the snowman for dynamic view
+                const orbitAngle = snowmanAngle + Math.PI + Math.sin(time * 0.3) * 0.3;
+                
+                // Target position behind and above snowman
+                const targetX = snowmanGroup.position.x + Math.cos(orbitAngle) * followDistance;
+                const targetZ = snowmanGroup.position.z + Math.sin(orbitAngle) * followDistance;
+                const targetY = followHeight + Math.sin(time * 0.5) * 0.3;
+                
+                // Smooth camera movement
+                camera.position.x += (targetX - camera.position.x) * 0.03;
+                camera.position.z += (targetZ - camera.position.z) * 0.03;
+                camera.position.y += (targetY - camera.position.y) * 0.03;
+                
+                // Look at a point ahead of the snowman (the chase!)
+                const lookAheadAngle = snowmanAngle - 0.3;
+                const lookTarget = new THREE.Vector3(
+                    snowmanGroup.position.x + Math.cos(lookAheadAngle) * 2,
+                    0.8,
+                    snowmanGroup.position.z + Math.sin(lookAheadAngle) * 2
+                );
+                camera.lookAt(lookTarget);
+            } else if (autoMode) {
+                // Fallback orbit mode
+                cameraAngle.x += autoAngleSpeed;
                 autoChangeTimer++;
                 if (autoChangeTimer > 300) {
                     autoChangeTimer = 0;
                     autoAngleSpeed = 0.002 + Math.random() * 0.004;
-                    if (Math.random() > 0.5) autoAngleSpeed *= -1; // Sometimes reverse
+                    if (Math.random() > 0.5) autoAngleSpeed *= -1;
                     autoHeightTarget = (Math.random() - 0.5) * 0.6;
                     autoRadiusTarget = 6 + Math.random() * 6;
                 }
-                
-                // Smooth interpolation
                 autoHeightCurrent += (autoHeightTarget - autoHeightCurrent) * 0.01;
                 autoRadiusCurrent += (autoRadiusTarget - autoRadiusCurrent) * 0.01;
                 cameraAngle.y = autoHeightCurrent;
-            }
-            
-            const radius = autoMode ? autoRadiusCurrent : 8;
-            camera.position.x = Math.sin(cameraAngle.x) * radius;
-            camera.position.z = Math.cos(cameraAngle.x) * radius;
-            camera.position.y = 2 + cameraAngle.y * 5;
-            
-            // Add subtle camera sway in auto mode
-            if (autoMode) {
+                
+                const radius = autoRadiusCurrent;
+                camera.position.x = Math.sin(cameraAngle.x) * radius;
+                camera.position.z = Math.cos(cameraAngle.x) * radius;
+                camera.position.y = 2 + cameraAngle.y * 5;
                 camera.position.x += Math.sin(time * 0.5) * 0.3;
                 camera.position.y += Math.sin(time * 0.3) * 0.2;
+                camera.lookAt(0, 0.5 + Math.sin(time * 0.2) * 0.3, 0);
+            } else {
+                // Manual control mode
+                const radius = 8;
+                camera.position.x = Math.sin(cameraAngle.x) * radius;
+                camera.position.z = Math.cos(cameraAngle.x) * radius;
+                camera.position.y = 2 + cameraAngle.y * 5;
+                camera.lookAt(snowmanGroup.position.x, 0.8, snowmanGroup.position.z);
             }
-            
-            camera.lookAt(0, 0.5 + Math.sin(time * 0.2) * 0.3, 0);
             
             // Tree sway
             trees.forEach(tree => {
