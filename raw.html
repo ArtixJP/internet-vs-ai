@@ -245,6 +245,55 @@
             });
         });
 
+        // Rare tile shuffle - like Hyprland's dynamic tiling
+        function shuffleTiles() {
+            const tilesContainer = document.querySelector('.tiles');
+            const tiles = Array.from(tilesContainer.querySelectorAll('.tile'));
+            if (tiles.length < 2) return;
+            
+            // Pick two random tiles to swap (excluding main tile for stability)
+            const swappable = tiles.filter(t => !t.classList.contains('main'));
+            if (swappable.length < 2) return;
+            
+            const idx1 = Math.floor(Math.random() * swappable.length);
+            let idx2 = Math.floor(Math.random() * swappable.length);
+            while (idx2 === idx1) idx2 = Math.floor(Math.random() * swappable.length);
+            
+            const tile1 = swappable[idx1];
+            const tile2 = swappable[idx2];
+            
+            // Animate the swap
+            tile1.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s';
+            tile2.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s';
+            tile1.style.opacity = '0.7';
+            tile2.style.opacity = '0.7';
+            tile1.style.transform = 'scale(0.95)';
+            tile2.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                // Actually swap in DOM
+                const parent = tile1.parentNode;
+                const sibling = tile1.nextSibling === tile2 ? tile1 : tile1.nextSibling;
+                tile2.parentNode.insertBefore(tile1, tile2);
+                parent.insertBefore(tile2, sibling);
+                
+                tile1.style.opacity = '1';
+                tile2.style.opacity = '1';
+                tile1.style.transform = 'scale(1)';
+                tile2.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Schedule rare shuffles (15-30 seconds interval)
+        function scheduleNextShuffle() {
+            const delay = 15000 + Math.random() * 15000; // 15-30 seconds
+            setTimeout(() => {
+                shuffleTiles();
+                scheduleNextShuffle();
+            }, delay);
+        }
+        scheduleNextShuffle();
+
         // Live Twitch Chat Integration
         const chatContainer = document.getElementById('chat-messages');
         const chatStatus = document.getElementById('chat-status');
