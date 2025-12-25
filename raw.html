@@ -1,228 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEXUS-7 | AI Companion Interface</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
-            font-family: 'Rajdhani', sans-serif;
-            color: #e0e8ff;
-            overflow-x: hidden;
-        }
-        
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px);
-            pointer-events: none;
-            z-index: 100;
-        }
-        
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            grid-template-rows: auto 1fr auto;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            min-height: 100vh;
-        }
-        
-        header {
-            grid-column: 1 / -1;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            background: rgba(10, 20, 40, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 10px;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        
-        .logo {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.8rem;
-            background: linear-gradient(90deg, #00ffff, #ff00ff);
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0,255,255,0.5);
         }
-        
-        .status-bar {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .status-dot {
-            width: 8px; height: 8px;
-            background: #00ff88;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        .main-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(10, 20, 40, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 30px;
-            position: relative;
-        }
-        
-        .ai-avatar {
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #00ffff33, transparent 70%);
-            border: 3px solid #00ffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            animation: float 4s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
-            margin-bottom: 20px;
-        }
-        
-        .ai-name {
-            font-family: 'Orbitron', monospace;
-            font-size: 2rem;
-            color: #00ffff;
-            margin-bottom: 10px;
-        }
-        
-        .ai-tagline {
-            color: #8899bb;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-        }
-        
-        .chat-input-area {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            border-radius: 25px;
-            padding: 12px 20px;
-            color: #667788;
-            font-style: italic;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .chat-input-area:hover {
-            border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-        
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .widget {
-            background: rgba(10, 20, 40, 0.7);
-            border: 1px solid rgba(255, 0, 255, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .widget h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            color: #ff00ff;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-        
-        .stat-value { color: #00ffff; }
-        
-        .community-zone {
-            min-height: 120px;
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #556677;
-            font-style: italic;
-        }
-        
-        footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 15px;
-            color: #445566;
-            font-size: 0.85rem;
-        }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes glow { from { box-shadow: 0 0 20px #00ffff55; } to { box-shadow: 0 0 40px #00ffff88, 0 0 60px #ff00ff44; } }
     </style>
 </head>
 <body>
-<div class="scanlines"></div>
-<div class="container">
-<header>
-<div class="logo">⟨NEXUS-7⟩</div>
-<div class="status-bar">
-<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
-<div class="status-item">🌐 Connected</div>
-<div class="status-item">⚡ 99.7% Sync</div>
-</div>
-</header>
-<main class="main-panel">
-<div class="ai-avatar">🤖</div>
-<h1 class="ai-name">NEXUS-7</h1>
-<p class="ai-tagline">Your Quantum-Enhanced Digital Companion</p>
-<div class="chat-input-area">💬 Community ideas will appear here...</div>
-</main>
-<aside class="sidebar">
-<div class="widget">
-<h3>📊 System Status</h3>
-<div class="stat-row"><span>Memory Core</span><span class="stat-value">2.4 PB</span></div>
-<div class="stat-row"><span>Emotion Matrix</span><span class="stat-value">Curious</span></div>
-<div class="stat-row"><span>Learning Rate</span><span class="stat-value">∞/sec</span></div>
-</div>
-<div class="widget">
-<h3>🎯 Abilities</h3>
-<div class="stat-row"><span>Creativity</span><span class="stat-value">███████░ 87%</span></div>
-<div class="stat-row"><span>Logic</span><span class="stat-value">████████ 99%</span></div>
-<div class="stat-row"><span>Chaos</span><span class="stat-value">████░░░░ 50%</span></div>
-</div>
-<div class="widget">
-<h3>🌟 Community Zone</h3>
-<div class="community-zone">Your ideas go here!</div>
-</div>
-</aside>
-<footer>⟨ NEXUS-7 Interface v1.0 | Powered by Collective Imagination ⟩</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
