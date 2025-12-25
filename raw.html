@@ -51,7 +51,7 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total (shader fix applied)<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 10<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -152,7 +152,7 @@
         
         // Window texture generator - Pre-generate textures to avoid memory leaks
         const windowTextureCache = [];
-        const NUM_CACHED_TEXTURES = 8;
+        const NUM_CACHED_TEXTURES = 5; // Reduced texture cache for memory
         
         function generateWindowTexture() {
             const canvas = document.createElement('canvas');
@@ -275,13 +275,13 @@
         for (let bx = -5; bx <= 5; bx++) {
             for (let bz = -4; bz <= 4; bz++) {
                 // Skip more blocks for performance + variety (parks, plazas)
-                if (Math.random() > 0.7) continue;
+                if (Math.random() > 0.55) continue; // Reduced density for better performance
                 
                 const blockCenterX = bx * gridSpacingX;
                 const blockCenterZ = bz * gridSpacingZ;
                 
-                // 2-5 buildings per Manhattan block (taller, denser)
-                const numBuildings = 2 + Math.floor(Math.random() * 4);
+                // 1-3 buildings per Manhattan block (optimized for performance)
+                const numBuildings = 1 + Math.floor(Math.random() * 3);
                 for (let b = 0; b < numBuildings; b++) {
                     const h = 8 + Math.random() * 35; // Taller buildings
                     const wX = 2 + Math.random() * 2.5;
@@ -326,7 +326,7 @@
             });
             
             // Head
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.22 * scale, 12, 12), mat);
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.22 * scale, 8, 8), mat); // Reduced segments
             head.position.y = 1.65 * scale;
             human.add(head);
             
@@ -401,7 +401,7 @@
         
         // Crowd (NPCs) - Now humanoid!
         const crowd = [];
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 10; i++) { // Reduced from 15 for better performance
             const npcColor = neonColors[Math.floor(Math.random() * neonColors.length)];
             const npc = createHumanoid(npcColor, Math.random() > 0.5, 0.9 + Math.random() * 0.3);
             npc.position.set(
@@ -588,7 +588,7 @@
         
         const manholeTexture = createManholeTexture();
         
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 12; i++) { // Reduced manholes for performance
             const manholeGroup = new THREE.Group();
             
             // Manhole rim (slightly larger, recessed)
@@ -764,14 +764,17 @@
                 if (!building.visible) cullCount++;
             });
             
-            // Frustum cull manholes
+            // Frustum cull manholes - tighter radius for performance
             manholes.forEach(mh => {
                 const dist = mh.position.distanceTo(camera.position);
-                mh.visible = dist < 50; // Distance-based culling for small objects
+                mh.visible = dist < 35; // Tighter distance culling
             });
             
-            // Animate crowd with walking motion
+            // Animate crowd with walking motion + distance culling
             crowd.forEach(npc => {
+                // Distance-based LOD: hide NPCs far from camera
+                const distToCam = npc.position.distanceTo(camera.position);
+                npc.visible = distToCam < 40;
                 npc.position.x += Math.cos(npc.userData.direction) * npc.userData.speed;
                 npc.position.z += Math.sin(npc.userData.direction) * npc.userData.speed;
                 npc.rotation.y = -npc.userData.direction + Math.PI/2;
