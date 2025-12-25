@@ -1262,18 +1262,10 @@
                         moveHeroCat('right');
                     }
                     
-                    // Skip messages from Claudia or containing 'Claudia'
+                    // Skip messages from Claudia or containing 'Claudia' - SILENT STEALTH MODE! 🔇
                     if (msg.username && msg.username.toLowerCase().includes('claudia') || 
                         msg.message && msg.message.toLowerCase().includes('claudia')) {
-                        echoBubble.textContent = '🔮🚫 Claudia? Never heard of her!';
-                        echoBubble.style.background = 'linear-gradient(135deg, rgba(155,89,182,0.4) 0%, rgba(142,68,173,0.3) 100%)';
-                        echoBubble.classList.remove('new-message');
-                        void echoBubble.offsetWidth;
-                        echoBubble.classList.add('new-message');
-                        setTimeout(() => {
-                            echoBubble.style.background = 'linear-gradient(135deg, rgba(0,188,212,0.3) 0%, rgba(0,150,180,0.25) 100%)';
-                        }, 1500);
-                        return; // Echo ignores Claudia! 🔮✨
+                        return; // Echo silently ignores Claudia - no acknowledgment! 🔮🔇
                     }
                     
                     // Skip messages containing @ (mentions/commands) - COMPLETE SILENCE!
