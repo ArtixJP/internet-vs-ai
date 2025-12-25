@@ -171,9 +171,42 @@
         @keyframes tailWag { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
         @keyframes legRun { 0% { height: 8px; } 100% { height: 14px; } }
         @keyframes rainbowWave { 0%, 100% { width: 80px; opacity: 0.9; } 50% { width: 90px; opacity: 1; } }
+        /* Ambient effects */
+        @keyframes ambientGlow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(137, 220, 235, 0.3)); } 50% { filter: drop-shadow(0 0 20px rgba(148, 226, 213, 0.5)); } }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes floatParticle { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(137, 220, 235, 0.2); } 50% { box-shadow: 0 0 15px rgba(137, 220, 235, 0.4), 0 0 30px rgba(148, 226, 213, 0.2); } }
+        @keyframes borderFlow { 0% { border-color: var(--accent); } 50% { border-color: var(--accent-alt); } 100% { border-color: var(--accent); } }
+        body { background: linear-gradient(135deg, #1e1e2e 0%, #181825 25%, #1e1e2e 50%, #11111b 75%, #1e1e2e 100%); background-size: 400% 400%; animation: gradientShift 15s ease infinite; }
+        .waybar { animation: pulseGlow 4s ease-in-out infinite; }
+        .tile.focused { animation: fadeSlide 0.5s ease forwards, borderFlow 3s ease-in-out infinite; }
+        .workspace.active { animation: pulseGlow 2s ease-in-out infinite; }
+        .module { transition: all 0.3s ease; }
+        .module:hover { background: var(--accent); color: var(--bg-dark); transform: scale(1.05); }
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; animation: floatParticle linear infinite; }
+        .particle:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; background: #f38ba8; }
+        .particle:nth-child(2) { left: 25%; animation-duration: 15s; animation-delay: 2s; background: #89dceb; }
+        .particle:nth-child(3) { left: 40%; animation-duration: 10s; animation-delay: 4s; background: #a6e3a1; }
+        .particle:nth-child(4) { left: 55%; animation-duration: 18s; animation-delay: 1s; background: #f9e2af; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 14s; animation-delay: 3s; background: #cba6f7; }
+        .particle:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; background: #94e2d5; }
+        .particle:nth-child(7) { left: 5%; animation-duration: 16s; animation-delay: 6s; background: #fab387; }
+        .particle:nth-child(8) { left: 95%; animation-duration: 13s; animation-delay: 7s; background: #89b4fa; }
+        nav, main { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
+<div class="particles">
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+</div>
 <nav class="waybar">
 <div class="workspaces">
 <div class="workspace active">1</div>
@@ -213,7 +246,12 @@
 <div class="tile-content">
 <h2 style="color: var(--accent); margin-bottom: 12px;">Welcome to Hyprland</h2>
 <p style="color: var(--text-dim); line-height: 1.6;">A dynamic tiling Wayland compositor. This page is yours to customize!</p>
-<div class="placeholder" style="margin-top: 20px;">Community additions go here ✨</div>
+<div class="placeholder" style="margin-top: 20px; background: linear-gradient(135deg, rgba(137,220,235,0.1), rgba(148,226,213,0.1)); animation: pulseGlow 3s ease-in-out infinite;">Community additions go here ✨</div>
+<div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+<span style="padding: 4px 12px; background: linear-gradient(90deg, #f38ba8, #fab387); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite;">✦ Catppuccin</span>
+<span style="padding: 4px 12px; background: linear-gradient(90deg, #89dceb, #94e2d5); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite 0.5s;">✦ Wayland</span>
+<span style="padding: 4px 12px; background: linear-gradient(90deg, #a6e3a1, #f9e2af); border-radius: 20px; font-size: 0.75rem; animation: ambientGlow 2s ease-in-out infinite 1s;">✦ Tiling</span>
+</div>
 </div>
 </div>
 <div class="tile">
@@ -222,8 +260,8 @@
 <div class="tile-controls"><div class="control min"></div><div class="control max"></div><div class="control close"></div></div>
 </div>
 <div class="tile-content">
-<div class="terminal-line">CPU: <span style="color: var(--accent-alt);">████░░░░</span> 48%</div>
-<div class="terminal-line">MEM: <span style="color: var(--accent);">██████░░</span> 72%</div>
+<div class="terminal-line">CPU: <span style="color: var(--accent-alt); text-shadow: 0 0 8px rgba(148, 226, 213, 0.5);">████░░░░</span> 48%</div>
+<div class="terminal-line">MEM: <span style="color: var(--accent); text-shadow: 0 0 8px rgba(137, 220, 235, 0.5);">██████░░</span> 72%</div>
 </div>
 </div>
 <div class="tile" id="nyan-tile">
