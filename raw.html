@@ -51,21 +51,25 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active</div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Memory: Optimized</div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
         // Happy whistling sound for the walker 🎵
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let whistleTimeout = null;
+        let isWhistling = false;
         
         function playWhistle() {
-            const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 698.46, 659.25, 587.33]; // C5 to G5 melody
+            if (isWhistling) return;
+            isWhistling = true;
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 698.46, 659.25, 587.33];
             let noteIndex = 0;
             
             function playNote() {
                 if (noteIndex >= notes.length) {
                     noteIndex = 0;
-                    setTimeout(playNote, 2000); // Pause between loops
+                    whistleTimeout = setTimeout(playNote, 2000);
                     return;
                 }
                 
@@ -86,8 +90,14 @@
                 osc.start(audioCtx.currentTime);
                 osc.stop(audioCtx.currentTime + 0.4);
                 
+                // Cleanup after note ends
+                osc.onended = () => {
+                    osc.disconnect();
+                    gain.disconnect();
+                };
+                
                 noteIndex++;
-                setTimeout(playNote, 350);
+                whistleTimeout = setTimeout(playNote, 350);
             }
             
             playNote();
@@ -137,8 +147,11 @@
         fillLight.position.set(-10, 20, -10);
         scene.add(fillLight);
         
-        // Window texture generator - Large industrial windows (2-3 per face)
-        function createWindowTexture(color) {
+        // Window texture generator - Pre-generate textures to avoid memory leaks
+        const windowTextureCache = [];
+        const NUM_CACHED_TEXTURES = 8;
+        
+        function generateWindowTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 64;
             canvas.height = 128;
@@ -147,21 +160,19 @@
             ctx.fillRect(0, 0, 64, 128);
             const windowColors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600', '#ffffff'];
             
-            // 2-3 large windows per building face
             const numWindows = 2 + Math.floor(Math.random() * 2);
             const windowHeight = Math.floor(100 / numWindows);
             const windowWidth = 50;
             const margin = 7;
             
             for (let i = 0; i < numWindows; i++) {
-                if (Math.random() > 0.15) { // Most windows lit
+                if (Math.random() > 0.15) {
                     const wColor = windowColors[Math.floor(Math.random() * windowColors.length)];
                     ctx.fillStyle = wColor;
                     ctx.globalAlpha = 0.6 + Math.random() * 0.4;
                     const yPos = margin + i * (windowHeight + 4);
                     ctx.fillRect(margin, yPos, windowWidth, windowHeight - 8);
                     
-                    // Window frame/divider
                     ctx.fillStyle = '#1a1a3e';
                     ctx.globalAlpha = 1;
                     ctx.fillRect(margin + windowWidth/2 - 1, yPos, 2, windowHeight - 8);
@@ -175,6 +186,15 @@
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
             return texture;
+        }
+        
+        // Pre-generate texture pool
+        for (let i = 0; i < NUM_CACHED_TEXTURES; i++) {
+            windowTextureCache.push(generateWindowTexture());
+        }
+        
+        function createWindowTexture() {
+            return windowTextureCache[Math.floor(Math.random() * windowTextureCache.length)];
         }
         
         // Buildings - Grid-based city layout
@@ -878,6 +898,15 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Cleanup on page unload to prevent memory leaks
+        window.addEventListener('beforeunload', () => {
+            if (whistleTimeout) clearTimeout(whistleTimeout);
+            if (audioCtx.state !== 'closed') audioCtx.close();
+            renderer.dispose();
+            windowTextureCache.forEach(tex => tex.dispose());
+            manholeTexture.dispose();
         });
     </script>
 </body>
