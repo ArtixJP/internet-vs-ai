@@ -49,71 +49,248 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens chatting | 🚶 Rectilinear paths | 💀 EVIL TMNT hunting | 🎵 Click to whistle</div>
+<div id="community-zone">🗣️ Citizens chatting | 🚶 Rectilinear paths | 💀 EVIL TMNT hunting | 🎵 Click for synthwave</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 10<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
 <div id="kill-count" style="position:absolute;top:170px;left:20px;color:#ff4444;font-family:monospace;font-size:11px;z-index:100;background:rgba(50,0,0,0.5);padding:8px;border:1px solid #ff4444;">☠️ VICTIMS: <span id="victims">0</span></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-        // Happy whistling sound for the walker 🎵
+        // 🎵 SYNTHWAVE CITY SOUNDTRACK 🎵
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let whistleTimeout = null;
-        let isWhistling = false;
+        let musicPlaying = false;
+        let musicIntervals = [];
         
-        function playWhistle() {
-            if (isWhistling) return;
-            isWhistling = true;
-            const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 698.46, 659.25, 587.33];
-            let noteIndex = 0;
-            
-            function playNote() {
-                if (noteIndex >= notes.length) {
-                    noteIndex = 0;
-                    whistleTimeout = setTimeout(playNote, 2000);
-                    return;
-                }
-                
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(notes[noteIndex], audioCtx.currentTime);
-                
-                gain.gain.setValueAtTime(0, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.05);
-                gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.2);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.35);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.4);
-                
-                // Cleanup after note ends
-                osc.onended = () => {
-                    osc.disconnect();
-                    gain.disconnect();
-                };
-                
-                noteIndex++;
-                whistleTimeout = setTimeout(playNote, 350);
+        // Musical scales for cyberpunk vibes (A minor pentatonic + extras)
+        const bassNotes = [55, 65.41, 73.42, 82.41, 98, 110]; // A1, C2, D2, E2, G2, A2
+        const arpNotes = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33]; // A3-D5
+        const padNotes = [110, 130.81, 146.83, 164.81]; // A2, C3, D3, E3
+        
+        // Master volume control
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.4;
+        masterGain.connect(audioCtx.destination);
+        
+        // Reverb for atmosphere
+        const convolver = audioCtx.createConvolver();
+        const reverbTime = 2;
+        const sampleRate = audioCtx.sampleRate;
+        const reverbLength = sampleRate * reverbTime;
+        const impulse = audioCtx.createBuffer(2, reverbLength, sampleRate);
+        for (let channel = 0; channel < 2; channel++) {
+            const channelData = impulse.getChannelData(channel);
+            for (let i = 0; i < reverbLength; i++) {
+                channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLength, 2);
             }
+        }
+        convolver.buffer = impulse;
+        
+        // Wet/dry mix for reverb
+        const reverbGain = audioCtx.createGain();
+        reverbGain.gain.value = 0.3;
+        convolver.connect(reverbGain);
+        reverbGain.connect(masterGain);
+        
+        // Dry signal path
+        const dryGain = audioCtx.createGain();
+        dryGain.gain.value = 0.7;
+        dryGain.connect(masterGain);
+        
+        // Deep bass synth
+        function playBass() {
+            const note = bassNotes[Math.floor(Math.random() * bassNotes.length)];
+            const osc = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
             
-            playNote();
+            osc.type = 'sawtooth';
+            osc.frequency.value = note;
+            osc2.type = 'square';
+            osc2.frequency.value = note * 0.5;
+            
+            filter.type = 'lowpass';
+            filter.frequency.value = 200;
+            filter.Q.value = 5;
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.05);
+            gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.3);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+            
+            osc.connect(filter);
+            osc2.connect(filter);
+            filter.connect(gain);
+            gain.connect(dryGain);
+            
+            osc.start();
+            osc2.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+            osc2.stop(audioCtx.currentTime + 0.9);
         }
         
-        // Start whistling on user interaction (browser autoplay policy)
+        // Sparkling arpeggiator
+        let arpIndex = 0;
+        let arpPattern = [0, 2, 4, 7, 4, 2]; // Arp pattern indices
+        function playArp() {
+            const noteIdx = arpPattern[arpIndex % arpPattern.length];
+            const note = arpNotes[noteIdx % arpNotes.length];
+            arpIndex++;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.value = note * (Math.random() > 0.8 ? 2 : 1);
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            
+            osc.connect(gain);
+            gain.connect(convolver);
+            gain.connect(dryGain);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        }
+        
+        // Atmospheric pad
+        let padOscs = [];
+        function playPad() {
+            // Clean up old pad
+            padOscs.forEach(p => { try { p.osc.stop(); } catch(e){} });
+            padOscs = [];
+            
+            const chord = [padNotes[0], padNotes[2], padNotes[3]]; // Am chord
+            chord.forEach((note, i) => {
+                const osc = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+                
+                osc.type = 'sine';
+                osc.frequency.value = note * 2;
+                osc2.type = 'triangle';
+                osc2.frequency.value = note * 2 + 1; // Slight detune for richness
+                
+                filter.type = 'lowpass';
+                filter.frequency.value = 800;
+                
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 2);
+                gain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 6);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 8);
+                
+                osc.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(convolver);
+                
+                osc.start();
+                osc2.start();
+                osc.stop(audioCtx.currentTime + 8.5);
+                osc2.stop(audioCtx.currentTime + 8.5);
+                padOscs.push({osc, osc2});
+            });
+        }
+        
+        // Kick drum
+        function playKick() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            
+            osc.connect(gain);
+            gain.connect(dryGain);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        }
+        
+        // Hi-hat
+        function playHiHat() {
+            const bufferSize = audioCtx.sampleRate * 0.05;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 8000;
+            
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(dryGain);
+            
+            noise.start();
+        }
+        
+        function startMusic() {
+            if (musicPlaying) return;
+            musicPlaying = true;
+            
+            // Bass every 800ms
+            musicIntervals.push(setInterval(playBass, 800));
+            
+            // Arp every 200ms
+            musicIntervals.push(setInterval(playArp, 200));
+            
+            // Pad every 8 seconds
+            playPad();
+            musicIntervals.push(setInterval(playPad, 8000));
+            
+            // Kick on beat (every 400ms)
+            musicIntervals.push(setInterval(playKick, 400));
+            
+            // Hi-hat offbeat
+            setTimeout(() => {
+                musicIntervals.push(setInterval(playHiHat, 400));
+            }, 200);
+            
+            // Random variation - change arp pattern occasionally
+            musicIntervals.push(setInterval(() => {
+                const patterns = [
+                    [0, 2, 4, 7, 4, 2],
+                    [0, 4, 2, 5, 7, 5],
+                    [7, 5, 4, 2, 0, 2],
+                    [0, 0, 4, 4, 7, 7]
+                ];
+                arpPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            }, 4000));
+        }
+        
+        function stopMusic() {
+            musicPlaying = false;
+            musicIntervals.forEach(id => clearInterval(id));
+            musicIntervals = [];
+        }
+        
+        // Start music on user interaction (browser autoplay policy)
         document.addEventListener('click', function startAudio() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            playWhistle();
+            startMusic();
             document.removeEventListener('click', startAudio);
         }, { once: true });
         
         // Try to start immediately (may work on some browsers)
         setTimeout(() => {
-            if (audioCtx.state === 'running') playWhistle();
+            if (audioCtx.state === 'running') startMusic();
         }, 1000);
     </script>
 <script>
@@ -1124,7 +1301,7 @@
         
         // Cleanup on page unload to prevent memory leaks
         window.addEventListener('beforeunload', () => {
-            if (whistleTimeout) clearTimeout(whistleTimeout);
+            stopMusic();
             if (audioCtx.state !== 'closed') audioCtx.close();
             renderer.dispose();
             windowTextureCache.forEach(tex => tex.dispose());
