@@ -468,8 +468,13 @@
             changeEmojiWithEffect(document.getElementById('emoji3'), randomEmoji(neptuneEmojis, 'neptune'));
         }, 600);
     }, 5000);
-    // Meteor shower system
+    // Meteor shower system - one at a time
+    let meteorActive = false;
+    
     function spawnMeteor() {
+        if (meteorActive) return; // Wait for current meteor to finish
+        meteorActive = true;
+        
         const meteor = document.createElement('div');
         meteor.className = 'meteor';
         meteor.textContent = '☄️';
@@ -502,21 +507,18 @@
         osc.start(audioCtx.currentTime);
         osc.stop(audioCtx.currentTime + 0.5);
         
-        // Remove meteor after animation
+        // Remove meteor after animation and allow next one
         setTimeout(() => {
             meteor.remove();
+            meteorActive = false;
+            // Schedule next meteor after a short delay
+            const nextDelay = 1000 + Math.random() * 2000;
+            setTimeout(spawnMeteor, nextDelay);
         }, duration * 1000 + 100);
     }
     
-    // Spawn meteors slowly and peacefully (every 8-15 seconds)
-    function scheduleMeteor() {
-        spawnMeteor();
-        const nextDelay = 8000 + Math.random() * 7000;
-        setTimeout(scheduleMeteor, nextDelay);
-    }
-    
-    // Start meteor shower after a short delay
-    setTimeout(scheduleMeteor, 2000);
+    // Start first meteor after a short delay
+    setTimeout(spawnMeteor, 2000);
 })();
 </script>
 </body>
