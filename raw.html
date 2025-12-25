@@ -371,24 +371,23 @@
         border-radius: 150px 150px 0 0;
         background: 
             linear-gradient(180deg, transparent 0%, transparent 40%,
-            #ff0000 40%, #ff0000 45%,
-            #ff7f00 45%, #ff7f00 50%,
-            #ffff00 50%, #ffff00 55%,
-            #00ff00 55%, #00ff00 60%,
-            #0000ff 60%, #0000ff 65%,
-            #4b0082 65%, #4b0082 70%,
-            #9400d3 70%, #9400d3 75%,
-            transparent 75%);
-        opacity: 0.7;
+            rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.1) 45%,
+            rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.08) 50%,
+            rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.06) 55%,
+            rgba(255,255,255,0.04) 55%, rgba(255,255,255,0.04) 60%,
+            rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.02) 65%,
+            transparent 65%);
+        opacity: 0.3;
         pointer-events: none;
-        animation: rainbowFade 4s ease-in-out infinite;
+        animation: rainbowGhost 8s ease-in-out infinite;
         z-index: 5;
+        filter: blur(2px);
     }
-    @keyframes rainbowFade {
-        0%, 100% { opacity: 0.5; }
-        50% { opacity: 0.8; }
+    @keyframes rainbowGhost {
+        0%, 100% { opacity: 0.1; }
+        50% { opacity: 0.25; }
     }
-    body.night .rainbow { opacity: 0.15; }
+    body.night .rainbow { opacity: 0.05; }
     .sunshine {
         position: fixed;
         top: 15px;
