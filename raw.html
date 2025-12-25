@@ -198,7 +198,7 @@ function animate(){
   
   // Earthquake shake effect
   shakeTime+=0.016;
-  if(Math.random()<0.002)shakeIntensity=0.5+Math.random()*0.5; // Random quakes
+  // Earthquake disabled for stability - if(Math.random()<0.002)shakeIntensity=0.5+Math.random()*0.5;
   if(shakeIntensity>0){
     camera.position.x+=Math.sin(shakeTime*50)*shakeIntensity*0.1;
     camera.position.y+=Math.cos(shakeTime*60)*shakeIntensity*0.05;
