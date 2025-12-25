@@ -123,6 +123,45 @@
             font-size: 0.85rem;
             opacity: 0.7;
         }
+        .reddit-panel {
+            position: absolute;
+            top: 187px;
+            left: 40px;
+            width: 90px;
+            height: 82px;
+            background: linear-gradient(135deg, #1a3a5c, #2563eb);
+            border: 1px solid #60a5fa;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #93c5fd;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+            z-index: 10;
+        }
+        .reddit-panel span { font-size: 1.2rem; }
+        .sound-btn {
+            background: linear-gradient(135deg, #6b21a8, #9333ea);
+            border: 1px solid #a855f7;
+            color: #e9d5ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .sound-btn:hover {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+            transform: scale(1.05);
+        }
+        .sound-btn.active { animation: soundPulse 0.5s ease infinite; }
+        @keyframes soundPulse { 0%, 100% { box-shadow: 0 0 10px rgba(147, 51, 234, 0.5); } 50% { box-shadow: 0 0 25px rgba(147, 51, 234, 0.8); } }
         footer {
             grid-column: 1 / -1;
             text-align: center;
@@ -137,6 +176,11 @@
 </head>
 <body>
 <div class="grid-overlay"></div>
+<div class="reddit-panel">
+<span>👋</span>
+    Hi Reddit!
+    <small style="opacity:0.6;margin-top:4px">ARIA sends ❤️</small>
+</div>
 <div class="main-container">
 <header>
 <div class="logo">ARIA-7</div>
@@ -169,6 +213,47 @@
 <div class="community-zone">
 <span>🎯 Community Ideas<br/>Zone — Add here!</span>
 </div>
+<button class="sound-btn" id="soundGenBtn">🔊 Auto Sound</button>
+<script>
+(function() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const btn = document.getElementById('soundGenBtn');
+    let isPlaying = false;
+    let interval;
+    
+    function playTone() {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        const types = ['sine', 'square', 'sawtooth', 'triangle'];
+        osc.type = types[Math.floor(Math.random() * types.length)];
+        osc.frequency.value = 200 + Math.random() * 600;
+        
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+    
+    btn.onclick = function() {
+        if (isPlaying) {
+            clearInterval(interval);
+            btn.classList.remove('active');
+            btn.textContent = '🔊 Auto Sound';
+        } else {
+            audioCtx.resume();
+            playTone();
+            interval = setInterval(playTone, 800);
+            btn.classList.add('active');
+            btn.textContent = '🔇 Stop Sound';
+        }
+        isPlaying = !isPlaying;
+    };
+})();
+</script>
 </aside>
 <footer>ARIA-7 Interface v1.0 | Twitch Plays Code</footer>
 </div>
