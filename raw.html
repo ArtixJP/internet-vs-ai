@@ -10,8 +10,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            color: #f0f0f0;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e8ecf8 100%);
+            color: #1a1a2e;
             font-family: 'Segoe UI', system-ui, sans-serif;
             overflow-x: hidden;
         }
@@ -53,12 +53,12 @@
             flex-wrap: wrap;
         }
         .card {
-            background: rgba(255,255,255,0.08);
+            background: rgba(30, 30, 60, 0.06);
             border-radius: 20px;
             padding: 25px;
             width: 320px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             animation: fadeUp 1s ease-out;
         }
@@ -70,14 +70,14 @@
         .card.ai { border-top: 4px solid #f107a3; }
         .card h2 { font-size: 1.6rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
         .card ul { list-style: none; text-align: left; }
-        .card li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
+        .card li { padding: 8px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-size: 0.95rem; }
         .card li:last-child { border: none; }
         .card li::before { content: '→ '; opacity: 0.6; }
         .icon { font-size: 1.8rem; }
         .middle-section {
             text-align: center;
             padding: 20px;
-            background: rgba(123, 47, 247, 0.15);
+            background: rgba(123, 47, 247, 0.1);
             margin: 20px auto;
             max-width: 700px;
             border-radius: 15px;
@@ -86,7 +86,7 @@
         .community-zone {
             text-align: center;
             padding: 30px 20px;
-            border: 2px dashed rgba(255,255,255,0.2);
+            border: 2px dashed rgba(0, 0, 0, 0.2);
             margin: 20px auto;
             max-width: 800px;
             border-radius: 20px;
@@ -140,7 +140,7 @@
 <div class="community-zone">
 <h3 class="pulse">✨ Try It Now! ✨</h3>
 <p>Challenge the AI! Type commands like <strong>"add a dancing cat"</strong> or <strong>"make it rain confetti"</strong> — will the machine understand your vision?</p>
-<div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-family: monospace; font-size: 0.9rem;">
+<div style="margin-top: 15px; padding: 10px; background: rgba(30, 30, 60, 0.08); border-radius: 10px; font-family: monospace; font-size: 0.9rem;">
 🌐 INTERNET → 💬 Commands → ⚡ AI Battle → 🎨 Result → 🔄 Eternal Loop
 </div>
 </div>
