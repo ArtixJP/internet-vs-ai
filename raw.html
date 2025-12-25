@@ -189,8 +189,15 @@ function animate(){
     if(!collide(player.x,player.y,player.z+velocity.z))player.z+=velocity.z;
     
     const groundCheck=getBlock(player.x,player.y-0.1,player.z);
-    if(groundCheck&&velocity.y<0){velocity.y=0;onGround=true;player.y=Math.floor(player.y)+1;}
-    else{onGround=false;player.y+=velocity.y;}
+    const groundY=groundCheck?Math.floor(player.y)+1:null;
+    if(groundCheck&&velocity.y<=0){
+      velocity.y=0;
+      onGround=true;
+      if(player.y<groundY)player.y=groundY;
+    }else{
+      onGround=false;
+      player.y+=velocity.y;
+    }
     
     if(player.y<-10){player.y=30;velocity.y=0;}
   }
