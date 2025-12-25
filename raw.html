@@ -49,10 +49,11 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens chatting | 🚶 Rectilinear paths | 🐢 TMNT active | 🎵 Click to whistle</div>
+<div id="community-zone">🗣️ Citizens chatting | 🚶 Rectilinear paths | 💀 EVIL TMNT hunting | 🎵 Click to whistle</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 10<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
-<div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
+<div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
+<div id="kill-count" style="position:absolute;top:170px;left:20px;color:#ff4444;font-family:monospace;font-size:11px;z-index:100;background:rgba(50,0,0,0.5);padding:8px;border:1px solid #ff4444;">☠️ VICTIMS: <span id="victims">0</span></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
         // Happy whistling sound for the walker 🎵
@@ -452,7 +453,8 @@
             const turtle = new THREE.Group();
             const shellMat = new THREE.MeshStandardMaterial({ color: 0x2d5a27, metalness: 0.3 });
             const skinMat = new THREE.MeshStandardMaterial({ color: 0x3d8b37 });
-            const bandanaMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.5 });
+            const bandanaMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.8 });
+            const swordMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1, emissive: 0xff0000, emissiveIntensity: 0.3 });
             
             // Shell (back)
             const shell = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 8), shellMat);
@@ -506,8 +508,24 @@
             rightArm.rotation.z = -Math.PI / 4;
             turtle.add(rightArm);
             
+            // DEADLY KATANA 🗡️
+            const katanaGroup = new THREE.Group();
+            const blade = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.6, 0.01), swordMat);
+            blade.position.y = 0.35;
+            katanaGroup.add(blade);
+            const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.15, 8), new THREE.MeshStandardMaterial({ color: 0x4a2511 }));
+            handle.position.y = 0;
+            katanaGroup.add(handle);
+            const guard = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.02, 0.02), new THREE.MeshStandardMaterial({ color: 0xffd700 }));
+            guard.position.y = 0.08;
+            katanaGroup.add(guard);
+            katanaGroup.position.set(0.45, 0.95, 0);
+            katanaGroup.rotation.z = -Math.PI / 3;
+            turtle.add(katanaGroup);
+            
             turtle.userData.name = name;
-            turtle.userData.limbs = { leftLeg, rightLeg, leftArm, rightArm };
+            turtle.userData.limbs = { leftLeg, rightLeg, leftArm, rightArm, katana: katanaGroup };
+            turtle.userData.killCount = 0;
             turtle.userData.state = 'hidden'; // hidden, emerging, running, entering
             turtle.userData.targetManhole = null;
             turtle.userData.startManhole = null;
@@ -527,6 +545,83 @@
         
         // Turtle mission system
         let nextTurtleMission = 200; // Start first mission after a few seconds
+        const dyingNPCs = [];
+        let totalKills = 0;
+        
+        function updateKillCount() {
+            totalKills++;
+            document.getElementById('victims').textContent = totalKills;
+            document.getElementById('count').textContent = crowd.length;
+        }
+        
+        function sliceNPC(npc, index, turtle) {
+            npc.userData.isDying = true;
+            
+            // Create blood splatter effect
+            const bloodGeom = new THREE.SphereGeometry(0.1, 6, 6);
+            const bloodMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            for (let b = 0; b < 8; b++) {
+                const blood = new THREE.Mesh(bloodGeom, bloodMat);
+                blood.position.copy(npc.position);
+                blood.position.y = 1;
+                blood.position.x += (Math.random() - 0.5) * 0.5;
+                blood.position.z += (Math.random() - 0.5) * 0.5;
+                scene.add(blood);
+                setTimeout(() => scene.remove(blood), 500 + Math.random() * 500);
+            }
+            
+            // Create top half (head, torso, arms)
+            const topHalf = new THREE.Group();
+            const topMat = new THREE.MeshStandardMaterial({ 
+                color: npc.children[0]?.material?.color || 0xff00ff, 
+                transparent: true, 
+                opacity: 1 
+            });
+            const topBody = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.2), topMat);
+            topBody.position.y = 0.2;
+            topHalf.add(topBody);
+            const topHead = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), topMat);
+            topHead.position.y = 0.5;
+            topHalf.add(topHead);
+            topHalf.position.copy(npc.position);
+            topHalf.position.y = 1.2;
+            scene.add(topHalf);
+            
+            // Create bottom half (hips, legs)
+            const bottomHalf = new THREE.Group();
+            const bottomMat = new THREE.MeshStandardMaterial({ 
+                color: npc.children[0]?.material?.color || 0xff00ff, 
+                transparent: true, 
+                opacity: 1 
+            });
+            const hips = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.18), bottomMat);
+            hips.position.y = 0.15;
+            bottomHalf.add(hips);
+            const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.5, 8), bottomMat);
+            leg1.position.set(-0.1, -0.2, 0);
+            bottomHalf.add(leg1);
+            const leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.5, 8), bottomMat);
+            leg2.position.set(0.1, -0.2, 0);
+            bottomHalf.add(leg2);
+            bottomHalf.position.copy(npc.position);
+            bottomHalf.position.y = 0.6;
+            scene.add(bottomHalf);
+            
+            // Remove original NPC
+            scene.remove(npc);
+            crowd.splice(index, 1);
+            
+            // Track dying animation
+            dyingNPCs.push({
+                topHalf: topHalf,
+                bottomHalf: bottomHalf,
+                timer: 60,
+                splitDir: Math.random() > 0.5 ? 1 : -1
+            });
+            
+            // Update status
+            document.getElementById('turtle-status').innerHTML = '💀 ' + turtle.userData.name + ': SLICED A VICTIM! ☠️';
+        }
         
         function startTurtleMission() {
             // Find available turtle
@@ -912,6 +1007,33 @@
                 }
             }
             
+            // NPC death/slice animation system
+            dyingNPCs.forEach((dying, idx) => {
+                dying.timer--;
+                // Separate the halves
+                if (dying.topHalf && dying.bottomHalf) {
+                    dying.topHalf.position.y += 0.05;
+                    dying.topHalf.rotation.x += 0.1;
+                    dying.topHalf.position.x += dying.splitDir * 0.02;
+                    dying.bottomHalf.position.y -= 0.02;
+                    dying.bottomHalf.rotation.z += 0.05;
+                    dying.bottomHalf.position.x -= dying.splitDir * 0.02;
+                    // Fade out
+                    const opacity = dying.timer / 60;
+                    dying.topHalf.children.forEach(c => {
+                        if (c.material) c.material.opacity = opacity;
+                    });
+                    dying.bottomHalf.children.forEach(c => {
+                        if (c.material) c.material.opacity = opacity;
+                    });
+                }
+                if (dying.timer <= 0) {
+                    scene.remove(dying.topHalf);
+                    scene.remove(dying.bottomHalf);
+                    dyingNPCs.splice(idx, 1);
+                }
+            });
+            
             // Animate Ninja Turtles
             nextTurtleMission--;
             if (nextTurtleMission <= 0) {
@@ -926,7 +1048,7 @@
                     if (turtle.userData.progress >= 1) {
                         turtle.userData.state = 'running';
                         turtle.userData.progress = 0;
-                        document.getElementById('turtle-status').innerHTML = '🐢 ' + turtle.userData.name + ': COWABUNGA! Running!';
+                        document.getElementById('turtle-status').innerHTML = '💀 ' + turtle.userData.name + ': HUNTING FOR PREY!';
                     }
                 } else if (turtle.userData.state === 'running') {
                     const target = turtle.userData.targetManhole.position;
@@ -940,17 +1062,34 @@
                         turtle.position.z += (dz / dist) * speed;
                         turtle.rotation.y = Math.atan2(dx, dz);
                         
-                        // Running animation
+                        // Running animation with sword swing
                         turtle.userData.walkPhase += 0.4;
                         const swing = Math.sin(turtle.userData.walkPhase) * 0.6;
                         turtle.userData.limbs.leftLeg.rotation.x = swing;
                         turtle.userData.limbs.rightLeg.rotation.x = -swing;
                         turtle.userData.limbs.leftArm.rotation.x = -swing * 0.5;
                         turtle.userData.limbs.rightArm.rotation.x = swing * 0.5;
+                        // Menacing sword swing
+                        if (turtle.userData.limbs.katana) {
+                            turtle.userData.limbs.katana.rotation.z = -Math.PI / 3 + Math.sin(turtle.userData.walkPhase * 2) * 0.3;
+                        }
+                        
+                        // CHECK FOR VICTIMS 💀
+                        for (let ci = crowd.length - 1; ci >= 0; ci--) {
+                            const victim = crowd[ci];
+                            if (victim.userData.isDying) continue;
+                            const victimDist = turtle.position.distanceTo(victim.position);
+                            if (victimDist < 1.5) {
+                                // SLICE THEM IN HALF!
+                                sliceNPC(victim, ci, turtle);
+                                turtle.userData.killCount++;
+                                updateKillCount();
+                            }
+                        }
                     } else {
                         turtle.userData.state = 'entering';
                         turtle.userData.progress = 0;
-                        document.getElementById('turtle-status').innerHTML = '🐢 ' + turtle.userData.name + ': Entering sewer...';
+                        document.getElementById('turtle-status').innerHTML = '💀 ' + turtle.userData.name + ': Retreating to shadows...';
                     }
                 } else if (turtle.userData.state === 'entering') {
                     turtle.userData.progress += 0.025;
@@ -958,7 +1097,7 @@
                     if (turtle.userData.progress >= 1) {
                         turtle.userData.state = 'hidden';
                         turtle.visible = false;
-                        document.getElementById('turtle-status').innerHTML = '🐢 Ninja Turtles: Patrolling sewers';
+                        document.getElementById('turtle-status').innerHTML = '🐢 EVIL Ninja Turtles: Patrolling sewers 💀';
                     }
                 }
             });
