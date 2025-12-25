@@ -45,11 +45,11 @@
 </head>
 <body>
 <div id="info">
-<h1>🌃 CITY WALKER</h1>
-<span>Follow the journey through neon streets</span>
+<h1>🐢 TURTLE TRACKER</h1>
+<span>Following the ninja hunters through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🎬 Attack cam focus | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
+<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
@@ -1118,7 +1118,10 @@
                 Math.cos(time * 0.6) * 10 * 0.6
             );
             
-            // Camera follows walker OR focuses on attack
+            // Camera follows active turtle OR walker
+            // Find an active hunting turtle
+            const activeTurtle = turtles.find(t => t.userData.state === 'running' || t.userData.state === 'emerging' || t.userData.state === 'entering');
+            
             if (attackCamActive && attackCamTarget) {
                 // Dramatic attack camera!
                 const turtlePos = attackCamTarget.turtle.position;
@@ -1139,6 +1142,22 @@
                     attackCamTarget = null;
                     currentTimeScale = 1;
                 }
+            } else if (activeTurtle && activeTurtle.visible) {
+                // 🐢 FOLLOW THE NINJA TURTLE!
+                const turtlePos = activeTurtle.position;
+                // Dynamic chase camera - follows behind the turtle
+                const followDist = 6;
+                const followHeight = 4;
+                const turtleDir = activeTurtle.rotation.y;
+                
+                // Smooth camera follow behind the turtle
+                const targetCamX = turtlePos.x - Math.sin(turtleDir) * followDist;
+                const targetCamZ = turtlePos.z - Math.cos(turtleDir) * followDist;
+                
+                camera.position.x += (targetCamX - camera.position.x) * 0.05;
+                camera.position.y += (followHeight - camera.position.y) * 0.05;
+                camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+                camera.lookAt(turtlePos.x, 1, turtlePos.z);
             } else {
                 camera.position.x = walker.position.x - 8;
                 camera.position.y = 5;
