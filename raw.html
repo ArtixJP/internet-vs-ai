@@ -532,7 +532,7 @@
         document.head.appendChild(spectatorStyle);
         
         // Cat Card Interactions System
-        const catCards = document.querySelectorAll('.cat-card');
+        const allCatCards = document.querySelectorAll('.cat-card');
         const interactions = [
             ['💕', '😻 So cute!'],
             ['🐟', 'Want some fish?'],
@@ -594,7 +594,7 @@
         }
         
         function catInteraction() {
-            const cards = Array.from(catCards);
+            const cards = Array.from(allCatCards);
             const fromIdx = Math.floor(Math.random() * cards.length);
             let toIdx = Math.floor(Math.random() * cards.length);
             while (toIdx === fromIdx) toIdx = Math.floor(Math.random() * cards.length);
