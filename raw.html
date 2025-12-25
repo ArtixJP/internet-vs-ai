@@ -112,6 +112,76 @@
             animation: sway 8s ease-in-out infinite;
         }
         
+        .forest-layer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .forest-back {
+            bottom: 5%;
+            font-size: 1.8rem;
+            opacity: 0.15;
+            filter: grayscale(100%) brightness(0.3) blur(2px);
+            z-index: 3;
+        }
+        
+        .forest-mid-back {
+            bottom: 3%;
+            font-size: 2.5rem;
+            opacity: 0.25;
+            filter: grayscale(100%) brightness(0.4) blur(1px);
+            z-index: 4;
+        }
+        
+        .forest-mid {
+            bottom: 1%;
+            font-size: 3.2rem;
+            opacity: 0.4;
+            filter: grayscale(100%) brightness(0.5);
+            z-index: 5;
+        }
+        
+        .forest-front {
+            bottom: -2%;
+            font-size: 4.5rem;
+            opacity: 0.6;
+            filter: grayscale(100%) brightness(0.6);
+            z-index: 6;
+        }
+        
+        .forest-layer span {
+            animation: sway 8s ease-in-out infinite;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .forest-layer span:nth-child(odd) {
+            animation-delay: -2s;
+            animation-duration: 10s;
+        }
+        
+        .forest-layer span:nth-child(3n) {
+            animation-delay: -4s;
+            animation-duration: 7s;
+        }
+        
+        .forest-mist {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30vh;
+            background: linear-gradient(180deg, transparent 0%, rgba(10,20,40,0.3) 50%, rgba(5,10,20,0.6) 100%);
+            pointer-events: none;
+            z-index: 7;
+        }
+        
         @keyframes sway {
             0%, 100% { transform: rotate(-2deg); }
             50% { transform: rotate(2deg); }
@@ -256,6 +326,20 @@
 <body>
 <div class="snowfall" id="snow"></div>
 <div class="breath-mist"></div>
+
+<div class="forest-layer forest-back">
+<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
+</div>
+<div class="forest-layer forest-mid-back">
+<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
+</div>
+<div class="forest-layer forest-mid">
+<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
+</div>
+<div class="forest-layer forest-front">
+<span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span><span>🌲</span>
+</div>
+<div class="forest-mist"></div>
 <div class="temperature">-42°</div>
 <div class="frozen-world">
 <h1 class="title-frozen">Black Winter</h1>
