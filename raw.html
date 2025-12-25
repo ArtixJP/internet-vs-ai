@@ -313,7 +313,7 @@
             if (tiles.length < 2) return;
             
             // Pick two random tiles to swap (excluding main tile for stability)
-            const swappable = tiles.filter(t => !t.classList.contains('main'));
+            const swappable = tiles.filter(t => !t.classList.contains('main') && t.id !== 'nyan-tile');
             if (swappable.length < 2) return;
             
             const idx1 = Math.floor(Math.random() * swappable.length);
