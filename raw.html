@@ -695,7 +695,7 @@
             }
         });
         
-        // Auto-start wind on first interaction
+        // Auto-start wind on first interaction (fallback)
         function autoStartWind() {
             if (!isAudioStarted) {
                 createWind();
@@ -709,6 +709,26 @@
         }
         document.addEventListener('click', autoStartWind);
         document.addEventListener('touchstart', autoStartWind);
+        
+        // Attempt immediate autoplay on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (!isAudioStarted) {
+                    try {
+                        createWind();
+                        isAudioStarted = true;
+                        const btn = document.getElementById('audioBtn');
+                        btn.textContent = '🎵';
+                        btn.style.boxShadow = '0 0 15px rgba(74,158,187,0.5)';
+                        // Check if audio context is running
+                        if (audioCtx && audioCtx.state === 'suspended') {
+                                                        isAudioStarted = false;
+                        }
+                    } catch(e) {
+                                            }
+                }
+            }, 500);
+        });
         
         // HORROR ELEMENTS
         
