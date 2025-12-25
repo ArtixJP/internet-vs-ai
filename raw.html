@@ -413,6 +413,55 @@
             pointer-events: auto;
         }
         
+        .running-snowman {
+            position: fixed;
+            bottom: 25%;
+            font-size: 2.5rem;
+            z-index: 9;
+            animation: snowman-run 12s linear infinite;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+        
+        .snowman-legs {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            animation: legs-move 0.3s steps(2) infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes snowman-run {
+            0% { left: -10%; transform: scaleX(1) rotate(-5deg); }
+            45% { transform: scaleX(1) rotate(5deg); }
+            50% { left: 110%; transform: scaleX(1) rotate(-5deg); }
+            50.1% { left: 110%; transform: scaleX(-1) rotate(-5deg); }
+            95% { transform: scaleX(-1) rotate(5deg); }
+            100% { left: -10%; transform: scaleX(-1) rotate(-5deg); }
+        }
+        
+        @keyframes legs-move {
+            0% { content: '👟 👟'; letter-spacing: 0.3rem; }
+            50% { content: '👟  👟'; letter-spacing: 0.1rem; }
+        }
+        
+        .snowman-panic {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            color: rgba(168,213,229,0.7);
+            animation: panic-text 0.8s ease-in-out infinite;
+            white-space: nowrap;
+        }
+        
+        @keyframes panic-text {
+            0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.8; transform: translateX(-50%) translateY(-3px); }
+        }
+        
         .temperature {
             position: fixed;
             top: 20px;
@@ -441,6 +490,11 @@
 </div>
 <div class="forest-mist"></div>
 <div class="temperature">-42°</div>
+<div class="running-snowman">
+<div class="snowman-panic">...too cold!...</div>
+    ⛄
+    <div class="snowman-legs">💨</div>
+</div>
 <div class="frozen-world">
 <div class="landscape">
 <span class="frozen-tree">🌲</span>
@@ -461,7 +515,6 @@
 <div class="ember e2"></div>
 <div class="ember e3"></div>
 </div>
-
 <div class="camp-scene">
 <div class="camper left-camper">
 <div class="speech-bubble left-bubble">...il fait si froid...</div>
