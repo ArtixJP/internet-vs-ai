@@ -116,10 +116,64 @@
             font-size: 0.8rem;
             color: #888;
         }
+        .music-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid #3a3a5e;
+            color: #48dbfb;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .music-toggle:hover {
+            background: rgba(72, 219, 251, 0.2);
+            box-shadow: 0 0 15px rgba(72, 219, 251, 0.3);
+        }
+        .music-toggle.active {
+            background: rgba(72, 219, 251, 0.3);
+            color: #fff;
+        }
+        .experiment-info {
+            background: linear-gradient(135deg, rgba(95, 39, 205, 0.2), rgba(72, 219, 251, 0.2));
+            border: 1px solid #5f27cd;
+            border-radius: 10px;
+            padding: 12px 18px;
+            max-width: 500px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .experiment-info h3 {
+            color: #ff9ff3;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .experiment-info .highlight {
+            color: #feca57;
+            font-weight: bold;
+        }
+        .experiment-info code {
+            background: #2a2a4e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #1dd1a1;
+        }
     </style>
 </head>
 <body>
+<button class="music-toggle" id="musicBtn" onclick="toggleMusic()">🔇 Music Off</button>
 <h1>🎨 Collective Canvas</h1>
+<div class="experiment-info">
+<h3>🌐 Internet vs AI Experiment 🤖</h3>
+<p>You're watching a <span class="highlight">live collaborative website</span> where the community controls what happens!</p>
+<p>Type <code>!idea your suggestion</code> in chat to propose changes to this page. AI interprets your ideas and evolves the site in real-time!</p>
+<p style="color:#888;font-size:0.75rem;margin-top:6px;">Every idea shapes this digital canvas. What will we create together?</p>
+</div>
 <div class="instructions">
         Type in chat: <code>draw [color] [x] [y]</code> — Example: <code>draw red 10 5</code><br/>
 <span style="color:#ff9ff3;font-size:0.8rem">👋 Hello r/SideProject community!</span>
@@ -172,6 +226,7 @@
                 pixelCount++;
                 countEl.textContent = pixelCount;
                 addLog(`${user}: ${color} at ${x},${y}`);
+                playPixelNote(color);
             }
         }
 
@@ -197,6 +252,62 @@
         };
         chatWs.onerror = () => { log.innerHTML = '🔴 Connection error'; };
 
+        // Audio context for generative music
+        let audioCtx = null;
+        let musicEnabled = false;
+        let oscillators = [];
+        const scales = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // C major pentatonic
+        
+        function toggleMusic() {
+            const btn = document.getElementById('musicBtn');
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            musicEnabled = !musicEnabled;
+            btn.textContent = musicEnabled ? '🔊 Music On' : '🔇 Music Off';
+            btn.classList.toggle('active', musicEnabled);
+            
+            if (musicEnabled) {
+                // Start ambient drone
+                playDrone();
+            } else {
+                // Stop all sounds
+                oscillators.forEach(o => { try { o.stop(); } catch(e){} });
+                oscillators = [];
+            }
+        }
+        
+        function playDrone() {
+            if (!musicEnabled || !audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 65.41; // Low C
+            gain.gain.value = 0.05;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            oscillators.push(osc);
+        }
+        
+        function playPixelNote(color) {
+            if (!musicEnabled || !audioCtx) return;
+            const colorNotes = {
+                red: 0, yellow: 1, blue: 2, green: 3, pink: 4, white: 5, purple: 2, orange: 1, erase: 0
+            };
+            const freq = scales[colorNotes[color] || 0];
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = ['sine', 'triangle', 'square'][Math.floor(Math.random() * 3)];
+            osc.frequency.value = freq * (Math.random() > 0.5 ? 2 : 1);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+        
         // Pre-draw welcome message for Reddit side projects community!
         const welcomePixels = [
             // H
