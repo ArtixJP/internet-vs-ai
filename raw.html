@@ -51,7 +51,7 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total (shader fix applied)</div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total (shader fix applied)<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -714,8 +714,26 @@
             }
         }
         
+        // Frustum culling for performance optimization
+        const frustum = new THREE.Frustum();
+        const projScreenMatrix = new THREE.Matrix4();
+        
+        function updateFrustum() {
+            projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+            frustum.setFromProjectionMatrix(projScreenMatrix);
+        }
+        
+        function isInView(object) {
+            if (!object.geometry) return true;
+            if (!object.geometry.boundingSphere) object.geometry.computeBoundingSphere();
+            const sphere = object.geometry.boundingSphere.clone();
+            sphere.applyMatrix4(object.matrixWorld);
+            return frustum.intersectsSphere(sphere);
+        }
+        
         // Animation
         let time = 0;
+        let cullCount = 0;
         function animate() {
             requestAnimationFrame(animate);
             time += 0.016;
@@ -733,6 +751,24 @@
             camera.position.y = 5;
             camera.position.z = walker.position.z + 8;
             camera.lookAt(walker.position.x, 1.5, walker.position.z);
+            
+            // Update frustum for culling
+            camera.updateMatrixWorld();
+            updateFrustum();
+            
+            // Frustum cull buildings
+            cullCount = 0;
+            buildings.forEach(building => {
+                const wasVisible = building.visible;
+                building.visible = isInView(building);
+                if (!building.visible) cullCount++;
+            });
+            
+            // Frustum cull manholes
+            manholes.forEach(mh => {
+                const dist = mh.position.distanceTo(camera.position);
+                mh.visible = dist < 50; // Distance-based culling for small objects
+            });
             
             // Animate crowd with walking motion
             crowd.forEach(npc => {
@@ -859,6 +895,9 @@
                     mh.userData.steamPhase += 0.05;
                 }
             });
+            
+            // Update cull stats in debug
+            document.getElementById('cull-stats').textContent = cullCount + ' buildings hidden';
             
             renderer.render(scene, camera);
         }
