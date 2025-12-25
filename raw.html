@@ -254,23 +254,36 @@
         }
         .stickman-hat {
             position: absolute;
-            top: -8px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
             animation: hatWobble 0.4s ease-in-out infinite;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
         }
         .hat-top {
-            width: 12px;
-            height: 10px;
-            background: #313244;
+            width: 16px;
+            height: 14px;
+            background: linear-gradient(135deg, #cba6f7 0%, #89b4fa 100%);
             border-radius: 50% 50% 0 0;
+            border: 2px solid var(--accent);
         }
         .hat-brim {
-            width: 20px;
+            width: 26px;
+            height: 4px;
+            background: linear-gradient(90deg, #cba6f7, #89b4fa);
+            border-radius: 3px;
+            margin-left: -5px;
+            border: 1px solid var(--accent);
+        }
+        .hat-ribbon {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
             height: 3px;
-            background: #313244;
-            border-radius: 2px;
-            margin-left: -4px;
+            background: #f38ba8;
+            border-radius: 1px;
         }
         .stickman-leg {
             width: 2px;
@@ -517,7 +530,7 @@
 </div>
 <div class="stickman-body">
 <div class="stickman-hat">
-<div class="hat-top"></div>
+<div class="hat-top"><div class="hat-ribbon"></div></div>
 <div class="hat-brim"></div>
 </div>
 <div class="stickman-head"></div>
