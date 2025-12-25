@@ -4,351 +4,198 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>🥐 The Code Bakery - Fresh Ideas Baked by Chat 🍞</title>
+<title>🐱 Cat Paradise 🐱</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 50%, #f5cba7 100%);
-            color: #5d4037;
-            font-family: 'Georgia', 'Segoe UI', system-ui, serif;
+            background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
             overflow-x: hidden;
-        }
-        .bread-float {
-            position: fixed;
-            font-size: 2rem;
-            animation: floatBread 8s ease-in-out infinite;
-            opacity: 0.6;
-            pointer-events: none;
-            z-index: -1;
-        }
-        @keyframes floatBread {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-        }
-        .hero {
-            text-align: center;
-            padding: 40px 20px 30px;
-            animation: slideDown 0.8s ease-out;
-        }
-        .hero h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(90deg, #d4a574, #8b4513, #cd853f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(139,69,19,0.1);
-        }
-        .hero p { font-size: 1.2rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
-        .tagline { font-style: italic; }
-        .vs-badge {
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #d4a574, #8b4513);
-            padding: 10px 30px;
-            border-radius: 50px;
-            animation: glow 2s ease-in-out infinite alternate;
-            box-shadow: 0 0 30px rgba(139, 69, 19, 0.5);
-        }
-        @keyframes glow {
-            from { box-shadow: 0 0 20px rgba(212, 165, 116, 0.5), 0 0 40px rgba(212, 165, 116, 0.3); }
-            to { box-shadow: 0 0 20px rgba(139, 69, 19, 0.5), 0 0 40px rgba(139, 69, 19, 0.3); }
-        }
-        .comparison {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 30px 20px;
-            flex-wrap: wrap;
-        }
-        .card {
-            background: rgba(30, 30, 60, 0.06);
-            border-radius: 20px;
-            padding: 25px;
-            width: 320px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeUp 1s ease-out;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        .card.internet { border-top: 4px solid #d4a574; }
-        .card.ai { border-top: 4px solid #8b4513; }
-        .card { background: rgba(255, 248, 220, 0.8); border: 1px solid rgba(139, 69, 19, 0.2); }
-        .card h2 { font-size: 1.6rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-        .card ul { list-style: none; text-align: left; }
-        .card li { padding: 8px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-size: 0.95rem; }
-        .card li:last-child { border: none; }
-        .card li::before { content: '→ '; opacity: 0.6; }
-        .icon { font-size: 1.8rem; }
-        .middle-section {
-            text-align: center;
-            padding: 20px;
-            background: rgba(123, 47, 247, 0.1);
-            margin: 20px auto;
-            max-width: 700px;
-            border-radius: 15px;
-        }
-        .middle-section h3 { font-size: 1.4rem; margin-bottom: 10px; color: #c9a0ff; }
-        .community-zone {
-            text-align: center;
-            padding: 30px 20px;
-            border: 2px dashed rgba(0, 0, 0, 0.2);
-            margin: 20px auto;
-            max-width: 800px;
-            border-radius: 20px;
-        }
-        .community-zone h3 { color: #7bffb1; margin-bottom: 10px; }
-        .rules-scroll {
-            text-align: center;
-            padding: 25px;
-            margin: 20px auto;
-            max-width: 750px;
-            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(123,47,247,0.1));
-            border-radius: 15px;
-            border: 2px solid rgba(255,215,0,0.3);
             position: relative;
         }
-        .rules-scroll h3 {
-            font-size: 1.5rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255,215,0,0.3);
-        }
-        .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .rule {
-            background: rgba(30,30,60,0.08);
-            padding: 15px 10px;
-            border-radius: 12px;
-            transition: transform 0.2s;
-        }
-        .rule:hover { transform: scale(1.05); }
-        .rule-num {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(45deg, #00d4ff, #f107a3);
-            border-radius: 50%;
-            line-height: 30px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: white;
-        }
-        .rule p { font-size: 0.9rem; margin: 0; }
-        .rules-footer {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            margin-top: 10px;
-        }
-        .pulse { animation: pulse 2s infinite; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-    .flying-cat {
+        
+        .sky {
             position: fixed;
-            font-size: 2.5rem;
-            z-index: 100;
+            top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
-            animation: flyAcross 12s linear infinite;
+            z-index: 0;
+        }
+        
+        .floating-cat {
+            position: absolute;
+            font-size: 3rem;
+            animation: float 6s ease-in-out infinite;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: transform 0.3s;
+        }
+        .floating-cat:hover { transform: scale(1.3) rotate(10deg); }
+        .floating-cat:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .floating-cat:nth-child(2) { top: 25%; right: 20%; animation-delay: 1s; font-size: 2.5rem; }
+        .floating-cat:nth-child(3) { top: 60%; left: 8%; animation-delay: 2s; font-size: 4rem; }
+        .floating-cat:nth-child(4) { top: 40%; right: 10%; animation-delay: 0.5s; }
+        .floating-cat:nth-child(5) { bottom: 20%; left: 25%; animation-delay: 3s; font-size: 2rem; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .main-content {
+            position: relative;
+            z-index: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
+            padding: 40px 20px;
+            min-height: 100vh;
         }
-        .cat-body {
-            animation: catBob 0.5s ease-in-out infinite alternate;
-            filter: drop-shadow(0 0 10px rgba(212, 165, 116, 0.8));
+        
+        h1 {
+            font-size: 3.5rem;
+            color: #5d4e60;
+            text-shadow: 3px 3px 0 #fff, -1px -1px 0 #ffb6c1;
+            margin-bottom: 10px;
+            animation: wiggle 2s ease-in-out infinite;
         }
-        .cat-wings {
-            position: absolute;
-            left: -20px;
-            top: -15px;
-            font-size: 1.5rem;
-            animation: wingFlap 0.2s ease-in-out infinite alternate;
-            transform-origin: center;
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
         }
-        .cat-trail {
-            position: absolute;
-            right: 40px;
-            font-size: 1rem;
-            animation: sparkle 0.3s ease-in-out infinite alternate;
-            opacity: 0.8;
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #8b7d8b;
+            margin-bottom: 30px;
         }
-        @keyframes flyAcross {
-            0% { left: -100px; top: 20%; transform: scaleX(1); }
-            45% { left: 110%; top: 35%; transform: scaleX(1); }
-            50% { left: 110%; top: 35%; transform: scaleX(-1); }
-            95% { left: -100px; top: 25%; transform: scaleX(-1); }
-            100% { left: -100px; top: 20%; transform: scaleX(1); }
+        
+        .cat-gallery {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
         }
-        @keyframes catBob {
-            from { transform: translateY(-5px) rotate(-5deg); }
-            to { transform: translateY(5px) rotate(5deg); }
+        
+        .cat-card {
+            background: rgba(255,255,255,0.85);
+            border-radius: 20px;
+            padding: 20px;
+            width: 180px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        @keyframes wingFlap {
-            from { transform: rotate(-15deg) scale(1); }
-            to { transform: rotate(15deg) scale(1.1); }
+        .cat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
-        @keyframes sparkle {
-            from { opacity: 0.4; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); }
-        }
-        .fireworks-canvas {
+        .cat-card .emoji { font-size: 4rem; }
+        .cat-card h3 { color: #5d4e60; margin: 10px 0 5px; }
+        .cat-card p { font-size: 0.9rem; color: #999; }
+        
+        .paw-prints {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
             pointer-events: none;
-            z-index: -1;
+            opacity: 0.4;
         }
+        .paw { font-size: 1.5rem; animation: step 1s ease-in-out infinite alternate; }
+        .paw:nth-child(odd) { animation-delay: 0.5s; }
+        
+        @keyframes step {
+            from { opacity: 0.3; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .community-zone {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 25px;
+            border: 3px dashed #ffb6c1;
+            max-width: 600px;
+            text-align: center;
+        }
+        .community-zone h2 { color: #d4798b; margin-bottom: 10px; }
+        .community-zone p { color: #8b7d8b; }
     </style>
 </head>
 <body>
-<div class="hero">
-<h1>🥖 The Code Bakery 🥐</h1>
-<p class="tagline">Fresh ideas, baked by the community. You order, we create!</p>
-<div style="margin-top: 15px; font-size: 1.1rem;">🍞 Est. 2024 - Where Chat Becomes Creation 🎂</div>
+<div class="sky">
+<div class="floating-cat">😺</div>
+<div class="floating-cat">🐱</div>
+<div class="floating-cat">😸</div>
+<div class="floating-cat">🙀</div>
+<div class="floating-cat">😻</div>
 </div>
-<div class="comparison">
-<div class="card internet" style="width: 450px; border-top: 4px solid linear-gradient(45deg, #00d4ff, #f107a3);">
-<h2 style="justify-content: center;"><span class="icon">🥧</span> Today's Menu <span class="icon">👨‍🍳</span></h2>
-<ul>
-<li><strong>📝 Place your order</strong> - Type anything in Twitch chat</li>
-<li><strong>👨‍🍳 Chef AI reads</strong> - Your requests go to our kitchen</li>
-<li><strong>🔥 We bake it fresh</strong> - AI crafts your ideas into code</li>
-<li><strong>✨ Served hot!</strong> - The page transforms before your eyes</li>
-</ul>
-<p style="margin-top:15px;text-align:center;font-size:1rem;opacity:0.9;">🥐 Everyone's a chef here!</p>
-<div style="margin-top: 15px; padding: 12px; background: rgba(212,165,116,0.3); border-radius: 10px; text-align: center; border: 2px dashed #8b4513;">
-<span style="font-size: 1.5rem;">Order 📋 → Kitchen 🔥 → Fresh Website 🍰</span>
+<div class="main-content">
+<h1>🐾 Cat Paradise 🐾</h1>
+<p class="subtitle">Where every pixel is purrfect~</p>
+<div class="cat-gallery">
+<div class="cat-card">
+<div class="emoji">😺</div>
+<h3>Whiskers</h3>
+<p>Chief Nap Officer</p>
 </div>
+<div class="cat-card">
+<div class="emoji">😸</div>
+<h3>Mittens</h3>
+<p>Treat Inspector</p>
 </div>
+<div class="cat-card">
+<div class="emoji">🐱</div>
+<h3>Shadow</h3>
+<p>Box Enthusiast</p>
 </div>
-<div class="explainer-board" style="background: linear-gradient(135deg, #3d2914 0%, #2a1d0d 100%); margin: 20px auto; max-width: 800px; border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 8px solid #5d4037; position: relative;">
-<div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #8b4513; padding: 5px 25px; border-radius: 20px; font-weight: bold; color: #fef9e7;">📋 WHAT IS THIS? 📋</div>
-<h3 style="color: #f5deb3; text-align: center; font-size: 1.6rem; margin-top: 10px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">🧑‍🍳 Welcome to Twitch Plays Code! 🧑‍🍳</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; color: #ffefd5;">
-<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 8px;">💬</div>
-<strong style="color: #deb887;">YOU Type in Chat</strong>
-<p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.9;">Every viewer can suggest ideas, features, or wild changes!</p>
-</div>
-<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 8px;">🤖</div>
-<strong style="color: #deb887;">AI Reads &amp; Bakes</strong>
-<p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.9;">An AI chef interprets your requests and writes real code!</p>
-</div>
-<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 8px;">✨</div>
-<strong style="color: #deb887;">Page Transforms LIVE</strong>
-<p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.9;">Watch this very website evolve in real-time based on chat!</p>
+<div class="cat-card">
+<div class="emoji">😻</div>
+<h3>Luna</h3>
+<p>Cuddle Expert</p>
 </div>
 </div>
-<p style="text-align: center; margin-top: 20px; color: #f5cba7; font-style: italic;">🥐 It's like "Twitch Plays Pokemon" but for building websites together! 🥐</p>
-</div>
-<div class="community-zone" style="background: rgba(255,248,220,0.9); border: 2px dashed #8b4513;">
-<h3 class="pulse" style="color: #8b4513;">🛎️ Ring the Bell! Place Your Order! 🛎️</h3>
-<p style="color: #5d4037;">Type your wildest ideas in chat - our AI chef will bake them into reality!</p>
-<div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🍪 Cookies of Code</span>
-<span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🎂 Layers of Logic</span>
-<span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🥖 Baguettes of Beauty</span>
-<span style="background: #f5cba7; padding: 8px 15px; border-radius: 20px;">🐱 Flying Cat Delivery</span>
+<div class="community-zone">
+<h2>✨ Community Cat Corner ✨</h2>
+<p>Chat can add more cats here! What feline friends will join the paradise?</p>
 </div>
 </div>
-<div class="bread-float" style="top: 10%; left: 5%;">🥐</div>
-<div class="bread-float" style="top: 30%; right: 8%; animation-delay: -2s;">🍞</div>
-<div class="bread-float" style="top: 60%; left: 3%; animation-delay: -4s;">🥖</div>
-<div class="bread-float" style="top: 80%; right: 5%; animation-delay: -6s;">🧁</div>
-<div class="bread-float" style="top: 45%; right: 2%; animation-delay: -3s;">🍰</div>
-<div class="flying-cat" id="pastry-cat">
-<span class="cat-body">🐱</span>
-<span class="cat-wings">🥐</span>
-<span class="cat-trail">✨</span>
+<div class="paw-prints">
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
+<span class="paw">🐾</span>
 </div>
-<canvas class="fireworks-canvas" id="fireworks"></canvas>
 <script>
-(function() {
-    const canvas = document.getElementById('fireworks');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
-    
-    class Particle {
-        constructor(x, y, color) {
-            this.x = x;
-            this.y = y;
-            this.color = color;
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 6 + 2;
-            this.vx = Math.cos(angle) * speed;
-            this.vy = Math.sin(angle) * speed;
-            this.alpha = 1;
-            this.decay = Math.random() * 0.015 + 0.01;
-            this.size = Math.random() * 3 + 1;
-        }
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.vy += 0.05;
-            this.alpha -= this.decay;
-        }
-        draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-    }
-    
-    let particles = [];
-    const colors = ['#d4a574', '#8b4513', '#cd853f', '#ffefd5', '#deb887', '#f5deb3'];
-    
-    function createFirework() {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height * 0.6;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        for (let i = 0; i < 80; i++) {
-            particles.push(new Particle(x, y, color));
-        }
-    }
-    
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        particles = particles.filter(p => p.alpha > 0);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
+        document.querySelectorAll('.cat-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.animation = 'none';
+                card.offsetHeight;
+                card.style.animation = 'wiggle 0.5s ease-in-out';
+                const meows = ['Meow!', 'Purrrr~', 'Mrrp?', 'Nya~', '*head bonk*'];
+                const msg = meows[Math.floor(Math.random() * meows.length)];
+                const bubble = document.createElement('div');
+                bubble.textContent = msg;
+                bubble.style.cssText = 'position:absolute;background:#fff;padding:8px 15px;border-radius:15px;font-size:1rem;box-shadow:0 3px 10px rgba(0,0,0,0.2);animation:fadeUp 1.5s forwards;pointer-events:none;';
+                card.style.position = 'relative';
+                card.appendChild(bubble);
+                setTimeout(() => bubble.remove(), 1500);
+            });
         });
         
-        requestAnimationFrame(animate);
-    }
-    
-    setInterval(createFirework, 1500);
-    createFirework();
-    animate();
-})();
-</script>
+        const style = document.createElement('style');
+        style.textContent = '@keyframes fadeUp{0%{opacity:1;top:-10px;}100%{opacity:0;top:-50px;}}';
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
