@@ -84,15 +84,50 @@
         fillLight.position.set(-10, 20, -10);
         scene.add(fillLight);
         
+        // Window texture generator
+        function createWindowTexture(color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0a0a1a';
+            ctx.fillRect(0, 0, 64, 128);
+            const windowColors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600', '#ffffff'];
+            for (let row = 0; row < 16; row++) {
+                for (let col = 0; col < 4; col++) {
+                    if (Math.random() > 0.3) {
+                        const wColor = windowColors[Math.floor(Math.random() * windowColors.length)];
+                        ctx.fillStyle = wColor;
+                        ctx.globalAlpha = 0.5 + Math.random() * 0.5;
+                        ctx.fillRect(col * 16 + 2, row * 8 + 1, 12, 6);
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+        
         // Buildings
         const buildings = [];
         const neonColors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff00, 0xff6600];
         for (let i = 0; i < 60; i++) {
             const h = 5 + Math.random() * 25;
             const w = 2 + Math.random() * 4;
+            const windowTex = createWindowTexture();
+            windowTex.repeat.set(Math.ceil(w/2), Math.ceil(h/3));
+            const buildingMat = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a3e,
+                map: windowTex,
+                emissive: 0x111122,
+                emissiveMap: windowTex,
+                emissiveIntensity: 0.8
+            });
             const building = new THREE.Mesh(
                 new THREE.BoxGeometry(w, h, w),
-                new THREE.MeshStandardMaterial({ color: 0x1a1a3e })
+                buildingMat
             );
             building.position.set(
                 (Math.random() - 0.5) * 80,
