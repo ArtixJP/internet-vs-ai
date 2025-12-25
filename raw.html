@@ -307,7 +307,7 @@
 <h2>✨ Community Cat Corner ✨</h2>
 <p>🎉 The cat family is growing! 9 adorable felines now call this paradise home! 🎉</p>
 <p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
-<p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">📜 Echo now reads chat history when connecting! Memory cat! 🧠</p>
+<p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">💬 Echo only shows the latest chat message! Simple cat! 🐱</p>
 </div>
 </div>
 <div class="paw-prints">
@@ -532,8 +532,8 @@
             }, 500);
         }
         
-        // Start cat interactions every 3-5 seconds
-        setInterval(catInteraction, 3000 + Math.random() * 2000);
+        // Start cat interactions every 8-12 seconds (reduced frequency per community request)
+        setInterval(catInteraction, 8000 + Math.random() * 4000);
         setTimeout(catInteraction, 1000); // First interaction after 1 second
         
         // Chat Mimic Cat - Echo!
@@ -570,24 +570,9 @@
                     updateEchoBubble(msg.message, msg.username);
                 }
                 if (msg.type === 'chat_history' && msg.messages && msg.messages.length > 0) {
-                    // Store all history messages
-                    msg.messages.forEach(m => {
-                        echoMessages.push({message: m.message, username: m.username});
-                    });
-                    if (echoMessages.length > 20) echoMessages.splice(0, echoMessages.length - 20);
-                    
-                    // Cycle through history with animation
-                    let historyIndex = 0;
-                    const showHistory = () => {
-                        if (historyIndex < msg.messages.length && historyIndex < 5) {
-                            const m = msg.messages[msg.messages.length - 1 - historyIndex];
-                            updateEchoBubble(m.message, m.username);
-                            historyIndex++;
-                            setTimeout(showHistory, 2000);
-                        }
-                    };
-                    updateEchoBubble('📜 Reading chat history...', null);
-                    setTimeout(showHistory, 1000);
+                    // Only show the very last message from history
+                    const lastMsg = msg.messages[msg.messages.length - 1];
+                    updateEchoBubble(lastMsg.message, lastMsg.username);
                 }
             };
             
