@@ -35,10 +35,10 @@
         
         .snowflake {
             position: absolute;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.4);
             font-size: 1rem;
             animation: fall linear infinite;
-            text-shadow: 0 0 5px rgba(168,213,229,0.5);
+            text-shadow: 0 0 3px rgba(168,213,229,0.3);
         }
         
         @keyframes fall {
@@ -335,14 +335,14 @@
             flake.style.left = Math.random() * 100 + 'vw';
             flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
             flake.style.fontSize = (Math.random() * 0.8 + 0.4) + 'rem';
-            flake.style.opacity = Math.random() * 0.7 + 0.3;
+            flake.style.opacity = Math.random() * 0.4 + 0.15;
             snowfall.appendChild(flake);
             
             setTimeout(() => flake.remove(), 10000);
         }
         
-        setInterval(createSnowflake, 150);
-        for(let i = 0; i < 30; i++) setTimeout(createSnowflake, i * 100);
+        setInterval(createSnowflake, 400);
+        for(let i = 0; i < 12; i++) setTimeout(createSnowflake, i * 200);
     </script>
 </body>
 </html>
