@@ -35,6 +35,7 @@
     .world-container {
         perspective: 1000px;
         transform-style: preserve-3d;
+        position: relative;
     }
     #world {
         display: grid;
@@ -146,9 +147,10 @@
         width: 20px;
         height: 26px;
         z-index: 100;
-        transition: left 0.15s ease-out, bottom 0.1s ease-out;
+        transition: left 0.15s ease-out, top 0.1s ease-out;
         image-rendering: pixelated;
         pointer-events: none;
+        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
     }
     .mario-sprite {
         width: 100%;
@@ -621,10 +623,9 @@
     function updateMarioPosition() {
         const groundY = findGround(marioX);
         marioY = groundY;
-        const worldRect = world.getBoundingClientRect();
         const blockSize = 23;
         mario.style.left = (marioX * blockSize + 4) + 'px';
-        mario.style.bottom = ((HEIGHT - marioY) * blockSize - 4) + 'px';
+        mario.style.top = ((marioY - 1) * blockSize + 4) + 'px';
     }
 
     function findGround(x) {
