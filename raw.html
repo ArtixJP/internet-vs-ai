@@ -251,7 +251,7 @@
 <p style="opacity:0.4; font-size:0.8rem;">the community will build here...</p>
 </div>
 <div class="audio-hint" onclick="this.style.display='none'" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-size:0.7rem; opacity:0.4; letter-spacing:0.2rem; cursor:pointer; transition: opacity 0.3s;">
-🔊 click anywhere to hear the wind
+🔊 wind loading... (click if silent)
 </div>
 </div>
 <script>
@@ -316,14 +316,39 @@
             gustCycle();
         }
         
-        // Start audio on first click (browser autoplay policy)
-        document.body.addEventListener('click', function startAudio() {
+        // Try to autoplay wind immediately
+        function tryAutoplay() {
             if (!isAudioStarted) {
-                createWind();
-                isAudioStarted = true;
-                document.body.removeEventListener('click', startAudio);
+                try {
+                    createWind();
+                    isAudioStarted = true;
+                    // Hide the audio hint if autoplay worked
+                    const hint = document.querySelector('.audio-hint');
+                    if (hint) hint.style.display = 'none';
+                } catch(e) {
+                    console.log('Autoplay blocked, waiting for interaction');
+                }
             }
-        }, { once: true });
+        }
+        
+        // Attempt autoplay on load
+        window.addEventListener('load', () => {
+            tryAutoplay();
+            // Also try after a small delay (helps on some browsers)
+            setTimeout(tryAutoplay, 500);
+        });
+        
+        // Fallback: Start audio on first interaction (browser autoplay policy)
+        ['click', 'touchstart', 'keydown'].forEach(event => {
+            document.body.addEventListener(event, function startAudio() {
+                if (!isAudioStarted) {
+                    createWind();
+                    isAudioStarted = true;
+                    const hint = document.querySelector('.audio-hint');
+                    if (hint) hint.style.display = 'none';
+                }
+            }, { once: true });
+        });
         
         const snowfall = document.getElementById('snow');
         const flakes = ['❄', '❅', '❆', '·', '•'];
