@@ -419,7 +419,7 @@
 <p>🎉 The cat family is growing! 9 adorable felines now call this paradise home! 🎉</p>
 <p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
 <p style="margin-top:5px;font-size:0.8rem;color:#00bcd4;">💬 Echo shows the latest chat message! 🗨️🐱</p>
-<p style="margin-top:3px;font-size:0.75rem;color:#ff6b6b;font-weight:bold;animation:pulseRed 2s ease-in-out infinite;">🙈 Echo IGNORES any message with "@" in it! No mentions allowed! 🚫@ <span style="background:#ff6b6b;color:#fff;padding:2px 6px;border-radius:8px;font-size:0.7rem;">ACTIVE ✓</span></p>
+<p style="margin-top:3px;font-size:0.75rem;color:#ff6b6b;font-weight:bold;animation:pulseRed 2s ease-in-out infinite;">🔇 Echo COMPLETELY IGNORES @ messages - total silence! 🚫@ <span style="background:#ff6b6b;color:#fff;padding:2px 6px;border-radius:8px;font-size:0.7rem;">STEALTH MODE ✓</span></p>
 <p style="margin-top:3px;font-size:0.75rem;color:#9b59b6;font-weight:bold;">🔮 Echo also ignores "Claudia" - some names are sacred! 🚫 <span style="background:#9b59b6;color:#fff;padding:2px 6px;border-radius:8px;font-size:0.7rem;">ACTIVE ✓</span></p>
 <p style="margin-top:5px;font-size:0.75rem;color:#999;">🐾 Cat interactions now happen every 25-45 seconds for ultra zen vibes! 🧘‍♀️🐾</p>
 <p style="margin-top:5px;font-size:0.8rem;color:#d4798b;">🎭 Click any cat to see their mood change! Each meow brings a new expression! 😺😻😼</p>
@@ -1276,19 +1276,10 @@
                         return; // Echo ignores Claudia! 🔮✨
                     }
                     
-                    // Skip messages containing @ (mentions/commands)
+                    // Skip messages containing @ (mentions/commands) - COMPLETE SILENCE!
                     if (msg.message && msg.message.includes('@')) {
-                        // Show that we're ignoring this message with flair!
-                        echoBubble.textContent = '🙈🚫@ Nope! Not echoing that!';
-                        echoBubble.style.background = 'linear-gradient(135deg, rgba(255,100,100,0.4) 0%, rgba(255,50,50,0.3) 100%)';
-                        echoBubble.classList.remove('new-message');
-                        void echoBubble.offsetWidth;
-                        echoBubble.classList.add('new-message');
-                        // Reset bubble color after animation
-                        setTimeout(() => {
-                            echoBubble.style.background = 'linear-gradient(135deg, rgba(0,188,212,0.3) 0%, rgba(0,150,180,0.25) 100%)';
-                        }, 1500);
-                        return; // Echo ignores @ messages! 🙀✨
+                        // Echo completely ignores @ messages - no reaction at all! 🙀🔇
+                        return;
                     }
                     echoMessages.push({message: msg.message, username: msg.username});
                     if (echoMessages.length > 20) echoMessages.shift(); // Keep last 20
