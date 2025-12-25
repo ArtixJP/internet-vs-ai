@@ -33,12 +33,16 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(168,213,229,0.5);
-            font-size: 0.9rem;
-            letter-spacing: 0.3rem;
+            color: rgba(168,213,229,0.7);
+            font-size: 1rem;
+            letter-spacing: 0.2rem;
             z-index: 100;
             pointer-events: none;
             animation: fade-hint 4s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(74,158,187,0.5);
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
         }
         @keyframes fade-hint {
             0%, 100% { opacity: 0.3; }
@@ -251,10 +255,9 @@
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="temperature">-42°</div>
-<div class="hint">drag to look around</div>
+<div class="hint">🎬 AUTO-TOUR MODE • sit back and enjoy the chaos</div>
 <div class="breath-overlay"></div>
 <div class="audio-btn" id="audioBtn">🔊</div>
-
 <div class="disco-overlay"></div>
 <div class="chaos-banana" style="top: 20%; left: 10%;">🍌</div>
 <div class="chaos-banana" style="top: 60%; right: 15%; animation-delay: 0.15s;">🍌</div>
@@ -523,8 +526,18 @@
         let previousMousePosition = { x: 0, y: 0 };
         let cameraAngle = { x: 0, y: 0 };
         
+        // AUTO-MODE: Cinematic camera tour
+        let autoMode = true;
+        let autoAngleSpeed = 0.003;
+        let autoHeightTarget = 0;
+        let autoHeightCurrent = 0;
+        let autoRadiusTarget = 8;
+        let autoRadiusCurrent = 8;
+        let autoChangeTimer = 0;
+        
         document.addEventListener('mousedown', (e) => {
             isDragging = true;
+            autoMode = false; // Disable auto when user interacts
             previousMousePosition = { x: e.clientX, y: e.clientY };
         });
         
@@ -571,12 +584,39 @@
             requestAnimationFrame(animate);
             time += 0.016;
             
-            // Camera orbit
-            const radius = 8;
+            // Camera orbit with AUTO-MODE
+            if (autoMode) {
+                // Smooth automatic rotation
+                cameraAngle.x += autoAngleSpeed;
+                
+                // Occasionally change camera behavior
+                autoChangeTimer++;
+                if (autoChangeTimer > 300) {
+                    autoChangeTimer = 0;
+                    autoAngleSpeed = 0.002 + Math.random() * 0.004;
+                    if (Math.random() > 0.5) autoAngleSpeed *= -1; // Sometimes reverse
+                    autoHeightTarget = (Math.random() - 0.5) * 0.6;
+                    autoRadiusTarget = 6 + Math.random() * 6;
+                }
+                
+                // Smooth interpolation
+                autoHeightCurrent += (autoHeightTarget - autoHeightCurrent) * 0.01;
+                autoRadiusCurrent += (autoRadiusTarget - autoRadiusCurrent) * 0.01;
+                cameraAngle.y = autoHeightCurrent;
+            }
+            
+            const radius = autoMode ? autoRadiusCurrent : 8;
             camera.position.x = Math.sin(cameraAngle.x) * radius;
             camera.position.z = Math.cos(cameraAngle.x) * radius;
             camera.position.y = 2 + cameraAngle.y * 5;
-            camera.lookAt(0, 0.5, 0);
+            
+            // Add subtle camera sway in auto mode
+            if (autoMode) {
+                camera.position.x += Math.sin(time * 0.5) * 0.3;
+                camera.position.y += Math.sin(time * 0.3) * 0.2;
+            }
+            
+            camera.lookAt(0, 0.5 + Math.sin(time * 0.2) * 0.3, 0);
             
             // Tree sway
             trees.forEach(tree => {
