@@ -49,7 +49,7 @@
 <span>Follow the journey through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens respawn! | 🎬 Attack cam focus | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
+<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🎬 Attack cam focus | 💀 EVIL TMNT hunting prey | 🎵 Click for synthwave</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
@@ -563,10 +563,39 @@
             rightFoot.position.set(0.12 * scale, 0.03 * scale, 0.04 * scale);
             human.add(rightFoot);
             
+            // Add laptop for busy NYC workers
+            const laptopGroup = new THREE.Group();
+            const laptopBase = new THREE.Mesh(
+                new THREE.BoxGeometry(0.35 * scale, 0.02 * scale, 0.25 * scale),
+                new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8 })
+            );
+            laptopBase.position.y = 0.01 * scale;
+            laptopGroup.add(laptopBase);
+            
+            // Glowing screen
+            const screenMat = new THREE.MeshStandardMaterial({ 
+                color: 0x00ffff, 
+                emissive: 0x00ffff, 
+                emissiveIntensity: 0.5 
+            });
+            const laptopScreen = new THREE.Mesh(
+                new THREE.BoxGeometry(0.32 * scale, 0.22 * scale, 0.01 * scale),
+                screenMat
+            );
+            laptopScreen.position.set(0, 0.12 * scale, -0.12 * scale);
+            laptopScreen.rotation.x = -0.3;
+            laptopGroup.add(laptopScreen);
+            
+            // Position laptop in front of body (held while walking)
+            laptopGroup.position.set(0, 0.85 * scale, -0.35 * scale);
+            laptopGroup.rotation.x = -0.4;
+            human.add(laptopGroup);
+            
             // Store limbs for animation
             human.userData.limbs = {
                 leftUpperArm, rightUpperArm, leftForearm, rightForearm,
-                leftThigh, rightThigh, leftCalf, rightCalf
+                leftThigh, rightThigh, leftCalf, rightCalf,
+                laptop: laptopGroup
             };
             
             return human;
@@ -1191,14 +1220,23 @@
                 
                 if (npc.userData.turningCooldown > 0) npc.userData.turningCooldown--;
                 
-                // Walking animation
+                // Walking animation with laptop typing
                 if (npc.userData.limbs) {
                     npc.userData.walkPhase += npc.userData.speed * 8;
                     const swing = Math.sin(npc.userData.walkPhase) * 0.4;
                     npc.userData.limbs.leftThigh.rotation.x = swing;
                     npc.userData.limbs.rightThigh.rotation.x = -swing;
-                    npc.userData.limbs.leftUpperArm.rotation.x = -swing * 0.6;
-                    npc.userData.limbs.rightUpperArm.rotation.x = swing * 0.6;
+                    // Arms bent forward to hold laptop
+                    npc.userData.limbs.leftUpperArm.rotation.x = -0.8;
+                    npc.userData.limbs.rightUpperArm.rotation.x = -0.8;
+                    npc.userData.limbs.leftUpperArm.rotation.z = 0.3;
+                    npc.userData.limbs.rightUpperArm.rotation.z = -0.3;
+                    // Laptop bobs slightly with walking
+                    if (npc.userData.limbs.laptop) {
+                        npc.userData.limbs.laptop.position.y = 0.85 + Math.sin(npc.userData.walkPhase * 2) * 0.02;
+                        // Subtle typing vibration
+                        npc.userData.limbs.laptop.rotation.z = Math.sin(npc.userData.walkPhase * 8) * 0.01;
+                    }
                 }
             });
             
