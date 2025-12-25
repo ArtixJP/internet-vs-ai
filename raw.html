@@ -97,6 +97,9 @@
             0%, 100% { transform: translate(-50%, -50%) scale(1); }
             50% { transform: translate(-50%, -55%) scale(1.1); }
         }
+        .planet-emoji {
+            transition: transform 0.3s ease-out, opacity 0.15s ease-out;
+        }
         .planet-1 {
             width: 100px; height: 100px;
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #922b21 100%);
@@ -338,18 +341,45 @@
     const saturnEmojis = ['💍', '🪐', '🌙', '⭐', '✨', '🔮'];
     const neptuneEmojis = ['❄️', '🧊', '💎', '🌊', '🔵', '💠'];
     
-    function randomEmoji(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    // Track last used emojis to ensure variety
+    const lastEmojis = { mars: -1, saturn: -1, neptune: -1 };
     
-    document.getElementById('emoji1').textContent = randomEmoji(marsEmojis);
-    document.getElementById('emoji2').textContent = randomEmoji(saturnEmojis);
-    document.getElementById('emoji3').textContent = randomEmoji(neptuneEmojis);
+    function randomEmoji(arr, planetKey) {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * arr.length);
+        } while (newIndex === lastEmojis[planetKey] && arr.length > 1);
+        lastEmojis[planetKey] = newIndex;
+        return arr[newIndex];
+    }
     
-    // Change emojis periodically
+    document.getElementById('emoji1').textContent = randomEmoji(marsEmojis, 'mars');
+    document.getElementById('emoji2').textContent = randomEmoji(saturnEmojis, 'saturn');
+    document.getElementById('emoji3').textContent = randomEmoji(neptuneEmojis, 'neptune');
+    
+    // Change emojis periodically with visual feedback
+    function changeEmojiWithEffect(element, emoji) {
+        element.style.transform = 'translate(-50%, -50%) scale(0)';
+        element.style.opacity = '0';
+        setTimeout(() => {
+            element.textContent = emoji;
+            element.style.transform = 'translate(-50%, -50%) scale(1.3)';
+            element.style.opacity = '1';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 200);
+        }, 150);
+    }
+    
     setInterval(() => {
-        document.getElementById('emoji1').textContent = randomEmoji(marsEmojis);
-        document.getElementById('emoji2').textContent = randomEmoji(saturnEmojis);
-        document.getElementById('emoji3').textContent = randomEmoji(neptuneEmojis);
-    }, 8000);
+        changeEmojiWithEffect(document.getElementById('emoji1'), randomEmoji(marsEmojis, 'mars'));
+        setTimeout(() => {
+            changeEmojiWithEffect(document.getElementById('emoji2'), randomEmoji(saturnEmojis, 'saturn'));
+        }, 300);
+        setTimeout(() => {
+            changeEmojiWithEffect(document.getElementById('emoji3'), randomEmoji(neptuneEmojis, 'neptune'));
+        }, 600);
+    }, 5000);
 })();
 </script>
 </body>
