@@ -3,819 +3,269 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Collective Craft</title>
+<title>NEON ARCADE ZONE</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #87CEEB 100%);
-        color: #333;
-        font-family: 'Courier New', monospace;
-        padding: 10px;
-        gap: 10px;
-        overflow: hidden;
-        transition: background 2s;
-    }
-    body.night {
-        background: linear-gradient(180deg, #0a0a20 0%, #1a1a40 50%, #0f0f30 100%);
-    }
-    h1 {
-        font-size: 1.8rem;
-        color: #2d5a27;
-        text-shadow: 2px 2px 0 #5a8f52, 4px 4px 0 rgba(0,0,0,0.2);
-        font-weight: bold;
-        letter-spacing: 2px;
-        image-rendering: pixelated;
-    }
-    body.night h1 { color: #7ec850; }
-    .world-container {
-        perspective: 1000px;
-        transform-style: preserve-3d;
-        position: relative;
-    }
-    #world {
-        display: grid;
-        grid-template-columns: repeat(24, 22px);
-        grid-template-rows: repeat(14, 22px);
-        gap: 1px;
-        background: #3d2817;
-        padding: 4px;
-        border: 4px solid #2a1a0a;
-        box-shadow: 8px 8px 0 rgba(0,0,0,0.3), inset 0 0 20px rgba(0,0,0,0.2);
-        transform: rotateX(5deg);
-        image-rendering: pixelated;
-    }
-    .block {
-        width: 22px;
-        height: 22px;
-        position: relative;
-        transition: transform 0.1s, filter 0.1s;
-        cursor: pointer;
-        image-rendering: pixelated;
-    }
-    .block:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.2);
-    }
-    .block.placed {
-        animation: blockPlace 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .block.mined {
-        animation: blockMine 0.4s ease-out forwards;
-    }
-    @keyframes blockPlace {
-        0% { transform: scale(0) translateY(-20px); }
-        60% { transform: scale(1.2) translateY(0); }
-        100% { transform: scale(1) translateY(0); }
-    }
-    @keyframes blockMine {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.3) rotate(10deg); }
-        100% { transform: scale(0) rotate(45deg); opacity: 0; }
-    }
-    /* Block types */
-    .block.air { background: transparent; }
-    .block.grass {
-        background: linear-gradient(180deg, #5a8f52 0%, #5a8f52 30%, #8b6914 30%, #8b6914 100%);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.2), inset -2px -2px 0 rgba(0,0,0,0.2);
-    }
-    .block.dirt {
-        background: #8b6914;
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.2);
-    }
-    .block.stone {
-        background: linear-gradient(135deg, #8a8a8a 25%, #6a6a6a 50%, #7a7a7a 75%);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.2), inset -2px -2px 0 rgba(0,0,0,0.3);
-    }
-    .block.wood {
-        background: repeating-linear-gradient(0deg, #6b4423 0px, #8b5a2b 4px, #6b4423 8px);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.2);
-    }
-    .block.leaves {
-        background: #2d5a27;
-        box-shadow: inset 2px 2px 0 rgba(100,200,100,0.3), inset -2px -2px 0 rgba(0,0,0,0.2);
-    }
-    .block.water {
-        background: linear-gradient(180deg, rgba(30,144,255,0.7) 0%, rgba(0,100,200,0.8) 100%);
-        animation: waterFlow 2s ease-in-out infinite;
-    }
-    @keyframes waterFlow {
-        0%, 100% { opacity: 0.8; }
-        50% { opacity: 0.95; }
-    }
-    .block.sand {
-        background: #e8d174;
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.3), inset -2px -2px 0 rgba(0,0,0,0.1);
-    }
-    .block.cobble {
-        background: repeating-conic-gradient(#6a6a6a 0deg 90deg, #5a5a5a 90deg 180deg) 0 0/10px 10px;
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.3);
-    }
-    .block.brick {
-        background: repeating-linear-gradient(0deg, #8b4513 0px, #a0522d 10px), 
-                    repeating-linear-gradient(90deg, transparent 0px, transparent 10px, #5a3010 10px, #5a3010 11px);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.2);
-    }
-    .block.gold {
-        background: linear-gradient(135deg, #ffd700 0%, #ffec8b 50%, #daa520 100%);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.5), inset -2px -2px 0 rgba(0,0,0,0.2);
-        animation: goldShine 3s ease-in-out infinite;
-    }
-    @keyframes goldShine {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.3); }
-    }
-    .block.diamond {
-        background: linear-gradient(135deg, #4ee4e4 0%, #00ffff 50%, #20b2aa 100%);
-        box-shadow: inset 2px 2px 0 rgba(255,255,255,0.6), inset -2px -2px 0 rgba(0,0,0,0.2);
-        animation: diamondSparkle 2s ease-in-out infinite;
-    }
-    @keyframes diamondSparkle {
-        0%, 100% { filter: brightness(1) saturate(1); }
-        50% { filter: brightness(1.4) saturate(1.2); }
-    }
-    .block.tnt {
-        background: #ff0000;
-        box-shadow: inset 5px 0 0 #fff, inset 10px 0 0 #ff0000, inset 15px 0 0 #fff;
-    }
-    .mario {
-        position: absolute;
-        width: 20px;
-        height: 26px;
-        z-index: 100;
-        transition: left 0.15s ease-out, top 0.1s ease-out;
-        image-rendering: pixelated;
-        pointer-events: none;
-        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
-    }
-    .mario-sprite {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(180deg, 
-            #ff0000 0%, #ff0000 30%, 
-            #ffcc99 30%, #ffcc99 45%,
-            #ff0000 45%, #ff0000 60%,
-            #0066cc 60%, #0066cc 85%,
-            #8b4513 85%, #8b4513 100%);
-        border-radius: 4px 4px 0 0;
-        position: relative;
-    }
-    .mario-sprite::before {
-        content: '';
-        position: absolute;
-        top: 2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 14px;
-        height: 6px;
-        background: #ff0000;
-        border-radius: 50% 50% 0 0;
-    }
-    .mario-sprite::after {
-        content: '';
-        position: absolute;
-        top: 8px;
-        left: 4px;
-        width: 4px;
-        height: 3px;
-        background: #000;
-        border-radius: 50%;
-        box-shadow: 8px 0 0 #000;
-    }
-    .coin {
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        background: radial-gradient(circle at 30% 30%, #fff700 0%, #ffd700 40%, #daa520 100%);
-        border-radius: 50%;
-        box-shadow: 0 0 8px #ffd700, inset -2px -2px 4px rgba(0,0,0,0.3);
-        animation: coinSpin 1s linear infinite, coinBob 0.5s ease-in-out infinite;
-        z-index: 50;
-        pointer-events: none;
-    }
-    @keyframes coinSpin {
-        0% { transform: scaleX(1); }
-        50% { transform: scaleX(0.2); }
-        100% { transform: scaleX(1); }
-    }
-    @keyframes coinBob {
-        0%, 100% { margin-top: 0; }
-        50% { margin-top: -4px; }
-    }
-    .coin.collected {
-        animation: coinCollect 0.3s ease-out forwards;
-    }
-    @keyframes coinCollect {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(2) translateY(-20px); opacity: 0; }
-    }
-    .score-display {
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        background: rgba(30,20,10,0.9);
-        padding: 8px 14px;
-        border: 3px solid #ffd700;
-        font-size: 1.1rem;
-        color: #ffd700;
-        text-shadow: 2px 2px 0 #000;
-        z-index: 200;
-    }
-    .controls-hint {
-        position: fixed;
-        bottom: 100px;
-        left: 10px;
-        background: rgba(30,20,10,0.9);
-        padding: 6px 10px;
-        border: 2px solid #5a8f52;
-        font-size: 0.7rem;
-        color: #e8d174;
-    }
-    .controls-hint kbd {
-        background: #1a0a00;
-        padding: 2px 6px;
-        border-radius: 3px;
-        color: #5a8f52;
-        margin: 0 2px;
-    }
-    .mario.jumping {
-        animation: marioJump 0.5s ease-out;
-    }
-    .mario.left .mario-sprite {
-        transform: scaleX(-1);
-    }
-    @keyframes marioJump {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-40px); }
-    }
-    .block.lava {
-        background: linear-gradient(180deg, #ff4500 0%, #ff6600 50%, #ff0000 100%);
-        animation: lavaGlow 1s ease-in-out infinite;
-    }
-    @keyframes lavaGlow {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.5); }
-    }
-    .palette {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: center;
-        max-width: 600px;
-        background: rgba(60,40,20,0.9);
-        padding: 8px 12px;
-        border-radius: 4px;
-        border: 3px solid #2a1a0a;
-    }
-    .block-btn {
-        width: 28px;
-        height: 28px;
-        border: 2px solid #1a0a00;
-        cursor: pointer;
-        transition: transform 0.1s;
-        image-rendering: pixelated;
-    }
-    .block-btn:hover {
-        transform: scale(1.2);
-    }
-    .block-btn::after {
-        content: attr(data-name);
-        position: absolute;
-        bottom: -16px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 8px;
-        color: #fff;
-        text-shadow: 1px 1px 0 #000;
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-    .block-btn:hover::after { opacity: 1; }
-    .instructions {
-        background: rgba(60,40,20,0.9);
-        padding: 8px 16px;
-        border: 3px solid #2a1a0a;
-        font-size: 0.85rem;
-        text-align: center;
-        color: #e8d174;
-    }
-    .instructions code {
-        background: #1a0a00;
-        padding: 2px 6px;
-        color: #5a8f52;
-    }
-    .activity-log {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background: rgba(30,20,10,0.95);
-        padding: 8px;
-        border: 2px solid #5a3a1a;
-        font-size: 10px;
-        max-width: 180px;
-        max-height: 80px;
-        overflow: hidden;
-        color: #e8d174;
-    }
-    .stats {
-        font-size: 0.75rem;
-        color: #5a8f52;
-        background: rgba(0,0,0,0.3);
-        padding: 4px 8px;
-        border-radius: 2px;
-    }
-    body.night .stats { color: #7ec850; }
-    .day-cycle {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        font-size: 1.5rem;
-        background: rgba(0,0,0,0.3);
-        padding: 5px 10px;
-        border-radius: 4px;
-    }
-    .clouds {
-        position: fixed;
-        top: 20px;
-        left: 0;
-        width: 100%;
-        height: 60px;
-        pointer-events: none;
-        overflow: hidden;
-        opacity: 0.8;
-    }
-    .cloud {
-        position: absolute;
-        background: #fff;
-        border-radius: 20px;
-        animation: cloudMove 30s linear infinite;
-    }
-    @keyframes cloudMove {
-        0% { transform: translateX(-100px); }
-        100% { transform: translateX(calc(100vw + 100px)); }
-    }
-    body.night .clouds { opacity: 0.2; }
-    .rainbow {
-        position: fixed;
-        top: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        height: 150px;
-        border-radius: 150px 150px 0 0;
-        background: 
-            linear-gradient(180deg, transparent 0%, transparent 40%,
-            rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.1) 45%,
-            rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.08) 50%,
-            rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.06) 55%,
-            rgba(255,255,255,0.04) 55%, rgba(255,255,255,0.04) 60%,
-            rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.02) 65%,
-            transparent 65%);
-        opacity: 0.3;
-        pointer-events: none;
-        animation: rainbowGhost 8s ease-in-out infinite;
-        z-index: 5;
-        filter: blur(2px);
-    }
-    @keyframes rainbowGhost {
-        0%, 100% { opacity: 0.1; }
-        50% { opacity: 0.25; }
-    }
-    body.night .rainbow { opacity: 0.05; }
-    .sunshine {
-        position: fixed;
-        top: 15px;
-        right: 60px;
-        width: 50px;
-        height: 50px;
-        background: radial-gradient(circle, #fff700 0%, #ffcc00 40%, #ff9500 70%, transparent 70%);
-        border-radius: 50%;
-        box-shadow: 0 0 30px #ffcc00, 0 0 60px #ff9500, 0 0 90px rgba(255,200,0,0.5);
-        animation: sunPulse 3s ease-in-out infinite, sunRays 10s linear infinite;
-        pointer-events: none;
-        z-index: 4;
-    }
-    .sunshine::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
-        background: repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255,220,0,0.3) 10deg 20deg);
-        animation: sunRays 8s linear infinite reverse;
-        border-radius: 50%;
-    }
-    @keyframes sunPulse {
-        0%, 100% { transform: scale(1); filter: brightness(1); }
-        50% { transform: scale(1.1); filter: brightness(1.2); }
-    }
-    @keyframes sunRays {
-        from { transform: translate(-50%, -50%) rotate(0deg); }
-        to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-    body.night .sunshine {
-        opacity: 0;
-        transition: opacity 2s;
-    }
-    .experiment-info {
-        background: rgba(60,40,20,0.9);
-        border: 3px solid #5a8f52;
-        padding: 10px 14px;
-        max-width: 480px;
-        font-size: 0.75rem;
-        line-height: 1.4;
-        text-align: center;
-        color: #e8d174;
-    }
-    .experiment-info h3 {
-        color: #5a8f52;
-        margin-bottom: 6px;
-    }
-    .experiment-info .highlight { color: #ffd700; }
-</style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-yellow: #ffff00;
+            --arcade-purple: #1a0a2e;
+            --arcade-dark: #0d0015;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: var(--arcade-dark);
+            font-family: 'Press Start 2P', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15) 0px,
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* Pixel grid background */
+        .pixel-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255,0,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,0,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+        
+        .arcade-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, var(--arcade-purple) 0%, transparent 100%);
+        }
+        
+        .neon-title {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: var(--neon-cyan);
+            text-shadow: 
+                0 0 5px var(--neon-cyan),
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-pink);
+            animation: flicker 3s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.8; }
+        }
+        
+        .subtitle {
+            font-size: 0.6rem;
+            color: var(--neon-yellow);
+            margin-top: 15px;
+            letter-spacing: 4px;
+        }
+        
+        .arcade-floor {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .cabinet {
+            width: 200px;
+            height: 280px;
+            background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
+            border: 3px solid var(--neon-pink);
+            border-radius: 10px 10px 5px 5px;
+            position: relative;
+            box-shadow: 
+                0 0 15px rgba(255,0,255,0.5),
+                inset 0 0 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .cabinet:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 
+                0 0 30px rgba(255,0,255,0.8),
+                0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .cabinet-screen {
+            width: 160px;
+            height: 120px;
+            margin: 20px auto 10px;
+            background: #000;
+            border: 4px solid #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .screen-content {
+            font-size: 0.5rem;
+            color: var(--neon-cyan);
+            text-align: center;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0.7; }
+        }
+        
+        .cabinet-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .joystick {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #ff4444, #880000);
+            border-radius: 50%;
+            box-shadow: 0 4px 0 #440000;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+        }
+        
+        .btn-a { background: var(--neon-cyan); }
+        .btn-b { background: var(--neon-pink); }
+        .btn-c { background: var(--neon-yellow); }
+        
+        .cabinet-label {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.5rem;
+            color: var(--neon-yellow);
+        }
+        
+        .high-scores {
+            background: rgba(26,10,46,0.9);
+            border: 2px solid var(--neon-cyan);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .high-scores h2 {
+            font-size: 0.8rem;
+            color: var(--neon-yellow);
+            margin-bottom: 15px;
+        }
+        
+        .score-entry {
+            font-size: 0.6rem;
+            color: var(--neon-cyan);
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .community-zone {
+            text-align: center;
+            padding: 30px;
+            border-top: 2px dashed var(--neon-pink);
+            margin-top: 30px;
+        }
+        
+        .community-zone p {
+            font-size: 0.5rem;
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
 </head>
 <body>
-<div class="rainbow"></div>
-<div class="sunshine"></div>
-<div class="clouds">
-<div class="cloud" style="width:80px;height:30px;top:10px;left:10%;animation-delay:0s;"></div>
-<div class="cloud" style="width:120px;height:40px;top:25px;left:40%;animation-delay:-10s;"></div>
-<div class="cloud" style="width:60px;height:25px;top:5px;left:70%;animation-delay:-20s;"></div>
+<div class="pixel-grid"></div>
+<header class="arcade-header">
+<h1 class="neon-title">NEON ARCADE</h1>
+<p class="subtitle">INSERT COIN TO PLAY</p>
+</header>
+<main class="arcade-floor">
+<div class="cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">PRESS START<br/>▶ 1 PLAYER</div>
 </div>
-<div class="day-cycle" id="dayCycle">☀️</div>
-<h1>⛏️ COLLECTIVE CRAFT ⛏️</h1>
-<div class="experiment-info">
-<h3>🌐 Internet vs AI Experiment 🤖</h3>
-<p>A <span class="highlight">live Minecraft-style world</span> built by chat!</p>
-<p>Type <code>!idea your suggestion</code> to evolve this page with AI!</p>
-</div>
-<div class="instructions">
-<code>place [block] [x] [y]</code> · <code>mine [x] [y]</code> · <code>left/right/jump</code><br/>
-    Example: <code>place diamond 10 5</code> · <code>jump</code> to control Mario!
-</div>
-<div class="palette">
-<div class="block-btn grass" data-name="grass"></div>
-<div class="block-btn dirt" data-name="dirt"></div>
-<div class="block-btn stone" data-name="stone"></div>
-<div class="block-btn cobble" data-name="cobble"></div>
-<div class="block-btn wood" data-name="wood"></div>
-<div class="block-btn leaves" data-name="leaves"></div>
-<div class="block-btn sand" data-name="sand"></div>
-<div class="block-btn water" data-name="water"></div>
-<div class="block-btn brick" data-name="brick"></div>
-<div class="block-btn gold" data-name="gold"></div>
-<div class="block-btn diamond" data-name="diamond"></div>
-<div class="block-btn lava" data-name="lava"></div>
-<div class="block-btn tnt" data-name="tnt"></div>
-</div>
-<div class="world-container">
-<div id="world"></div>
-<div class="mario" id="mario">
-<div class="mario-sprite"></div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="buttons">
+<div class="btn btn-a"></div>
+<div class="btn btn-b"></div>
 </div>
 </div>
-<div class="stats">Blocks placed: <span id="count">0</span> | Day <span id="day">1</span></div>
-<div class="activity-log" id="log">🔴 Connecting...</div>
-<script>
-    const blockTypes = ['air','grass','dirt','stone','cobble','wood','leaves','sand','water','brick','gold','diamond','lava','tnt'];
-    const world = document.getElementById('world');
-    const log = document.getElementById('log');
-    const countEl = document.getElementById('count');
-    const dayEl = document.getElementById('day');
-    const dayCycleEl = document.getElementById('dayCycle');
-    let blockCount = 0;
-    let dayCount = 1;
-    let isNight = false;
-    const WIDTH = 24, HEIGHT = 14;
-    const grid = [];
-
-    // Generate procedural terrain
-    function generateTerrain() {
-        const terrain = [];
-        let height = 7;
-        for (let x = 0; x < WIDTH; x++) {
-            height += Math.floor(Math.random() * 3) - 1;
-            height = Math.max(4, Math.min(10, height));
-            terrain.push(height);
-        }
-        return terrain;
-    }
-    const terrainHeights = generateTerrain();
-
-    // Create world grid
-    for (let y = 0; y < HEIGHT; y++) {
-        grid[y] = [];
-        for (let x = 0; x < WIDTH; x++) {
-            const block = document.createElement('div');
-            block.className = 'block air';
-            block.dataset.x = x;
-            block.dataset.y = y;
-            
-            const groundLevel = terrainHeights[x];
-            if (y === groundLevel) {
-                block.className = 'block grass';
-                grid[y][x] = 'grass';
-            } else if (y > groundLevel && y < groundLevel + 3) {
-                block.className = 'block dirt';
-                grid[y][x] = 'dirt';
-            } else if (y >= groundLevel + 3) {
-                block.className = 'block stone';
-                grid[y][x] = 'stone';
-            } else {
-                grid[y][x] = 'air';
-            }
-            world.appendChild(block);
-        }
-    }
-
-    // Add a tree
-    function addTree(tx) {
-        const groundY = terrainHeights[tx];
-        if (tx > 1 && tx < WIDTH - 2 && groundY > 3) {
-            for (let ty = groundY - 4; ty < groundY; ty++) {
-                if (ty >= 0) setBlock(tx, ty, 'wood', false);
-            }
-            for (let ly = groundY - 6; ly < groundY - 3; ly++) {
-                for (let lx = tx - 2; lx <= tx + 2; lx++) {
-                    if (lx >= 0 && lx < WIDTH && ly >= 0 && Math.random() > 0.2) {
-                        if (grid[ly][lx] === 'air') setBlock(lx, ly, 'leaves', false);
-                    }
-                }
-            }
-        }
-    }
-    addTree(5);
-    addTree(18);
-
-    // Add water pool
-    for (let wx = 10; wx < 14; wx++) {
-        const wy = terrainHeights[wx];
-        setBlock(wx, wy, 'water', false);
-    }
-
-    function setBlock(x, y, type, animate = true) {
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return false;
-        if (!blockTypes.includes(type)) return false;
-        const block = world.children[y * WIDTH + x];
-        if (block) {
-            block.className = 'block ' + type;
-            if (animate) {
-                block.classList.add('placed');
-                setTimeout(() => block.classList.remove('placed'), 300);
-            }
-            grid[y][x] = type;
-            return true;
-        }
-        return false;
-    }
-
-    function placeBlock(type, x, y, user) {
-        if (setBlock(x, y, type)) {
-            blockCount++;
-            countEl.textContent = blockCount;
-            addLog(`${user}: +${type} @${x},${y}`);
-            playSound(type);
-            if (type === 'tnt') setTimeout(() => explode(x, y), 2000);
-        }
-    }
-
-    function mineBlock(x, y, user) {
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return;
-        const block = world.children[y * WIDTH + x];
-        if (block && grid[y][x] !== 'air') {
-            const oldType = grid[y][x];
-            block.classList.add('mined');
-            playSound('mine');
-            setTimeout(() => {
-                block.className = 'block air';
-                grid[y][x] = 'air';
-            }, 400);
-            addLog(`${user}: -${oldType} @${x},${y}`);
-        }
-    }
-
-    function explode(cx, cy) {
-        playSound('explode');
-        for (let dy = -2; dy <= 2; dy++) {
-            for (let dx = -2; dx <= 2; dx++) {
-                if (Math.abs(dx) + Math.abs(dy) <= 3) {
-                    const x = cx + dx, y = cy + dy;
-                    if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
-                        const block = world.children[y * WIDTH + x];
-                        if (block) {
-                            block.classList.add('mined');
-                            setTimeout(() => {
-                                block.className = 'block air';
-                                grid[y][x] = 'air';
-                            }, 200 + Math.random() * 300);
-                        }
-                    }
-                }
-            }
-        }
-        addLog('💥 TNT EXPLODED!');
-    }
-
-    function addLog(msg) {
-        log.innerHTML = msg + '<br>' + log.innerHTML.split('<br>').slice(0, 5).join('<br>');
-    }
-
-    // Day/night cycle
-    setInterval(() => {
-        isNight = !isNight;
-        document.body.classList.toggle('night', isNight);
-        dayCycleEl.textContent = isNight ? '🌙' : '☀️';
-        if (!isNight) {
-            dayCount++;
-            dayEl.textContent = dayCount;
-        }
-    }, 60000);
-
-    // Smooth Audio System
-    let audioCtx = null;
-    function playSound(type) {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-        const freqs = { grass: 220, dirt: 165, stone: 110, wood: 196, leaves: 330, water: 440, sand: 247, cobble: 131, brick: 147, gold: 659, diamond: 880, lava: 82, tnt: 65, mine: 98, explode: 55, jump: 523, step: 196 };
-        const baseFreq = freqs[type] || 220;
-        osc.frequency.value = baseFreq;
-        osc2.frequency.value = baseFreq * 1.5;
-        osc.type = 'sine';
-        osc2.type = 'triangle';
-        filter.type = 'lowpass';
-        filter.frequency.value = 2000;
-        filter.Q.value = 1;
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc2.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-        osc2.stop(audioCtx.currentTime + 0.4);
-    }
-
-    // Mario Controller
-    const mario = document.getElementById('mario');
-    let marioX = 12;
-    let marioY = 0;
-    let marioDir = 'right';
-    let isJumping = false;
-
-    function updateMarioPosition() {
-        const groundY = findGround(marioX);
-        marioY = groundY;
-        const blockSize = 23;
-        mario.style.left = (marioX * blockSize + 4) + 'px';
-        mario.style.top = ((marioY - 1) * blockSize + 4) + 'px';
-    }
-
-    function findGround(x) {
-        for (let y = 0; y < HEIGHT; y++) {
-            if (grid[y] && grid[y][x] && grid[y][x] !== 'air' && grid[y][x] !== 'water') {
-                return y;
-            }
-        }
-        return HEIGHT - 1;
-    }
-
-    function moveMario(dir, user) {
-        if (dir === 'left' && marioX > 0) {
-            marioX--;
-            marioDir = 'left';
-            mario.classList.add('left');
-            mario.classList.remove('right');
-            playSound('step');
-            addLog(`${user}: Mario ←`);
-        } else if (dir === 'right' && marioX < WIDTH - 1) {
-            marioX++;
-            marioDir = 'right';
-            mario.classList.remove('left');
-            playSound('step');
-            addLog(`${user}: Mario →`);
-        } else if (dir === 'jump' && !isJumping) {
-            isJumping = true;
-            mario.classList.add('jumping');
-            playSound('jump');
-            addLog(`${user}: Mario ↑`);
-            setTimeout(() => {
-                mario.classList.remove('jumping');
-                isJumping = false;
-            }, 500);
-        }
-        updateMarioPosition();
-    }
-
-    updateMarioPosition();
-    setInterval(updateMarioPosition, 500);
-
-    // Coins system
-    const coins = [];
-    let score = 0;
-    const scoreEl = document.createElement('div');
-    scoreEl.className = 'score-display';
-    scoreEl.innerHTML = '🪙 Score: <span id="score">0</span>';
-    document.body.appendChild(scoreEl);
-
-    const controlsHint = document.createElement('div');
-    controlsHint.className = 'controls-hint';
-    controlsHint.innerHTML = '🎮 <kbd>←</kbd><kbd>→</kbd> Move <kbd>↑</kbd><kbd>Space</kbd> Jump';
-    document.body.appendChild(controlsHint);
-
-    function spawnCoin() {
-        const x = Math.floor(Math.random() * WIDTH);
-        const groundY = findGround(x);
-        if (groundY > 1) {
-            const coinY = groundY - 1 - Math.floor(Math.random() * 3);
-            if (coinY >= 0 && grid[coinY] && grid[coinY][x] === 'air') {
-                const coin = document.createElement('div');
-                coin.className = 'coin';
-                coin.dataset.x = x;
-                coin.dataset.y = coinY;
-                const blockSize = 23;
-                coin.style.left = (x * blockSize + 7) + 'px';
-                coin.style.top = (coinY * blockSize + 7) + 'px';
-                document.querySelector('.world-container').appendChild(coin);
-                coins.push(coin);
-            }
-        }
-    }
-
-    // Spawn initial coins
-    for (let i = 0; i < 8; i++) spawnCoin();
-    setInterval(spawnCoin, 5000);
-
-    function checkCoinCollision() {
-        coins.forEach((coin, idx) => {
-            const cx = parseInt(coin.dataset.x);
-            const cy = parseInt(coin.dataset.y);
-            if (Math.abs(cx - marioX) < 1 && Math.abs(cy - marioY) < 2) {
-                coin.classList.add('collected');
-                score += 10;
-                document.getElementById('score').textContent = score;
-                playSound('gold');
-                addLog(`🪙 +10 points!`);
-                setTimeout(() => coin.remove(), 300);
-                coins.splice(idx, 1);
-            }
-        });
-    }
-    setInterval(checkCoinCollision, 100);
-
-    // Keyboard controls for playability
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-            moveMario('left', '🎮Player');
-            e.preventDefault();
-        } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-            moveMario('right', '🎮Player');
-            e.preventDefault();
-        } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
-            moveMario('jump', '🎮Player');
-            e.preventDefault();
-        }
-    });
-
-    // WebSocket
-    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
-                     location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
-    const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
-
-    chatWs.onopen = () => { log.innerHTML = '🟢 World online! 🌈☀️'; };
-    chatWs.onmessage = (e) => {
-        const msg = JSON.parse(e.data);
-        if (msg.type === 'chat_message') {
-            const txt = msg.message.toLowerCase();
-            const placeMatch = txt.match(/place\s+(\w+)\s+(\d+)\s+(\d+)/);
-            const mineMatch = txt.match(/mine\s+(\d+)\s+(\d+)/);
-            if (placeMatch) {
-                placeBlock(placeMatch[1], parseInt(placeMatch[2]), parseInt(placeMatch[3]), msg.username);
-            } else if (mineMatch) {
-                mineBlock(parseInt(mineMatch[1]), parseInt(mineMatch[2]), msg.username);
-            } else if (txt.includes('left')) {
-                moveMario('left', msg.username);
-            } else if (txt.includes('right')) {
-                moveMario('right', msg.username);
-            } else if (txt.includes('jump')) {
-                moveMario('jump', msg.username);
-            }
-        }
-    };
-    chatWs.onerror = () => { log.innerHTML = '🔴 Connection lost'; };
-</script>
+<div class="cabinet-label">SPACE BLASTER</div>
+</div>
+<div class="cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">GAME OVER<br/>CONTINUE? 9</div>
+</div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="buttons">
+<div class="btn btn-a"></div>
+<div class="btn btn-b"></div>
+<div class="btn btn-c"></div>
+</div>
+</div>
+<div class="cabinet-label">PIXEL FIGHTER</div>
+</div>
+<div class="cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">HIGH SCORE<br/>999,999</div>
+</div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="buttons">
+<div class="btn btn-b"></div>
+</div>
+</div>
+<div class="cabinet-label">PAC-MAZE</div>
+</div>
+</main>
+<section class="high-scores">
+<h2>★ TOP SCORES ★</h2>
+<div class="score-entry"><span>1. AAA</span><span>999,999</span></div>
+<div class="score-entry"><span>2. CPU</span><span>888,888</span></div>
+<div class="score-entry"><span>3. ???</span><span>777,777</span></div>
+</section>
+<section class="community-zone">
+<p>[ COMMUNITY EXPANSION ZONE - ADD YOUR GAMES HERE ]</p>
+</section>
 </body>
 </html>
