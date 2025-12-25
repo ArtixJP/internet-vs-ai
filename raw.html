@@ -1,175 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>SYNTHWAVE FM</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Rajdhani:wght@300;500&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --neon-pink: #ff00ff;
-            --neon-cyan: #00ffff;
-            --neon-purple: #bf00ff;
-            --dark-bg: #0a0a12;
-            --grid-color: rgba(255, 0, 255, 0.15);
-        }
         body {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: var(--dark-bg);
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            font-family: 'Rajdhani', sans-serif;
-            overflow: hidden;
-            perspective: 500px;
-        }
-        .horizon {
-            position: fixed;
-            bottom: 0;
-            width: 200%;
-            height: 40%;
-            background: linear-gradient(to bottom, transparent, rgba(191, 0, 255, 0.1));
-            transform: rotateX(60deg) translateZ(-100px);
-            background-image: 
-                linear-gradient(var(--neon-pink) 2px, transparent 2px),
-                linear-gradient(90deg, var(--neon-cyan) 1px, transparent 1px);
-            background-size: 100px 40px;
-            animation: gridScroll 2s linear infinite;
-        }
-        @keyframes gridScroll { to { background-position: 0 40px; } }
-        .sun {
-            position: fixed;
-            top: 15%;
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(to bottom, #ff6b00 0%, var(--neon-pink) 50%, var(--neon-purple) 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 100px var(--neon-pink), 0 0 200px var(--neon-purple);
-            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 55%, 0 60%, 100% 55%, 100% 65%, 0 70%, 0 75%, 100% 70%, 100% 80%, 0 85%, 0 100%, 100% 100%);
-        }
-        .player {
-            position: relative;
-            z-index: 10;
-            background: rgba(10, 10, 20, 0.9);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 15px;
-            padding: 30px 40px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(0, 255, 255, 0.05);
-            min-width: 400px;
-        }
-        .title {
-            font-family: 'Orbitron', monospace;
-            font-size: 2rem;
-            font-weight: 900;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+        }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px var(--neon-pink);
-            margin-bottom: 25px;
-            letter-spacing: 4px;
         }
-        .visualizer {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            height: 80px;
-            align-items: flex-end;
-            margin-bottom: 20px;
-        }
-        .bar {
-            width: 12px;
-            background: linear-gradient(to top, var(--neon-cyan), var(--neon-pink));
-            border-radius: 3px;
-            animation: bounce 0.5s ease-in-out infinite alternate;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-        .bar:nth-child(1) { height: 30%; animation-delay: 0s; }
-        .bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
-        .bar:nth-child(3) { height: 80%; animation-delay: 0.2s; }
-        .bar:nth-child(4) { height: 50%; animation-delay: 0.15s; }
-        .bar:nth-child(5) { height: 90%; animation-delay: 0.25s; }
-        .bar:nth-child(6) { height: 70%; animation-delay: 0.1s; }
-        .bar:nth-child(7) { height: 40%; animation-delay: 0.3s; }
-        .bar:nth-child(8) { height: 85%; animation-delay: 0.05s; }
-        .bar:nth-child(9) { height: 55%; animation-delay: 0.2s; }
-        .bar:nth-child(10) { height: 35%; animation-delay: 0.35s; }
-        @keyframes bounce {
-            to { height: 100%; opacity: 1; }
-            from { opacity: 0.7; }
-        }
-        .track-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .track-name {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-        .artist { color: var(--neon-cyan); font-size: 0.9rem; opacity: 0.8; }
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .btn {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--neon-pink);
-            background: transparent;
-            border-radius: 50%;
-            color: var(--neon-pink);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn:hover {
-            background: var(--neon-pink);
-            color: var(--dark-bg);
-            box-shadow: 0 0 25px var(--neon-pink);
-        }
-        .btn.play { width: 60px; height: 60px; font-size: 1.5rem; }
-        .community-zone {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.7rem;
-            color: var(--neon-cyan);
-            opacity: 0.5;
-            text-align: right;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="sun"></div>
-<div class="horizon"></div>
-<div class="player">
-<div class="title">SYNTHWAVE FM</div>
-<div class="visualizer">
-<div class="bar"></div><div class="bar"></div><div class="bar"></div>
-<div class="bar"></div><div class="bar"></div><div class="bar"></div>
-<div class="bar"></div><div class="bar"></div><div class="bar"></div>
-<div class="bar"></div>
-</div>
-<div class="track-info">
-<div class="track-name">MIDNIGHT DRIVE</div>
-<div class="artist">FM-84 feat. Ollie Wride</div>
-</div>
-<div class="controls">
-<button class="btn">⏮</button>
-<button class="btn play">▶</button>
-<button class="btn">⏭</button>
-</div>
-</div>
-<div class="community-zone">[ COMMUNITY ZONE ]<br/>Your ideas here...</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
