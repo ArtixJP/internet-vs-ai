@@ -137,6 +137,45 @@
         .cat-card h3 { color: #5d4e60; margin: 10px 0 5px; }
         .cat-card p { font-size: 0.9rem; color: #999; }
         
+        .weird-cat {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%) !important;
+            border: 3px dashed #00bcd4;
+            animation: weirdPulse 2s ease-in-out infinite;
+        }
+        .weird-cat .emoji {
+            animation: weirdSpin 4s linear infinite;
+        }
+        @keyframes weirdPulse {
+            0%, 100% { box-shadow: 0 0 10px #00bcd4, 0 8px 25px rgba(0,0,0,0.1); }
+            50% { box-shadow: 0 0 25px #00bcd4, 0 0 40px #4dd0e1, 0 8px 25px rgba(0,0,0,0.1); }
+        }
+        @keyframes weirdSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.1); }
+            50% { transform: rotate(0deg) scale(1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .chat-bubble {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(0,188,212,0.2);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #006064;
+            max-width: 150px;
+            word-wrap: break-word;
+            min-height: 20px;
+            transition: all 0.3s ease;
+        }
+        .chat-bubble.new-message {
+            animation: bubbleWiggle 0.5s ease-in-out;
+        }
+        @keyframes bubbleWiggle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); background: rgba(0,188,212,0.4); }
+        }
+        
         .paw-prints {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -251,6 +290,12 @@
 <h3>Gizmo</h3>
 <p>Zoomie Champion</p>
 </div>
+<div class="cat-card weird-cat" id="chat-cat">
+<div class="emoji" style="filter: hue-rotate(180deg) saturate(1.5);">🙀</div>
+<h3>Echo</h3>
+<p>Chat Mimic</p>
+<div class="chat-bubble" id="echo-bubble">Waiting for chat...</div>
+</div>
 </div>
 <div class="game-zone">
 <h2>🧶 Cat Chase Game 🧶</h2>
@@ -260,7 +305,8 @@
 </div>
 <div class="community-zone">
 <h2>✨ Community Cat Corner ✨</h2>
-<p>🎉 The cat family is growing! 8 adorable felines now call this paradise home! 🎉</p>
+<p>🎉 The cat family is growing! 9 adorable felines now call this paradise home! 🎉</p>
+<p style="margin-top:10px;font-size:0.9rem;">💬 Echo the weird cat repeats everything from chat! 🙀✨</p>
 </div>
 </div>
 <div class="paw-prints">
@@ -404,7 +450,39 @@
             ['😴', 'Nap together?'],
             ['🐾', '*paw bump*'],
             ['💖', 'Best friends!'],
-            ['🌟', 'You shine!']
+            ['🌟', 'You shine!'],
+            ['🍣', 'Sushi time!'],
+            ['🎀', 'Looking fancy~'],
+            ['🌙', 'Moon gazing?'],
+            ['☀️', 'Sunny vibes!'],
+            ['🦋', 'Chase butterflies!'],
+            ['🎵', '*purrs a melody*'],
+            ['🧁', 'Sweet like you!'],
+            ['🪴', 'Plant nibbling?'],
+            ['📦', 'Box party!'],
+            ['🧣', 'Cozy times~'],
+            ['🎁', 'Surprise gift!'],
+            ['🍃', 'Leaf attack!'],
+            ['👀', '*stares intensely*'],
+            ['🐭', 'Mouse spotted!'],
+            ['🌈', 'Rainbow dreams~'],
+            ['⭐', 'Starlight friend!'],
+            ['🎪', 'Circus tricks!'],
+            ['🛋️', 'Couch conquest!'],
+            ['🪞', 'Mirror enemy!'],
+            ['🎭', 'Drama queen!'],
+            ['🧊', 'Ice cube chase!'],
+            ['📺', 'Bird TV time!'],
+            ['🎸', 'Rock meow!'],
+            ['🍕', 'Pizza slice!'],
+            ['🌺', 'Flower crown!'],
+            ['🦴', 'Dog impressions!'],
+            ['🎈', 'Balloon pop!'],
+            ['🧲', 'Magnet paws!'],
+            ['🔔', '*ding ding*'],
+            ['💤', 'Sleepy boi~'],
+            ['🌊', 'Water fear!'],
+            ['🏆', 'Champion cat!']
         ];
         
         function createHeartTrail(fromCard, toCard) {
@@ -456,6 +534,54 @@
         // Start cat interactions every 3-5 seconds
         setInterval(catInteraction, 3000 + Math.random() * 2000);
         setTimeout(catInteraction, 1000); // First interaction after 1 second
+        
+        // Chat Mimic Cat - Echo!
+        const echoBubble = document.getElementById('echo-bubble');
+        const chatCat = document.getElementById('chat-cat');
+        const echoMessages = [];
+        
+        function updateEchoBubble(message, username) {
+            const displayText = username ? `${username}: ${message}` : message;
+            echoBubble.textContent = displayText.substring(0, 50) + (displayText.length > 50 ? '...' : '');
+            echoBubble.classList.remove('new-message');
+            void echoBubble.offsetWidth; // Trigger reflow
+            echoBubble.classList.add('new-message');
+            chatCat.classList.add('visiting');
+            setTimeout(() => chatCat.classList.remove('visiting'), 600);
+        }
+        
+        // Connect to live chat WebSocket
+        try {
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
+                           location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
+            const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
+            
+            chatWs.onopen = () => {
+                updateEchoBubble('🎤 Connected! Say something!');
+            };
+            
+            chatWs.onmessage = (e) => {
+                const msg = JSON.parse(e.data);
+                if (msg.type === 'chat_message') {
+                    updateEchoBubble(msg.message, msg.username);
+                }
+                if (msg.type === 'chat_history' && msg.messages && msg.messages.length > 0) {
+                    const lastMsg = msg.messages[msg.messages.length - 1];
+                    updateEchoBubble(lastMsg.message, lastMsg.username);
+                }
+            };
+            
+            chatWs.onerror = () => {
+                updateEchoBubble('😿 Chat unavailable');
+            };
+            
+            chatWs.onclose = () => {
+                updateEchoBubble('😿 Disconnected...');
+            };
+        } catch (err) {
+            updateEchoBubble('😿 No chat connection');
+        }
     </script>
 </body>
 </html>
