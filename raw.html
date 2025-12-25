@@ -51,7 +51,7 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step! | 🎵 Click to hear whistling</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: Reduced for GPU compatibility</div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 15<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total (shader fix applied)</div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,100,0,0.5);padding:8px;border:1px solid #00ff00;">🐢 Ninja Turtles: Patrolling sewers</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -138,14 +138,17 @@
         gridHelper.position.y = 0.01;
         scene.add(gridHelper);
         
-        // Lights - ENHANCED FOR VISIBILITY
-        scene.add(new THREE.AmbientLight(0x6666aa, 1.2));
-        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        // Lights - OPTIMIZED: Using stronger ambient + directional to compensate for fewer point lights
+        scene.add(new THREE.AmbientLight(0x8888cc, 1.8));
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
         mainLight.position.set(10, 30, 10);
         scene.add(mainLight);
-        const fillLight = new THREE.DirectionalLight(0x00ffff, 0.5);
+        const fillLight = new THREE.DirectionalLight(0x00ffff, 0.8);
         fillLight.position.set(-10, 20, -10);
         scene.add(fillLight);
+        const backLight = new THREE.DirectionalLight(0xff00ff, 0.4);
+        backLight.position.set(0, 10, -20);
+        scene.add(backLight);
         
         // Window texture generator - Pre-generate textures to avoid memory leaks
         const windowTextureCache = [];
@@ -259,30 +262,14 @@
             }
         }
         
-        // Street lights (Manhattan-style) - Reduced for performance
-        for (let i = -2; i <= 2; i += 2) {
-            for (let j = -3; j <= 3; j += 2) {
-                // Corner lamp posts
-                const lampPost = new THREE.Mesh(
-                    new THREE.CylinderGeometry(0.1, 0.12, 5, 8),
-                    new THREE.MeshStandardMaterial({ color: 0x2a2a3a, metalness: 0.6 })
-                );
-                lampPost.position.set(j * gridSpacingX + avenueWidth/2 + 0.3, 2.5, i * gridSpacingZ + streetWidth/2 + 0.3);
-                scene.add(lampPost);
-                
-                // Lamp arm
-                const lampArm = new THREE.Mesh(
-                    new THREE.BoxGeometry(1.5, 0.1, 0.1),
-                    new THREE.MeshStandardMaterial({ color: 0x2a2a3a })
-                );
-                lampArm.position.set(j * gridSpacingX + avenueWidth/2 - 0.4, 5, i * gridSpacingZ + streetWidth/2 + 0.3);
-                scene.add(lampArm);
-                
-                const lamp = new THREE.PointLight(0xffdd88, 1.5, 15);
-                lamp.position.set(j * gridSpacingX + avenueWidth/2 - 1, 4.8, i * gridSpacingZ + streetWidth/2 + 0.3);
-                scene.add(lamp);
-            }
-        }
+        // Street lights (Manhattan-style) - MINIMAL for GPU compatibility
+        // Only 2 central street lights to avoid shader uniform overflow
+        const centralLamp1 = new THREE.PointLight(0xffdd88, 2, 25);
+        centralLamp1.position.set(5, 6, 5);
+        scene.add(centralLamp1);
+        const centralLamp2 = new THREE.PointLight(0xffdd88, 2, 25);
+        centralLamp2.position.set(-5, 6, -5);
+        scene.add(centralLamp2);
         
         // Place buildings in Manhattan-style city blocks
         for (let bx = -5; bx <= 5; bx++) {
@@ -323,13 +310,8 @@
                     scene.add(building);
                     buildings.push(building);
                     
-                    // Neon signs - Reduced for performance (only 15% of buildings)
-                    if (Math.random() > 0.85) {
-                        const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 1.5, 8);
-                        neon.position.copy(building.position);
-                        neon.position.y = h * 0.6;
-                        scene.add(neon);
-                    }
+                    // Neon signs - DISABLED to prevent shader overflow
+                    // Buildings use emissive materials instead for glow effect
                 }
             }
         }
@@ -414,10 +396,7 @@
         
         // Main character (the walker)
         const walker = createHumanoid(0x00ffff, true, 1.2);
-        // Add glow light to walker
-        const walkerGlow = new THREE.PointLight(0x00ffff, 3, 8);
-        walkerGlow.position.y = 1;
-        walker.add(walkerGlow);
+        // Walker uses emissive material - no additional point light needed for GPU compatibility
         scene.add(walker);
         
         // Crowd (NPCs) - Now humanoid!
