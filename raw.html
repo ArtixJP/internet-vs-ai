@@ -37,7 +37,7 @@
         }
         .rocket {
             position: absolute;
-            left: 50%; top: 50%;
+            left: 50%; top: 85%;
             font-size: 80px;
             filter: drop-shadow(0 0 30px rgba(255,100,50,0.8));
             cursor: pointer;
@@ -400,9 +400,9 @@
     const chatCmd = document.getElementById('chatCommand');
     
     let rocketX = 50;
-    let rocketY = 80;
+    let rocketY = 85;
     const step = 8;
-    const bounds = { minX: 10, maxX: 90, minY: 15, maxY: 85 };
+    const bounds = { minX: 10, maxX: 90, minY: 15, maxY: 90 };
     
     function updateRocket() {
         rocket.style.left = rocketX + '%';
