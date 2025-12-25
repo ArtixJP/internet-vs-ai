@@ -9,11 +9,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --neon-pink: #ff00ff;
-            --neon-cyan: #00ffff;
-            --neon-yellow: #ffff00;
-            --arcade-purple: #1a0a2e;
-            --arcade-dark: #0d0015;
+            --neon-pink: #ff6b9d;
+            --neon-cyan: #7fdbff;
+            --neon-yellow: #ffd93d;
+            --arcade-purple: #2d1b4e;
+            --arcade-dark: #1a0d2e;
+            --warm-coral: #ff8a80;
+            --soft-lavender: #b39ddb;
+            --peachy: #ffab91;
         }
         
         body {
@@ -54,16 +57,16 @@
         .arcade-header {
             text-align: center;
             padding: 30px 20px;
-            background: linear-gradient(180deg, var(--arcade-purple) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(45,27,78,0.9) 0%, rgba(255,138,128,0.1) 50%, transparent 100%);
         }
         
         .neon-title {
             font-size: clamp(1.5rem, 5vw, 3rem);
-            color: var(--neon-cyan);
+            color: var(--neon-yellow);
             text-shadow: 
-                0 0 5px var(--neon-cyan),
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
+                0 0 5px var(--neon-yellow),
+                0 0 10px var(--peachy),
+                0 0 20px var(--warm-coral),
                 0 0 40px var(--neon-pink);
             animation: flicker 3s infinite;
         }
@@ -108,20 +111,20 @@
             margin-top: 20px;
             padding: 10px 25px;
             font-size: 0.9rem;
-            color: #00ff88;
-            background: linear-gradient(90deg, rgba(0,255,136,0.1) 0%, rgba(0,255,255,0.2) 50%, rgba(0,255,136,0.1) 100%);
-            border: 3px solid #00ff88;
+            color: #ffd93d;
+            background: linear-gradient(90deg, rgba(255,171,145,0.2) 0%, rgba(255,217,61,0.25) 50%, rgba(255,171,145,0.2) 100%);
+            border: 3px solid var(--peachy);
             border-radius: 8px;
             text-shadow: 
-                0 0 10px #00ff88,
-                0 0 20px #00ff88,
-                0 0 40px #00ff88;
+                0 0 10px var(--neon-yellow),
+                0 0 20px var(--peachy),
+                0 0 40px var(--warm-coral);
             animation: welcomePulse 2s ease-in-out infinite;
         }
         
         @keyframes welcomePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0,255,136,0.5); }
-            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(0,255,136,0.8); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,171,145,0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(255,217,61,0.6); }
         }
         
         .star {
@@ -168,13 +171,13 @@
         .cabinet {
             width: 200px;
             height: 280px;
-            background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
-            border: 3px solid var(--neon-pink);
+            background: linear-gradient(180deg, #3d2a5a 0%, #2d1b4e 100%);
+            border: 3px solid var(--soft-lavender);
             border-radius: 10px 10px 5px 5px;
             position: relative;
             box-shadow: 
-                0 0 15px rgba(255,0,255,0.5),
-                inset 0 0 30px rgba(0,0,0,0.5);
+                0 0 15px rgba(179,157,219,0.4),
+                inset 0 0 30px rgba(0,0,0,0.3);
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
         }
@@ -182,8 +185,9 @@
         .cabinet:hover {
             transform: scale(1.05) translateY(-5px);
             box-shadow: 
-                0 0 30px rgba(255,0,255,0.8),
-                0 20px 40px rgba(0,0,0,0.5);
+                0 0 30px rgba(255,171,145,0.6),
+                0 0 50px rgba(179,157,219,0.4),
+                0 20px 40px rgba(0,0,0,0.3);
         }
         
         .cabinet-screen {
@@ -251,12 +255,13 @@
         }
         
         .high-scores {
-            background: rgba(26,10,46,0.9);
-            border: 2px solid var(--neon-cyan);
+            background: rgba(45,27,78,0.85);
+            border: 2px solid var(--peachy);
             padding: 20px;
             margin: 20px auto;
             max-width: 400px;
             text-align: center;
+            box-shadow: 0 0 20px rgba(255,171,145,0.2);
         }
         
         .high-scores h2 {
@@ -276,7 +281,7 @@
         .community-zone {
             text-align: center;
             padding: 30px;
-            border-top: 2px dashed var(--neon-pink);
+            border-top: 2px dashed var(--soft-lavender);
             margin-top: 30px;
         }
         
@@ -284,8 +289,8 @@
             font-size: 1.2rem;
             margin-top: 10px;
             animation: heartbeat 1s ease-in-out infinite;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
+            color: var(--warm-coral);
+            text-shadow: 0 0 10px var(--warm-coral), 0 0 20px var(--peachy);
         }
         
         @keyframes heartbeat {
