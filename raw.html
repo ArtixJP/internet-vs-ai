@@ -306,13 +306,13 @@
 <div class="main-content">
 <h1>🐾 Cat Paradise 🐾</h1>
 <p class="subtitle">Where every pixel is purrfect~</p>
-<div class="game-zone" style="margin-top:10px;">
-<h2>🧶 Cat Chase Game 🧶</h2>
-<p style="color:#8b7d8b;margin-bottom:15px;">🤖 Autoplay ON! Watch the cats chase the magical yarn! 🧶✨</p>
-<canvas height="300" id="game-canvas" width="650"></canvas>
-<p class="game-score">Yarn caught: <span id="score">0</span> times! 🎉</p>
+<div class="arena-container" style="display:flex;flex-direction:column;align-items:center;margin-top:20px;">
+<div class="spectator-row top-spectators" style="display:flex;gap:10px;margin-bottom:15px;">
 </div>
-<div class="battle-arena">
+<div class="arena-with-sides" style="display:flex;align-items:center;gap:15px;">
+<div class="side-spectators left-side" style="display:flex;flex-direction:column;gap:10px;">
+</div>
+<div class="battle-arena" style="margin:0;">
 <h2>⚔️ Cat vs Dog Battle Arena ⚔️</h2>
 <p style="color:#8b7d8b;margin-bottom:10px;">🐱 Cats defend the paradise! 🐕 Dogs invade! Watch the epic auto-battle! ⚔️</p>
 <canvas height="280" id="battle-canvas" width="650"></canvas>
@@ -322,7 +322,13 @@
 <span class="dog-score">🐕 Dogs: <span id="dog-wins">0</span></span>
 </div>
 </div>
-<div class="cat-gallery" style="margin-top:30px;">
+<div class="side-spectators right-side" style="display:flex;flex-direction:column;gap:10px;">
+</div>
+</div>
+<div class="spectator-row bottom-spectators" style="display:flex;gap:10px;margin-top:15px;">
+</div>
+</div>
+<div class="cat-gallery" style="display:none;">
 <div class="cat-card">
 <div class="emoji">😺</div>
 <h3>Whiskers</h3>
@@ -442,106 +448,47 @@
         style.textContent = '@keyframes fadeUp{0%{opacity:1;top:-10px;}100%{opacity:0;top:-50px;}}';
         document.head.appendChild(style);
         
-        // Cat Chase Game
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-        let mouseX = canvas.width / 2;
-        let mouseY = canvas.height / 2;
-        let score = 0;
+        // Distribute cat cards around the battle arena as spectators!
+        const catCards = document.querySelectorAll('.cat-gallery .cat-card');
+        const topRow = document.querySelector('.top-spectators');
+        const bottomRow = document.querySelector('.bottom-spectators');
+        const leftSide = document.querySelector('.left-side');
+        const rightSide = document.querySelector('.right-side');
         
-        const gameCats = [
-            { x: 100, y: 100, emoji: '😺', speed: 2.5 },
-            { x: 500, y: 200, emoji: '🐱', speed: 2 },
-            { x: 300, y: 150, emoji: '😸', speed: 3 },
-            { x: 200, y: 250, emoji: '🐈', speed: 1.8 }
-        ];
-        
-        const yarn = { x: mouseX, y: mouseY, radius: 15 };
-        
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
+        // Distribute cards: 3 top, 2 left, 2 right, 2 bottom
+        const cardArray = Array.from(catCards);
+        cardArray.forEach((card, i) => {
+            card.style.width = '140px';
+            card.style.padding = '12px';
+            card.querySelector('.emoji').style.fontSize = '2.5rem';
+            card.querySelector('h3').style.fontSize = '0.9rem';
+            card.querySelector('p').style.fontSize = '0.7rem';
+            
+            if (i < 3) topRow.appendChild(card);
+            else if (i < 5) leftSide.appendChild(card);
+            else if (i < 7) rightSide.appendChild(card);
+            else bottomRow.appendChild(card);
         });
         
-        // Autoplay mode - yarn moves on its own!
-        let autoplayAngle = 0;
-        let autoplayRadius = 80;
-        let autoplayCenterX = canvas.width / 2;
-        let autoplayCenterY = canvas.height / 2;
-        let autoplayMode = true;
-        
-        function updateAutoplay() {
-            if (!autoplayMode) return;
-            
-            autoplayAngle += 0.03;
-            autoplayRadius = 60 + Math.sin(autoplayAngle * 0.5) * 40;
-            
-            // Slowly drift center
-            autoplayCenterX += Math.sin(autoplayAngle * 0.2) * 0.5;
-            autoplayCenterY += Math.cos(autoplayAngle * 0.3) * 0.3;
-            
-            // Keep center in bounds
-            autoplayCenterX = Math.max(100, Math.min(canvas.width - 100, autoplayCenterX));
-            autoplayCenterY = Math.max(80, Math.min(canvas.height - 80, autoplayCenterY));
-            
-            mouseX = autoplayCenterX + Math.cos(autoplayAngle) * autoplayRadius;
-            mouseY = autoplayCenterY + Math.sin(autoplayAngle * 1.3) * autoplayRadius * 0.7;
-        }
-        
-        function drawYarn(x, y) {
-            ctx.beginPath();
-            ctx.arc(x, y, yarn.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#ff6b9d';
-            ctx.fill();
-            ctx.strokeStyle = '#ff4081';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            // Yarn string
-            ctx.beginPath();
-            ctx.moveTo(x, y + yarn.radius);
-            ctx.quadraticCurveTo(x + 20, y + 40, x - 10, y + 50);
-            ctx.strokeStyle = '#ff6b9d';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-        
-        function gameLoop() {
-            updateAutoplay();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Smooth yarn movement
-            yarn.x += (mouseX - yarn.x) * 0.1;
-            yarn.y += (mouseY - yarn.y) * 0.1;
-            
-            drawYarn(yarn.x, yarn.y);
-            
-            // Update and draw cats
-            gameCats.forEach(cat => {
-                const dx = yarn.x - cat.x;
-                const dy = yarn.y - cat.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist > 30) {
-                    cat.x += (dx / dist) * cat.speed;
-                    cat.y += (dy / dist) * cat.speed;
-                } else if (dist < 25) {
-                    score++;
-                    document.getElementById('score').textContent = score;
-                    // Scatter yarn
-                    yarn.x = Math.random() * (canvas.width - 60) + 30;
-                    yarn.y = Math.random() * (canvas.height - 60) + 30;
-                }
-                
-                ctx.font = '35px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(cat.emoji, cat.x, cat.y);
-            });
-            
-            requestAnimationFrame(gameLoop);
-        }
-        gameLoop();
+        // Add cheering animations to spectator cards
+        const spectatorStyle = document.createElement('style');
+        spectatorStyle.textContent = `
+            .spectator-row .cat-card, .side-spectators .cat-card {
+                animation: spectatorCheer 2s ease-in-out infinite;
+            }
+            .left-side .cat-card { animation-delay: 0.3s; }
+            .right-side .cat-card { animation-delay: 0.6s; }
+            .bottom-spectators .cat-card { animation-delay: 0.9s; }
+            @keyframes spectatorCheer {
+                0%, 100% { transform: translateY(0) rotate(0); }
+                25% { transform: translateY(-5px) rotate(-3deg); }
+                75% { transform: translateY(-3px) rotate(3deg); }
+            }
+            .arena-container { max-width: 95vw; }
+            .side-spectators .cat-card { width: 120px !important; }
+            .side-spectators .emoji { font-size: 2rem !important; }
+        `;
+        document.head.appendChild(spectatorStyle);
         
         // Cat Card Interactions System
         const catCards = document.querySelectorAll('.cat-card');
