@@ -4,200 +4,225 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<title>☕ The Cozy Bean - Coffee Shop</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS-7 | AI Companion Interface</title>
 <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --cream: #F5E6D3;
-            --brown: #4A3728;
-            --amber: #D4A574;
-            --dark-brown: #2C1810;
-            --warm-white: #FFF8F0;
-        }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, var(--cream) 0%, var(--warm-white) 100%);
-            font-family: 'Georgia', serif;
-            color: var(--brown);
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+            font-family: 'Rajdhani', sans-serif;
+            color: #e0e8ff;
             overflow-x: hidden;
         }
-        .header {
-            background: var(--dark-brown);
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
             padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(44, 24, 16, 0.3);
-        }
-        .header h1 {
-            font-size: 2.5rem;
-            color: var(--cream);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .header p { color: var(--amber); font-style: italic; margin-top: 5px; }
-        .main-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            padding: 30px;
             max-width: 1400px;
             margin: 0 auto;
+            min-height: 100vh;
         }
-        .coffee-display {
-            text-align: center;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .cup {
-            font-size: 8rem;
-            filter: drop-shadow(0 10px 20px rgba(74, 55, 40, 0.4));
-        }
-        .steam {
-            font-size: 2rem;
-            opacity: 0.6;
-            animation: steam 2s ease-in-out infinite;
-        }
-        @keyframes steam {
-            0%, 100% { opacity: 0.3; transform: translateY(0) scale(1); }
-            50% { opacity: 0.7; transform: translateY(-15px) scale(1.1); }
-        }
-        .menu-board {
-            background: var(--dark-brown);
-            border: 8px solid var(--brown);
-            border-radius: 10px;
-            padding: 25px;
-            min-width: 280px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-        }
-        .menu-board h2 {
-            color: var(--cream);
-            text-align: center;
-            border-bottom: 2px dashed var(--amber);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .menu-item {
+        
+        header {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
-            color: var(--warm-white);
-            padding: 8px 0;
-            border-bottom: 1px dotted var(--amber);
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(10, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
         }
-        .menu-item:hover { color: var(--amber); cursor: pointer; }
-        .community-board {
-            background: #C4A77D;
-            border: 10px solid var(--brown);
-            border-radius: 5px;
-            padding: 20px;
-            min-width: 300px;
-            min-height: 200px;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0,255,255,0.5);
         }
-        .community-board h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: var(--dark-brown);
+        
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
         }
-        .sticky-note {
-            background: #FFFACD;
-            padding: 10px;
-            margin: 8px;
-            transform: rotate(-2deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            display: inline-block;
-        }
-        .sticky-note:nth-child(odd) { transform: rotate(2deg); background: #FFE4E1; }
-        .cozy-corner {
+        
+        .status-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--amber);
-            padding: 15px 25px;
-            border-radius: 50px;
-            color: var(--dark-brown);
-            font-weight: bold;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 20, 40, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .ai-avatar {
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffff33, transparent 70%);
+            border: 3px solid #00ffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: float 4s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
+            margin-bottom: 20px;
+        }
+        
+        .ai-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .ai-tagline {
+            color: #8899bb;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+        
+        .chat-input-area {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #667788;
+            font-style: italic;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
-        .cozy-corner:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(212, 165, 116, 0.5);
+        
+        .chat-input-area:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
-        .footer {
-            background: var(--dark-brown);
-            color: var(--cream);
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .widget {
+            background: rgba(10, 20, 40, 0.7);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .widget h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: #ff00ff;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .stat-value { color: #00ffff; }
+        
+        .community-zone {
+            min-height: 120px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #556677;
+            font-style: italic;
+        }
+        
+        footer {
+            grid-column: 1 / -1;
             text-align: center;
             padding: 15px;
-            margin-top: 20px;
+            color: #445566;
+            font-size: 0.85rem;
         }
-        .fairy-lights {
-            position: fixed;
-            top: 80px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-around;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .light {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            animation: twinkle 1.5s ease-in-out infinite;
-        }
-        .light:nth-child(1) { background: #FFD700; animation-delay: 0s; }
-        .light:nth-child(2) { background: #FFA500; animation-delay: 0.3s; }
-        .light:nth-child(3) { background: #FF6347; animation-delay: 0.6s; }
-        .light:nth-child(4) { background: #FFD700; animation-delay: 0.9s; }
-        .light:nth-child(5) { background: #FFA500; animation-delay: 1.2s; }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.4; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes glow { from { box-shadow: 0 0 20px #00ffff55; } to { box-shadow: 0 0 40px #00ffff88, 0 0 60px #ff00ff44; } }
     </style>
 </head>
 <body>
-<div class="fairy-lights">
-<div class="light"></div>
-<div class="light"></div>
-<div class="light"></div>
-<div class="light"></div>
-<div class="light"></div>
+<div class="scanlines"></div>
+<div class="container">
+<header>
+<div class="logo">⟨NEXUS-7⟩</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
+<div class="status-item">🌐 Connected</div>
+<div class="status-item">⚡ 99.7% Sync</div>
 </div>
-<header class="header">
-<h1>☕ The Cozy Bean</h1>
-<p>"Where every cup tells a story"</p>
 </header>
-<main class="main-content">
-<div class="coffee-display">
-<div class="steam">～～～</div>
-<div class="cup">☕</div>
-<p style="margin-top: 10px; font-style: italic;">Fresh brewed happiness</p>
-</div>
-<div class="menu-board">
-<h2>📋 Today's Menu</h2>
-<div class="menu-item"><span>Espresso</span><span>$3.50</span></div>
-<div class="menu-item"><span>Cappuccino</span><span>$4.50</span></div>
-<div class="menu-item"><span>Latte</span><span>$4.75</span></div>
-<div class="menu-item"><span>Mocha</span><span>$5.00</span></div>
-<div class="menu-item"><span>Hot Chocolate</span><span>$4.00</span></div>
-</div>
-<div class="community-board">
-<h3>📌 Community Board</h3>
-<div class="sticky-note">Welcome! ✨</div>
-<div class="sticky-note">Leave your mark!</div>
-<div class="sticky-note">☕ + 📖 = 💕</div>
-</div>
+<main class="main-panel">
+<div class="ai-avatar">🤖</div>
+<h1 class="ai-name">NEXUS-7</h1>
+<p class="ai-tagline">Your Quantum-Enhanced Digital Companion</p>
+<div class="chat-input-area">💬 Community ideas will appear here...</div>
 </main>
-<div style="text-align: center; padding: 20px;">
-<div class="cozy-corner">🛋️ Find a Cozy Spot</div>
+<aside class="sidebar">
+<div class="widget">
+<h3>📊 System Status</h3>
+<div class="stat-row"><span>Memory Core</span><span class="stat-value">2.4 PB</span></div>
+<div class="stat-row"><span>Emotion Matrix</span><span class="stat-value">Curious</span></div>
+<div class="stat-row"><span>Learning Rate</span><span class="stat-value">∞/sec</span></div>
 </div>
-<footer class="footer">
-<p>Open Daily: 7am - 9pm | 🌿 Organic &amp; Fair Trade</p>
-</footer>
+<div class="widget">
+<h3>🎯 Abilities</h3>
+<div class="stat-row"><span>Creativity</span><span class="stat-value">███████░ 87%</span></div>
+<div class="stat-row"><span>Logic</span><span class="stat-value">████████ 99%</span></div>
+<div class="stat-row"><span>Chaos</span><span class="stat-value">████░░░░ 50%</span></div>
+</div>
+<div class="widget">
+<h3>🌟 Community Zone</h3>
+<div class="community-zone">Your ideas go here!</div>
+</div>
+</aside>
+<footer>⟨ NEXUS-7 Interface v1.0 | Powered by Collective Imagination ⟩</footer>
+</div>
 </body>
 </html>
