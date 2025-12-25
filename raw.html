@@ -49,7 +49,8 @@
 <span>Following the ninja hunters through neon streets</span>
 </div>
 <div id="population">CITIZENS: <span id="count">0</span></div>
-<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🚗 CARJACKING ENABLED | 🎵 Click for synthwave</div>
+<div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🚗 CARJACKING ENABLED | 👮 POLICE PATROL | 🎵 Click for synthwave</div>
+<div id="police-status" style="position:absolute;top:210px;left:20px;color:#4488ff;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,50,0.5);padding:8px;border:1px solid #4488ff;">👮 NYPD: Patrolling... | Shots Fired: <span id="shots-fired">0</span></div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
 <div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
@@ -649,6 +650,143 @@
             crowd.push(npc);
         }
         document.getElementById('count').textContent = crowd.length;
+        
+        // NYPD POLICE SYSTEM 👮
+        const police = [];
+        let shotsFired = 0;
+        const policeColors = [0x1144aa, 0x2255bb, 0x0033aa];
+        
+        function createPolice() {
+            const cop = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1144aa });
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xddaa88 });
+            const badgeMat = new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0xffd700, emissiveIntensity: 0.3 });
+            const gunMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.9 });
+            
+            // Head
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), skinMat);
+            head.position.y = 1.6;
+            cop.add(head);
+            
+            // Police cap
+            const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 0.1, 8), new THREE.MeshStandardMaterial({ color: 0x0a0a44 }));
+            cap.position.y = 1.75;
+            cop.add(cap);
+            const capBrim = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.02, 0.15), new THREE.MeshStandardMaterial({ color: 0x0a0a44 }));
+            capBrim.position.set(0, 1.7, -0.1);
+            cop.add(capBrim);
+            
+            // Torso
+            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.55, 0.25), bodyMat);
+            torso.position.y = 1.15;
+            cop.add(torso);
+            
+            // Badge
+            const badge = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.1, 0.02), badgeMat);
+            badge.position.set(-0.12, 1.25, -0.14);
+            cop.add(badge);
+            
+            // Legs
+            const legGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.5, 8);
+            const leftLeg = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: 0x111133 }));
+            leftLeg.position.set(-0.12, 0.5, 0);
+            cop.add(leftLeg);
+            const rightLeg = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: 0x111133 }));
+            rightLeg.position.set(0.12, 0.5, 0);
+            cop.add(rightLeg);
+            
+            // Arms
+            const armGeo = new THREE.CylinderGeometry(0.06, 0.05, 0.45, 8);
+            const leftArm = new THREE.Mesh(armGeo, bodyMat);
+            leftArm.position.set(-0.28, 1.1, 0);
+            leftArm.rotation.z = 0.15;
+            cop.add(leftArm);
+            const rightArm = new THREE.Mesh(armGeo, bodyMat);
+            rightArm.position.set(0.28, 1.1, 0);
+            rightArm.rotation.z = -0.15;
+            cop.add(rightArm);
+            
+            // Gun in right hand
+            const gunGroup = new THREE.Group();
+            const gunBody = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.12, 0.2), gunMat);
+            gunGroup.add(gunBody);
+            const gunBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.15, 8), gunMat);
+            gunBarrel.rotation.x = Math.PI / 2;
+            gunBarrel.position.set(0, 0.02, -0.15);
+            gunGroup.add(gunBarrel);
+            gunGroup.position.set(0.35, 0.85, 0);
+            cop.add(gunGroup);
+            
+            cop.userData.limbs = { leftLeg, rightLeg, leftArm, rightArm, gun: gunGroup };
+            cop.userData.walkPhase = Math.random() * Math.PI * 2;
+            cop.userData.speed = 0.02 + Math.random() * 0.01;
+            cop.userData.state = 'patrol'; // patrol, chasing, shooting
+            cop.userData.target = null;
+            cop.userData.shootCooldown = 0;
+            cop.userData.witnessedCrime = false;
+            
+            return cop;
+        }
+        
+        // Spawn police officers
+        for (let i = 0; i < 6; i++) {
+            const cop = createPolice();
+            const onAvenue = Math.random() > 0.5;
+            const sidewalkSide = sidewalkOffsets[Math.floor(Math.random() * 2)];
+            
+            if (onAvenue) {
+                const avenueIndex = Math.floor(Math.random() * 8) - 4;
+                cop.position.set(
+                    avenueIndex * gridSpacingX + sidewalkSide,
+                    0,
+                    (Math.random() - 0.5) * 50
+                );
+                cop.userData.walkAxis = 'z';
+                cop.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+            } else {
+                const streetIndex = Math.floor(Math.random() * 6) - 3;
+                cop.position.set(
+                    (Math.random() - 0.5) * 50,
+                    0,
+                    streetIndex * gridSpacingZ + sidewalkSide
+                );
+                cop.userData.walkAxis = 'x';
+                cop.userData.walkDirection = Math.random() > 0.5 ? 1 : -1;
+            }
+            
+            scene.add(cop);
+            police.push(cop);
+        }
+        
+        // Bullet system
+        const bullets = [];
+        function shootBullet(cop, targetPos) {
+            const bullet = new THREE.Mesh(
+                new THREE.SphereGeometry(0.05, 6, 6),
+                new THREE.MeshBasicMaterial({ color: 0xffff00 })
+            );
+            bullet.position.copy(cop.position);
+            bullet.position.y = 1;
+            
+            const dir = new THREE.Vector3().subVectors(targetPos, bullet.position).normalize();
+            bullet.userData.velocity = dir.multiplyScalar(0.8);
+            bullet.userData.life = 60;
+            bullet.userData.target = targetPos.clone();
+            
+            scene.add(bullet);
+            bullets.push(bullet);
+            shotsFired++;
+            document.getElementById('shots-fired').textContent = shotsFired;
+            
+            // Muzzle flash
+            const flash = new THREE.Mesh(
+                new THREE.SphereGeometry(0.15, 8, 8),
+                new THREE.MeshBasicMaterial({ color: 0xffaa00 })
+            );
+            flash.position.copy(cop.userData.limbs.gun.getWorldPosition(new THREE.Vector3()));
+            scene.add(flash);
+            setTimeout(() => scene.remove(flash), 50);
+        }
         
         // NYC TRAFFIC SYSTEM 🚗
         const cars = [];
@@ -1582,6 +1720,132 @@
                     mh.userData.steamPhase += 0.05;
                 }
             });
+            
+            // Animate police
+            police.forEach(cop => {
+                const distToCam = cop.position.distanceTo(camera.position);
+                cop.visible = distToCam < 50;
+                
+                if (cop.userData.shootCooldown > 0) cop.userData.shootCooldown--;
+                
+                // Check if cop witnesses a turtle crime
+                turtles.forEach(turtle => {
+                    if (!turtle.visible || turtle.userData.state === 'hidden') return;
+                    const turtleDist = cop.position.distanceTo(turtle.position);
+                    
+                    // Witness range: 15 units
+                    if (turtleDist < 15 && (turtle.userData.state === 'running' || turtle.userData.state === 'driving')) {
+                        // Check if turtle just killed someone or is in a stolen car
+                        if (turtle.userData.killCount > 0 || turtle.userData.stolenCar) {
+                            cop.userData.witnessedCrime = true;
+                            cop.userData.target = turtle;
+                            cop.userData.state = 'chasing';
+                        }
+                    }
+                });
+                
+                if (cop.userData.state === 'chasing' && cop.userData.target) {
+                    const turtle = cop.userData.target;
+                    if (!turtle.visible || turtle.userData.state === 'hidden') {
+                        cop.userData.state = 'patrol';
+                        cop.userData.target = null;
+                        cop.userData.witnessedCrime = false;
+                        return;
+                    }
+                    
+                    const dx = turtle.position.x - cop.position.x;
+                    const dz = turtle.position.z - cop.position.z;
+                    const dist = Math.sqrt(dx * dx + dz * dz);
+                    
+                    // Chase the turtle
+                    if (dist > 3) {
+                        cop.position.x += (dx / dist) * cop.userData.speed * 2;
+                        cop.position.z += (dz / dist) * cop.userData.speed * 2;
+                        cop.rotation.y = Math.atan2(dx, dz);
+                    }
+                    
+                    // Shoot if in range and cooldown ready
+                    if (dist < 12 && cop.userData.shootCooldown <= 0) {
+                        shootBullet(cop, turtle.position.clone());
+                        cop.userData.shootCooldown = 30; // Shoot every 0.5 seconds
+                        document.getElementById('police-status').innerHTML = '👮 NYPD: SHOTS FIRED AT ' + turtle.userData.name.toUpperCase() + '! | Shots: <span id="shots-fired">' + shotsFired + '</span>';
+                    }
+                    
+                    // Aim gun at turtle
+                    cop.userData.limbs.gun.rotation.x = -0.5;
+                    cop.userData.limbs.rightArm.rotation.x = -0.8;
+                    cop.userData.limbs.rightArm.rotation.z = -0.5;
+                } else {
+                    // Normal patrol
+                    cop.userData.limbs.gun.rotation.x = 0;
+                    cop.userData.limbs.rightArm.rotation.x = 0;
+                    cop.userData.limbs.rightArm.rotation.z = -0.15;
+                    
+                    if (cop.userData.walkAxis === 'z') {
+                        cop.position.z += cop.userData.walkDirection * cop.userData.speed;
+                        cop.rotation.y = cop.userData.walkDirection > 0 ? 0 : Math.PI;
+                        if (Math.abs(cop.position.z) > 30) cop.userData.walkDirection *= -1;
+                    } else {
+                        cop.position.x += cop.userData.walkDirection * cop.userData.speed;
+                        cop.rotation.y = cop.userData.walkDirection > 0 ? Math.PI/2 : -Math.PI/2;
+                        if (Math.abs(cop.position.x) > 30) cop.userData.walkDirection *= -1;
+                    }
+                }
+                
+                // Walking animation
+                cop.userData.walkPhase += cop.userData.speed * 6;
+                const swing = Math.sin(cop.userData.walkPhase) * 0.35;
+                cop.userData.limbs.leftLeg.rotation.x = swing;
+                cop.userData.limbs.rightLeg.rotation.x = -swing;
+                if (cop.userData.state !== 'chasing') {
+                    cop.userData.limbs.leftArm.rotation.x = -swing * 0.4;
+                }
+            });
+            
+            // Update bullets
+            for (let bi = bullets.length - 1; bi >= 0; bi--) {
+                const bullet = bullets[bi];
+                bullet.position.add(bullet.userData.velocity);
+                bullet.userData.life--;
+                
+                // Check if bullet hits a turtle
+                turtles.forEach(turtle => {
+                    if (!turtle.visible || turtle.userData.state === 'hidden') return;
+                    const hitDist = bullet.position.distanceTo(turtle.position);
+                    if (hitDist < 1) {
+                        // HIT! Turtle takes damage - force retreat
+                        turtle.userData.state = 'entering';
+                        turtle.userData.progress = 0;
+                        if (turtle.userData.stolenCar) {
+                            turtle.userData.stolenCar.userData.stolen = false;
+                            turtle.userData.stolenCar = null;
+                        }
+                        document.getElementById('turtle-status').innerHTML = '💥 ' + turtle.userData.name + ' SHOT! Retreating to sewers!';
+                        document.getElementById('police-status').innerHTML = '👮 NYPD: Target neutralized! | Shots: <span id="shots-fired">' + shotsFired + '</span>';
+                        
+                        // Blood effect
+                        for (let b = 0; b < 5; b++) {
+                            const blood = new THREE.Mesh(
+                                new THREE.SphereGeometry(0.08, 6, 6),
+                                new THREE.MeshBasicMaterial({ color: 0x00ff00 }) // Green turtle blood!
+                            );
+                            blood.position.copy(turtle.position);
+                            blood.position.y = 1;
+                            blood.position.x += (Math.random() - 0.5) * 0.5;
+                            blood.position.z += (Math.random() - 0.5) * 0.5;
+                            scene.add(blood);
+                            setTimeout(() => scene.remove(blood), 400);
+                        }
+                        
+                        bullet.userData.life = 0;
+                    }
+                });
+                
+                if (bullet.userData.life <= 0) {
+                    scene.remove(bullet);
+                    bullets.splice(bi, 1);
+                }
+            }
             
             // Animate cars
             cars.forEach(car => {
