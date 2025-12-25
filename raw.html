@@ -139,15 +139,16 @@
             transform: rotate(135deg);
         }
         .meteor::after {
-            content: '';
+            content: '🐌';
             position: absolute;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to left, rgba(255,200,100,0.9), rgba(255,150,50,0.5), transparent);
-            top: 50%;
-            right: 100%;
-            transform: translateY(-50%);
-            border-radius: 50%;
+            font-size: 20px;
+            top: -15px;
+            right: -25px;
+            animation: snailWiggle 2s ease-in-out infinite;
+        }
+        @keyframes snailWiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
         }
         .planet-emoji {
             position: absolute;
@@ -685,7 +686,7 @@
             document.querySelector('.space-scene').appendChild(meteor);
             this.active = meteor;
             
-            const duration = 3500 + Math.random() * 1500; // 3.5-5 seconds - much faster!
+            const duration = 15000 + Math.random() * 10000; // 15-25 seconds - snail speed! 🐌
             const startTime = Date.now();
             const startY = -50;
             const endY = window.innerHeight + 50;
@@ -718,7 +719,7 @@
                 } else {
                     meteor.remove();
                     this.active = null;
-                    setTimeout(() => this.createMeteor(), 800 + Math.random() * 700); // Spawn next meteor quickly
+                    setTimeout(() => this.createMeteor(), 3000 + Math.random() * 2000); // Leisurely spawn timing
                 }
             };
             
