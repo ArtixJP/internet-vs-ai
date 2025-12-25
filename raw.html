@@ -52,7 +52,7 @@
 <div id="community-zone">🗣️ Citizens respawn! | 💻 NPCs typing while walking | 🐢 Camera follows turtles! | 💀 EVIL TMNT hunting prey | 🚗 CARJACKING ENABLED | 👮 POLICE PATROL | 🎵 Click for synthwave</div>
 <div id="police-status" style="position:absolute;top:210px;left:20px;color:#4488ff;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,50,0.5);padding:8px;border:1px solid #4488ff;">👮 NYPD: Patrolling... | Shots Fired: <span id="shots-fired">0</span></div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 24<br/>Renderer: WebGL | 🐢 TMNT Active<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Manhattan Grid: Optimized | NPCs: 48<br/>Renderer: WebGL | 🐢 SOLO TMNT Mode<br/>✅ Lights: 4 total | 📊 Memory Optimized<br/>🎯 Frustum Culling: <span id="cull-stats">Active</span></div>
 <div id="turtle-status" style="position:absolute;top:130px;left:20px;color:#ff0000;font-family:monospace;font-size:11px;z-index:100;background:rgba(100,0,0,0.5);padding:8px;border:1px solid #ff0000;">🐢 EVIL Ninja Turtles: Hunting... 💀</div>
 <div id="kill-count" style="position:absolute;top:170px;left:20px;color:#ff4444;font-family:monospace;font-size:11px;z-index:100;background:rgba(50,0,0,0.5);padding:8px;border:1px solid #ff4444;">☠️ VICTIMS: <span id="victims">0</span></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -611,7 +611,7 @@
         const crowd = [];
         const sidewalkOffsets = [-1.8, 1.8]; // Left and right sidewalks
         
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < 48; i++) {
             const npcColor = neonColors[Math.floor(Math.random() * neonColors.length)];
             const npc = createHumanoid(npcColor, Math.random() > 0.5, 0.9 + Math.random() * 0.3);
             
@@ -1114,6 +1114,10 @@
         }
         
         function startTurtleMission() {
+            // Only ONE turtle can be active at a time!
+            const activeTurtleCount = turtles.filter(t => t.userData.state !== 'hidden').length;
+            if (activeTurtleCount > 0) return; // Already a turtle out hunting!
+            
             // Find available turtle
             const availableTurtle = turtles.find(t => t.userData.state === 'hidden');
             if (!availableTurtle || manholes.length < 2) return;
