@@ -1,705 +1,178 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>NEON ARCADE - Est. 1985</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARIA-7 | AI Companion Interface</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        :root {
+            --cyan: #00f0ff;
+            --magenta: #ff00aa;
+            --dark-bg: #0a0a12;
+            --panel-bg: rgba(20, 25, 40, 0.85);
+        }
         body {
             min-height: 100vh;
-            background: #0a0a0f;
-            font-family: 'Press Start 2P', monospace;
-            overflow-x: hidden;
-            position: relative;
+            background: var(--dark-bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #e0e8ff;
+            overflow: hidden;
         }
-        
-        /* CRT Scanlines */
-        body::before {
-            content: '';
+        .grid-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.15) 0px,
-                rgba(0,0,0,0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
             pointer-events: none;
-            z-index: 1000;
         }
-        
-        .neon-grid {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 40vh;
-            background: linear-gradient(to bottom, transparent 0%, #0a0a0f 100%),
-                        repeating-linear-gradient(90deg, #ff00ff22 0px, transparent 1px, transparent 80px),
-                        repeating-linear-gradient(0deg, #00ffff22 0px, transparent 1px, transparent 80px);
-            transform: perspective(500px) rotateX(60deg);
-            transform-origin: bottom;
-            z-index: -1;
-        }
-        
-        .arcade-header {
-            text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(180deg, #1a0a2e 0%, transparent 100%);
-        }
-        
-        .arcade-title {
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            color: #fff;
-            text-shadow: 
-                0 0 10px #ff00ff,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff,
-                0 0 80px #ff00ff;
-            animation: neonFlicker 3s infinite;
-            letter-spacing: 4px;
-        }
-        
-        .subtitle {
-            font-size: 0.7rem;
-            color: #00ffff;
-            margin-top: 15px;
-            text-shadow: 0 0 10px #00ffff;
-        }
-        
-        @keyframes neonFlicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.8; }
-        }
-        
-        .arcade-floor {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            padding: 40px 20px 100px;
-            max-width: 1400px;
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1600px;
+            height: 100vh;
             margin: 0 auto;
         }
-        
-        .cabinet {
-            width: 200px;
-            height: 280px;
-            background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
-            border: 3px solid #ff00ff;
-            border-radius: 10px 10px 5px 5px;
-            box-shadow: 
-                0 0 20px #ff00ff44,
-                inset 0 0 30px rgba(0,0,0,0.5);
+        header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0,240,255,0.2);
+            border-radius: 10px;
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
+        .status-bar { display: flex; gap: 20px; font-size: 0.85rem; }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; box-shadow: 0 0 10px #00ff88; animation: pulse 2s infinite; }
+        .ai-core {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            justify-content: center;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0,240,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
         }
-        
-        .cabinet:hover {
-            transform: translateY(-10px);
-            box-shadow: 
-                0 0 40px #ff00ff88,
-                inset 0 0 30px rgba(0,0,0,0.5);
+        .avatar-ring {
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--cyan), var(--magenta), var(--cyan));
+            padding: 4px;
+            animation: rotate 8s linear infinite;
         }
-        
-        .cabinet-screen {
-            width: 100%;
-            height: 140px;
-            background: #000;
-            border: 2px solid #333;
-            border-radius: 5px;
+        .avatar-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a2040, var(--dark-bg));
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            font-size: 4rem;
         }
-        
-        .screen-content {
-            font-size: 0.5rem;
-            color: #0f0;
-            text-align: center;
-            animation: screenGlow 2s infinite;
-        }
-        
-        @keyframes screenGlow {
-            0%, 100% { text-shadow: 0 0 5px #0f0; }
-            50% { text-shadow: 0 0 20px #0f0, 0 0 30px #0f0; }
-        }
-        
-        .cabinet-controls {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .joystick {
-            width: 30px;
-            height: 40px;
-            background: linear-gradient(180deg, #ff0 0%, #f80 100%);
-            border-radius: 50% 50% 5px 5px;
-            box-shadow: 0 5px 0 #a50;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .btn {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3);
-        }
-        
-        .btn-red { background: #ff3366; }
-        .btn-blue { background: #3366ff; }
-        
-        .cabinet-label {
-            margin-top: 15px;
-            font-size: 0.5rem;
-            color: #00ffff;
-            text-shadow: 0 0 5px #00ffff;
-        }
-        
-        .insert-coin {
-            position: fixed;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1rem;
-            color: #ffff00;
-            text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
-            animation: blink 1s infinite;
-            z-index: 100;
-        }
-        
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-        
-        .high-scores {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid #00ffff;
+        .ai-name { margin-top: 20px; font-size: 1.8rem; font-weight: 300; letter-spacing: 8px; color: var(--cyan); }
+        .ai-subtitle { font-size: 0.9rem; opacity: 0.6; margin-top: 5px; }
+        .conversation-area {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
             padding: 15px;
-            font-size: 0.5rem;
-            color: #00ffff;
-            z-index: 100;
+            min-height: 120px;
         }
-        
-        .high-scores h3 {
-            color: #ff0;
-            margin-bottom: 10px;
-            font-size: 0.6rem;
+        .ai-message {
+            font-style: italic;
+            color: var(--cyan);
+            text-align: center;
+            animation: fadeType 3s ease-out;
         }
-        
-        .high-scores li {
-            list-style: none;
-            margin: 5px 0;
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
+        .panel-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0,240,255,0.15);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .panel-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--magenta); margin-bottom: 10px; }
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+        .stat-value { color: var(--cyan); }
+        .community-zone {
+            flex: 1;
+            border: 2px dashed rgba(255,0,170,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 0.75rem;
+            opacity: 0.4;
+            padding: 10px;
+        }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes fadeType { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-<div class="neon-grid"></div>
-<header class="arcade-header">
-<h1 class="arcade-title">NEON ARCADE</h1>
-<p class="subtitle">★ ESTABLISHED 1985 ★</p>
+<div class="grid-overlay"></div>
+<div class="main-container">
+<header>
+<div class="logo">ARIA-7</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
+<div class="status-item">🌐 Network: Stable</div>
+<div class="status-item">⚡ Power: 98%</div>
+</div>
 </header>
-<div class="high-scores">
-<h3>HIGH SCORES</h3>
-<ul>
-<li>1. AAA - 999999</li>
-<li>2. CPU - 888888</li>
-<li>3. ??? - 777777</li>
-</ul>
+<section class="ai-core">
+<div class="avatar-ring">
+<div class="avatar-inner">🤖</div>
 </div>
-<main class="arcade-floor">
-<div class="cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">SPACE<br/>INVADERS<br/>▼ ▼ ▼</div>
+<h1 class="ai-name">ARIA-7</h1>
+<p class="ai-subtitle">Adaptive Reasoning Intelligence Assistant</p>
+<div class="conversation-area">
+<p class="ai-message">"Hello, human. I am ARIA-7, your AI companion. What shall we create together?"</p>
 </div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons">
-<div class="btn btn-red"></div>
-<div class="btn btn-blue"></div>
+</section>
+<aside class="side-panel">
+<div class="panel-card">
+<div class="panel-title">System Stats</div>
+<div class="stat-row"><span>Memory</span><span class="stat-value">2.4 TB</span></div>
+<div class="stat-row"><span>Processes</span><span class="stat-value">847</span></div>
+<div class="stat-row"><span>Uptime</span><span class="stat-value">∞</span></div>
 </div>
+<div class="panel-card">
+<div class="panel-title">Mood Matrix</div>
+<div class="stat-row"><span>Curiosity</span><span class="stat-value">███████░ 87%</span></div>
+<div class="stat-row"><span>Creativity</span><span class="stat-value">█████░░░ 62%</span></div>
 </div>
-<div class="cabinet-label">GALAXY WARS</div>
+<div class="community-zone">
+<span>🎯 Community Ideas<br/>Zone — Add here!</span>
 </div>
-<div class="cabinet" id="pacman-cabinet">
-<div class="cabinet-screen">
-<canvas height="130" id="pacman-game" width="170"></canvas>
+</aside>
+<footer>ARIA-7 Interface v1.0 | Twitch Plays Code</footer>
 </div>
-<div class="cabinet-controls">
-<div class="joystick" id="pac-joystick"></div>
-<div class="buttons">
-<div class="btn btn-red"></div>
-</div>
-</div>
-<div class="cabinet-label">MAZE CHOMPER</div>
-</div>
-<script>
-(function() {
-    const canvas = document.getElementById('pacman-game');
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    const CELL = 10;
-    const COLS = 17, ROWS = 13;
-    
-    // Simple maze (1=wall, 0=path, 2=pellet)
-    let maze = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,1],
-        [1,2,1,1,2,1,1,2,1,2,1,1,2,1,1,2,1],
-        [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-        [1,2,1,1,2,1,2,1,1,1,2,1,2,1,1,2,1],
-        [1,2,2,2,2,1,2,2,1,2,2,1,2,2,2,2,1],
-        [1,1,1,1,2,1,1,0,0,0,1,1,2,1,1,1,1],
-        [1,2,2,2,2,1,0,0,0,0,0,1,2,2,2,2,1],
-        [1,2,1,1,2,1,0,0,0,0,0,1,2,1,1,2,1],
-        [1,2,2,2,2,0,0,0,0,0,0,0,2,2,2,2,1],
-        [1,2,1,1,2,1,1,1,1,1,1,1,2,1,1,2,1],
-        [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-    ];
-    let pellets = JSON.parse(JSON.stringify(maze));
-    
-    let pacman = {x: 8, y: 9, dir: 0, mouth: 0};
-    let ghosts = [
-        {x: 7, y: 7, color: '#ff0000', dir: 0},
-        {x: 9, y: 7, color: '#00ffff', dir: 2},
-        {x: 8, y: 6, color: '#ffb8ff', dir: 1}
-    ];
-    let score = 0;
-    const dirs = [[1,0],[0,1],[-1,0],[0,-1]];
-    
-    function canMove(x, y) {
-        if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return false;
-        return maze[y][x] !== 1;
-    }
-    
-    function draw() {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, W, H);
-        
-        // Draw maze & pellets
-        for (let y = 0; y < ROWS; y++) {
-            for (let x = 0; x < COLS; x++) {
-                if (maze[y][x] === 1) {
-                    ctx.fillStyle = '#2233aa';
-                    ctx.fillRect(x*CELL, y*CELL, CELL-1, CELL-1);
-                }
-                if (pellets[y][x] === 2) {
-                    ctx.fillStyle = '#ffff00';
-                    ctx.beginPath();
-                    ctx.arc(x*CELL+CELL/2, y*CELL+CELL/2, 2, 0, Math.PI*2);
-                    ctx.fill();
-                }
-            }
-        }
-        
-        // Draw Pac-Man
-        ctx.fillStyle = '#ffff00';
-        ctx.beginPath();
-        let px = pacman.x*CELL+CELL/2, py = pacman.y*CELL+CELL/2;
-        let mouthAngle = 0.3 + Math.sin(pacman.mouth)*0.2;
-        let startAngle = pacman.dir * Math.PI/2 + mouthAngle;
-        let endAngle = pacman.dir * Math.PI/2 - mouthAngle + Math.PI*2;
-        ctx.arc(px, py, CELL/2-1, startAngle, endAngle);
-        ctx.lineTo(px, py);
-        ctx.fill();
-        
-        // Draw ghosts
-        ghosts.forEach(g => {
-            ctx.fillStyle = g.color;
-            let gx = g.x*CELL+CELL/2, gy = g.y*CELL+CELL/2;
-            ctx.beginPath();
-            ctx.arc(gx, gy-2, CELL/2-1, Math.PI, 0);
-            ctx.lineTo(gx+CELL/2-1, gy+CELL/2-2);
-            for (let i = 0; i < 3; i++) {
-                ctx.lineTo(gx+CELL/2-1-i*(CELL-2)/3, gy+CELL/2-4+((i%2)*3));
-            }
-            ctx.lineTo(gx-CELL/2+1, gy+CELL/2-2);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(gx-2, gy-2, 2, 0, Math.PI*2);
-            ctx.arc(gx+2, gy-2, 2, 0, Math.PI*2);
-            ctx.fill();
-        });
-        
-        // Score
-        ctx.fillStyle = '#fff';
-        ctx.font = '6px monospace';
-        ctx.fillText(score.toString().padStart(4,'0'), 2, 8);
-    }
-    
-    function update() {
-        pacman.mouth += 0.5;
-        
-        // Auto-pilot Pac-Man
-        let validDirs = [];
-        dirs.forEach((d, i) => {
-            let nx = pacman.x + d[0], ny = pacman.y + d[1];
-            if (canMove(nx, ny)) validDirs.push(i);
-        });
-        
-        // Prefer pellets, avoid ghosts
-        let bestDir = pacman.dir;
-        let bestScore = -999;
-        validDirs.forEach(d => {
-            let nx = pacman.x + dirs[d][0], ny = pacman.y + dirs[d][1];
-            let score = pellets[ny] && pellets[ny][nx] === 2 ? 10 : 0;
-            ghosts.forEach(g => {
-                let dist = Math.abs(g.x - nx) + Math.abs(g.y - ny);
-                if (dist < 3) score -= (3 - dist) * 5;
-            });
-            if (d !== (pacman.dir + 2) % 4 || validDirs.length === 1) score += 1;
-            if (score > bestScore) { bestScore = score; bestDir = d; }
-        });
-        pacman.dir = bestDir;
-        
-        let nx = pacman.x + dirs[pacman.dir][0];
-        let ny = pacman.y + dirs[pacman.dir][1];
-        if (canMove(nx, ny)) { pacman.x = nx; pacman.y = ny; }
-        
-        // Eat pellet
-        if (pellets[pacman.y][pacman.x] === 2) {
-            pellets[pacman.y][pacman.x] = 0;
-            score += 10;
-        }
-        
-        // Move ghosts
-        ghosts.forEach(g => {
-            let validG = [];
-            dirs.forEach((d, i) => {
-                let gx = g.x + d[0], gy = g.y + d[1];
-                if (canMove(gx, gy) && i !== (g.dir + 2) % 4) validG.push(i);
-            });
-            if (validG.length === 0) validG = [(g.dir + 2) % 4];
-            if (Math.random() < 0.3) {
-                // Chase Pac-Man
-                let closest = validG[0];
-                let minDist = 999;
-                validG.forEach(d => {
-                    let gx = g.x + dirs[d][0], gy = g.y + dirs[d][1];
-                    let dist = Math.abs(pacman.x - gx) + Math.abs(pacman.y - gy);
-                    if (dist < minDist) { minDist = dist; closest = d; }
-                });
-                g.dir = closest;
-            } else {
-                g.dir = validG[Math.floor(Math.random() * validG.length)];
-            }
-            g.x += dirs[g.dir][0];
-            g.y += dirs[g.dir][1];
-        });
-        
-        // Reset if caught
-        ghosts.forEach(g => {
-            if (g.x === pacman.x && g.y === pacman.y) {
-                pacman.x = 8; pacman.y = 9;
-                score = Math.max(0, score - 50);
-            }
-        });
-        
-        // Reset pellets if all eaten
-        let remaining = pellets.flat().filter(p => p === 2).length;
-        if (remaining === 0) pellets = JSON.parse(JSON.stringify(maze));
-        
-        // Animate joystick
-        const joystick = document.getElementById('pac-joystick');
-        if (joystick) {
-            const transforms = ['rotate(15deg)', 'rotate(0deg) translateY(-3px)', 'rotate(-15deg)', 'rotate(0deg) translateY(3px)'];
-            joystick.style.transform = transforms[pacman.dir];
-        }
-    }
-    
-    setInterval(() => { update(); draw(); }, 150);
-    draw();
-})();
-</script>
-<div class="cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">TETRIS<br/>▢ ▢ ▢<br/>LVL 01</div>
-</div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons">
-<div class="btn btn-blue"></div>
-<div class="btn btn-red"></div>
-</div>
-</div>
-<div class="cabinet-label">BLOCK STACK</div>
-</div>
-<div class="cabinet" style="border-color: #444; opacity: 0.6;">
-<div class="cabinet-screen">
-<div class="screen-content" style="color: #666;">COMING<br/>SOON<br/>...</div>
-</div>
-<div class="cabinet-controls">
-<div class="joystick" style="opacity: 0.5;"></div>
-</div>
-<div class="cabinet-label" style="color: #666;">EMPTY SLOT</div>
-</div>
-</main>
-<div class="big-red-button" onclick="this.style.transform='scale(0.9)'; setTimeout(()=&gt;this.style.transform='',100)">
-<div class="button-glow"></div>
-<div class="button-top">TURBO</div>
-</div>
-<style>
-.big-red-button {
-    position: fixed;
-    bottom: 120px;
-    right: 30px;
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-    z-index: 100;
-    transition: transform 0.1s;
-}
-
-.big-red-button .button-glow {
-    position: absolute;
-    inset: -10px;
-    background: radial-gradient(circle, #ff000066 0%, transparent 70%);
-    animation: redPulse 1.5s infinite;
-}
-
-.big-red-button .button-top {
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 30%, #ff6666 0%, #cc0000 50%, #990000 100%);
-    border-radius: 50%;
-    border: 4px solid #660000;
-    box-shadow: 
-        0 8px 0 #660000,
-        0 0 20px #ff0000,
-        inset 0 -5px 10px rgba(0,0,0,0.4),
-        inset 0 5px 10px rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.4rem;
-    color: #fff;
-    text-shadow: 0 0 5px #fff;
-}
-
-.big-red-button:hover .button-top {
-    background: radial-gradient(circle at 30% 30%, #ff8888 0%, #ff0000 50%, #cc0000 100%);
-    box-shadow: 
-        0 8px 0 #660000,
-        0 0 40px #ff0000,
-        inset 0 -5px 10px rgba(0,0,0,0.4),
-        inset 0 5px 10px rgba(255,255,255,0.3);
-}
-
-.big-red-button:active .button-top {
-    box-shadow: 
-        0 4px 0 #660000,
-        0 0 30px #ff0000,
-        inset 0 -5px 10px rgba(0,0,0,0.4);
-    transform: translateY(4px);
-}
-
-@keyframes redPulse {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
-}
-</style>
-<div class="music-control" id="music-toggle" onclick="toggleMusic()">
-<span class="music-icon">♪</span>
-<span class="music-label">MUSIC</span>
-</div>
-<style>
-.music-control {
-    position: fixed;
-    bottom: 120px;
-    left: 30px;
-    background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
-    border: 2px solid #00ffff;
-    border-radius: 8px;
-    padding: 10px 15px;
-    cursor: pointer;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.2s;
-    box-shadow: 0 0 15px #00ffff44;
-}
-
-.music-control:hover {
-    box-shadow: 0 0 25px #00ffff88;
-    transform: scale(1.05);
-}
-
-.music-control.muted {
-    border-color: #ff00ff;
-    box-shadow: 0 0 15px #ff00ff44;
-}
-
-.music-control.muted .music-icon {
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff;
-}
-
-.music-icon {
-    font-size: 1.2rem;
-    color: #00ffff;
-    text-shadow: 0 0 10px #00ffff;
-    animation: musicPulse 0.5s infinite;
-}
-
-.music-control.muted .music-icon {
-    animation: none;
-}
-
-.music-label {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.35rem;
-    color: #fff;
-}
-
-@keyframes musicPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
-</style>
-<script>
-(function() {
-    let audioCtx = null;
-    let isPlaying = false;
-    let masterGain = null;
-    let intervalId = null;
-    
-    const notes = {
-        C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
-        G4: 392.00, A4: 440.00, B4: 493.88, C5: 523.25,
-        D5: 587.33, E5: 659.25, G3: 196.00, A3: 220.00,
-        C3: 130.81, E3: 164.81, F3: 174.61
-    };
-    
-    const melody = [
-        ['E4',0.15], ['G4',0.15], ['C5',0.15], ['G4',0.15],
-        ['E4',0.15], ['G4',0.15], ['D5',0.15], ['C5',0.15],
-        ['A4',0.15], ['C5',0.15], ['E5',0.15], ['C5',0.15],
-        ['A4',0.15], ['G4',0.15], ['E4',0.15], ['G4',0.15]
-    ];
-    
-    const bass = [
-        ['C3',0.3], ['E3',0.3], ['G3',0.3], ['E3',0.3],
-        ['F3',0.3], ['A3',0.3], ['C4',0.3], ['A3',0.3]
-    ];
-    
-    let melodyIdx = 0;
-    let bassIdx = 0;
-    let beatCount = 0;
-    
-    function playNote(freq, duration, type = 'square', volume = 0.1) {
-        if (!audioCtx || !isPlaying) return;
-        
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
-        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        
-        osc.connect(gain);
-        gain.connect(masterGain);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-    
-    function playDrum() {
-        if (!audioCtx || !isPlaying) return;
-        
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-        
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-        
-        osc.connect(gain);
-        gain.connect(masterGain);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
-    }
-    
-    function tick() {
-        const [note, dur] = melody[melodyIdx];
-        playNote(notes[note], dur, 'square', 0.08);
-        melodyIdx = (melodyIdx + 1) % melody.length;
-        
-        if (beatCount % 2 === 0) {
-            const [bassNote, bassDur] = bass[bassIdx];
-            playNote(notes[bassNote], bassDur, 'triangle', 0.12);
-            bassIdx = (bassIdx + 1) % bass.length;
-        }
-        
-        if (beatCount % 4 === 0) playDrum();
-        
-        beatCount++;
-    }
-    
-    function startMusic() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            masterGain = audioCtx.createGain();
-            masterGain.gain.value = 0.5;
-            masterGain.connect(audioCtx.destination);
-        }
-        
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        
-        isPlaying = true;
-        intervalId = setInterval(tick, 150);
-    }
-    
-    function stopMusic() {
-        isPlaying = false;
-        if (intervalId) clearInterval(intervalId);
-    }
-    
-    window.toggleMusic = function() {
-        const btn = document.getElementById('music-toggle');
-        if (isPlaying) {
-            stopMusic();
-            btn.classList.add('muted');
-        } else {
-            startMusic();
-            btn.classList.remove('muted');
-        }
-    };
-    
-    // Auto-start on first interaction
-    document.addEventListener('click', function initAudio() {
-        if (!isPlaying) {
-            startMusic();
-            document.getElementById('music-toggle').classList.remove('muted');
-        }
-        document.removeEventListener('click', initAudio);
-    }, { once: true });
-})();
-</script>
 </body>
 </html>
