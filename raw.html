@@ -51,7 +51,7 @@
 <div id="population">CITIZENS: <span id="count">0</span></div>
 <div id="community-zone">🗣️ Citizens chatting | 🕳️ Watch your step!</div>
 <div id="speech-bubble" style="position:absolute;display:none;background:rgba(0,0,0,0.85);color:#fff;font-family:'Courier New',monospace;font-size:12px;padding:10px 15px;border-radius:10px;border:2px solid #00ffff;max-width:250px;z-index:200;pointer-events:none;box-shadow:0 0 15px rgba(0,255,255,0.5);"><span id="bubble-text"></span></div>
-<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Buildings: 60 | NPCs: 30<br/>Renderer: WebGL</div>
+<div id="debug" style="position:absolute;top:60px;left:20px;color:#00ff00;font-family:monospace;font-size:11px;z-index:100;background:rgba(0,0,0,0.5);padding:8px;border:1px solid #00ff00;">🔧 DEBUG: Scene Active<br/>Grid City: 7x7 blocks | NPCs: 30<br/>Renderer: WebGL | Streets: Active</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
         const scene = new THREE.Scene();
@@ -125,39 +125,90 @@
             return texture;
         }
         
-        // Buildings
+        // Buildings - Grid-based city layout
         const buildings = [];
         const neonColors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff00, 0xff6600];
-        for (let i = 0; i < 60; i++) {
-            const h = 5 + Math.random() * 25;
-            const w = 2 + Math.random() * 4;
-            const windowTex = createWindowTexture();
-            windowTex.repeat.set(Math.ceil(w/3), 1); // One texture per building height for big windows
-            const buildingMat = new THREE.MeshStandardMaterial({ 
-                color: 0x1a1a3e,
-                map: windowTex,
-                emissive: 0x111122,
-                emissiveMap: windowTex,
-                emissiveIntensity: 0.8
-            });
-            const building = new THREE.Mesh(
-                new THREE.BoxGeometry(w, h, w),
-                buildingMat
-            );
-            building.position.set(
-                (Math.random() - 0.5) * 80,
-                h / 2,
-                (Math.random() - 0.5) * 80
-            );
-            scene.add(building);
-            buildings.push(building);
+        const blockSize = 12; // Size of each city block
+        const streetWidth = 4; // Width of streets
+        const gridSpacing = blockSize + streetWidth;
+        
+        // Create streets (darker ground strips)
+        const streetMat = new THREE.MeshStandardMaterial({ color: 0x222233 });
+        for (let i = -3; i <= 3; i++) {
+            // Horizontal streets
+            const hStreet = new THREE.Mesh(new THREE.PlaneGeometry(100, streetWidth), streetMat);
+            hStreet.rotation.x = -Math.PI / 2;
+            hStreet.position.set(0, 0.02, i * gridSpacing);
+            scene.add(hStreet);
+            // Vertical streets
+            const vStreet = new THREE.Mesh(new THREE.PlaneGeometry(streetWidth, 100), streetMat);
+            vStreet.rotation.x = -Math.PI / 2;
+            vStreet.position.set(i * gridSpacing, 0.02, 0);
+            scene.add(vStreet);
             
-            // Neon signs
-            if (Math.random() > 0.5) {
-                const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 2, 10);
-                neon.position.copy(building.position);
-                neon.position.y = h * 0.6;
-                scene.add(neon);
+            // Street lights along streets
+            for (let j = -3; j <= 3; j++) {
+                if (Math.random() > 0.3) {
+                    const lampPost = new THREE.Mesh(
+                        new THREE.CylinderGeometry(0.08, 0.1, 4, 8),
+                        new THREE.MeshStandardMaterial({ color: 0x444466 })
+                    );
+                    lampPost.position.set(i * gridSpacing + streetWidth/2 + 0.5, 2, j * gridSpacing + streetWidth/2);
+                    scene.add(lampPost);
+                    const lamp = new THREE.PointLight(0xffaa55, 1.5, 8);
+                    lamp.position.copy(lampPost.position);
+                    lamp.position.y = 4.2;
+                    scene.add(lamp);
+                }
+            }
+        }
+        
+        // Place buildings in city blocks (not on streets)
+        for (let bx = -3; bx <= 3; bx++) {
+            for (let bz = -3; bz <= 3; bz++) {
+                // Skip some blocks for variety (parks, plazas)
+                if (Math.random() > 0.85) continue;
+                
+                const blockCenterX = bx * gridSpacing;
+                const blockCenterZ = bz * gridSpacing;
+                
+                // 1-4 buildings per block
+                const numBuildings = 1 + Math.floor(Math.random() * 4);
+                for (let b = 0; b < numBuildings; b++) {
+                    const h = 5 + Math.random() * 25;
+                    const w = 2 + Math.random() * 3;
+                    const windowTex = createWindowTexture();
+                    windowTex.repeat.set(Math.ceil(w/3), 1);
+                    const buildingMat = new THREE.MeshStandardMaterial({ 
+                        color: 0x1a1a3e,
+                        map: windowTex,
+                        emissive: 0x111122,
+                        emissiveMap: windowTex,
+                        emissiveIntensity: 0.8
+                    });
+                    const building = new THREE.Mesh(
+                        new THREE.BoxGeometry(w, h, w),
+                        buildingMat
+                    );
+                    // Position within the block (avoiding edges/streets)
+                    const offsetX = (Math.random() - 0.5) * (blockSize - w - 1);
+                    const offsetZ = (Math.random() - 0.5) * (blockSize - w - 1);
+                    building.position.set(
+                        blockCenterX + offsetX,
+                        h / 2,
+                        blockCenterZ + offsetZ
+                    );
+                    scene.add(building);
+                    buildings.push(building);
+                    
+                    // Neon signs
+                    if (Math.random() > 0.4) {
+                        const neon = new THREE.PointLight(neonColors[Math.floor(Math.random() * neonColors.length)], 2, 10);
+                        neon.position.copy(building.position);
+                        neon.position.y = h * 0.6;
+                        scene.add(neon);
+                    }
+                }
             }
         }
         
