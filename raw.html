@@ -189,8 +189,81 @@
 <h3>[ frozen earth awaits your mark ]</h3>
 <p style="opacity:0.4; font-size:0.8rem;">the community will build here...</p>
 </div>
+<div class="audio-hint" onclick="this.style.display='none'" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-size:0.7rem; opacity:0.4; letter-spacing:0.2rem; cursor:pointer; transition: opacity 0.3s;">
+🔊 click anywhere to hear the wind
+</div>
 </div>
 <script>
+        // Procedural Wind Audio
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let windGain = null;
+        let isAudioStarted = false;
+        
+        function createWind() {
+            audioCtx = new AudioContext();
+            
+            // Create noise source
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+            
+            // Low-pass filter for wind effect
+            const lowpass = audioCtx.createBiquadFilter();
+            lowpass.type = 'lowpass';
+            lowpass.frequency.value = 400;
+            lowpass.Q.value = 1;
+            
+            // High-pass to remove rumble
+            const highpass = audioCtx.createBiquadFilter();
+            highpass.type = 'highpass';
+            highpass.frequency.value = 80;
+            
+            // Volume control
+            windGain = audioCtx.createGain();
+            windGain.gain.value = 0.08;
+            
+            // Connect nodes
+            whiteNoise.connect(lowpass);
+            lowpass.connect(highpass);
+            highpass.connect(windGain);
+            windGain.connect(audioCtx.destination);
+            
+            whiteNoise.start();
+            
+            // Modulate wind intensity for gusts
+            function gustCycle() {
+                const now = audioCtx.currentTime;
+                const gustDuration = 2 + Math.random() * 4;
+                const gustIntensity = 0.05 + Math.random() * 0.12;
+                
+                windGain.gain.setValueAtTime(windGain.gain.value, now);
+                windGain.gain.linearRampToValueAtTime(gustIntensity, now + gustDuration * 0.3);
+                lowpass.frequency.linearRampToValueAtTime(300 + Math.random() * 400, now + gustDuration * 0.3);
+                windGain.gain.linearRampToValueAtTime(0.06, now + gustDuration);
+                lowpass.frequency.linearRampToValueAtTime(400, now + gustDuration);
+                
+                setTimeout(gustCycle, gustDuration * 1000 + Math.random() * 3000);
+            }
+            gustCycle();
+        }
+        
+        // Start audio on first click (browser autoplay policy)
+        document.body.addEventListener('click', function startAudio() {
+            if (!isAudioStarted) {
+                createWind();
+                isAudioStarted = true;
+                document.body.removeEventListener('click', startAudio);
+            }
+        }, { once: true });
+        
         const snowfall = document.getElementById('snow');
         const flakes = ['❄', '❅', '❆', '·', '•'];
         
