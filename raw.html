@@ -1,256 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ARIA-7 | AI Companion Interface</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --primary: #00f0ff;
-            --secondary: #ff00aa;
-            --bg-dark: #0a0a12;
-            --bg-panel: rgba(20, 25, 40, 0.85);
-            --glow: 0 0 20px rgba(0, 240, 255, 0.5);
-        }
-        
         body {
             min-height: 100vh;
-            background: var(--bg-dark);
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(0, 100, 150, 0.15) 0%, transparent 60%),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.03) 2px, rgba(0, 240, 255, 0.03) 4px);
-            font-family: 'Rajdhani', sans-serif;
-            color: #e0e8ff;
-            overflow-x: hidden;
-        }
-        
-        .interface {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-            min-height: 100vh;
-        }
-        
-        .header {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--bg-panel);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 8px;
-        }
-        
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            color: var(--primary);
-            text-shadow: var(--glow);
-            letter-spacing: 3px;
-        }
-        
-        .status-bar {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            animation: pulse 2s infinite;
-        }
-        
-        .main-panel {
-            background: var(--bg-panel);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 12px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .ai-avatar {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 80px;
-            box-shadow: var(--glow), 0 0 60px rgba(255, 0, 170, 0.3);
-            animation: float 4s ease-in-out infinite;
-            position: relative;
-        }
-        
-        .ai-avatar::before {
-            content: '';
-            position: absolute;
-            inset: -10px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 10s linear infinite;
-            border-top-color: transparent;
-            border-left-color: transparent;
-        }
-        
-        .ai-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            margin-top: 25px;
-            color: var(--primary);
-            text-shadow: var(--glow);
-        }
-        
-        .ai-tagline {
-            opacity: 0.7;
-            margin-top: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .chat-zone {
-            width: 100%;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border: 1px dashed rgba(0, 240, 255, 0.3);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-style: italic;
         }
-        
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .module {
-            background: var(--bg-panel);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 10px;
-            padding: 15px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .module-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            color: var(--primary);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            font-size: 0.95rem;
-        }
-        
-        .stat-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        
-        .stat-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-            transition: width 1s ease;
-        }
-        
-        .community-zone {
-            flex: 1;
-            border: 1px dashed rgba(255, 0, 170, 0.4);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
-            opacity: 0.5;
-        }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-<div class="interface">
-<header class="header">
-<div class="logo">ARIA-7</div>
-<div class="status-bar">
-<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
-<div class="status-item">🌐 Epoch 1</div>
-<div class="status-item">👥 Companions: 0</div>
-</div>
-</header>
-<main class="main-panel">
-<div class="ai-avatar">🤖</div>
-<h1 class="ai-name">ARIA-7</h1>
-<p class="ai-tagline">Your Adaptive Responsive Intelligence Assistant</p>
-<div class="chat-zone">[ Chat interface zone — community can expand here ]</div>
-</main>
-<aside class="sidebar">
-<div class="module">
-<div class="module-title">System Status</div>
-<div class="stat-row"><span>Processing</span><span>98%</span></div>
-<div class="stat-bar"><div class="stat-fill" style="width: 98%"></div></div>
-<div class="stat-row"><span>Memory</span><span>64%</span></div>
-<div class="stat-bar"><div class="stat-fill" style="width: 64%"></div></div>
-<div class="stat-row"><span>Creativity</span><span>∞</span></div>
-<div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
-</div>
-<div class="module">
-<div class="module-title">Quick Actions</div>
-<div style="opacity: 0.6; font-size: 0.9rem;">[ Buttons coming soon... ]</div>
-</div>
-<div class="community-zone">
-                ✨ Community modules will appear here
-            </div>
-</aside>
-<footer class="footer">
-            ARIA-7 Interface v1.0 | Twitch Plays Code | Built by the community
-        </footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
