@@ -186,7 +186,95 @@
             width: min(500px, 90vw);
         }
         
-        .floor-tiles {
+        .ai-cabinet {
+  margin-top: 30px;
+  background: linear-gradient(180deg, #1a2a1a 0%, #0a150a 100%);
+  border: 4px solid #00ff00;
+  border-radius: 10px;
+  padding: 15px;
+  width: min(400px, 90vw);
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.ai-screen {
+  background: #000;
+  border: 3px solid #00ff00;
+  border-radius: 5px;
+  padding: 15px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 20px #00ff00, inset 0 0 30px rgba(0, 255, 0, 0.1);
+}
+
+.ai-title {
+  color: #00ff00;
+  font-size: 0.9rem;
+  text-shadow: 0 0 10px #00ff00;
+  margin-bottom: 10px;
+}
+
+.neural-grid {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.neuron {
+  width: 15px;
+  height: 15px;
+  background: #00ff00;
+  border-radius: 50%;
+  animation: neuronPulse 1.5s infinite;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+.neuron:nth-child(2) { animation-delay: 0.2s; }
+.neuron:nth-child(3) { animation-delay: 0.4s; }
+.neuron:nth-child(4) { animation-delay: 0.6s; }
+.neuron:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes neuronPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes neuronFire {
+  0% { background: #ffffff; box-shadow: 0 0 30px #ffffff; }
+  100% { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
+}
+
+.ai-thoughts {
+  width: 100%;
+  max-height: 80px;
+  overflow-y: auto;
+  background: rgba(0, 50, 0, 0.3);
+  border: 1px solid #004400;
+  padding: 8px;
+  margin: 10px 0;
+}
+
+.thought {
+  color: #00ff00;
+  font-size: 0.4rem;
+  padding: 3px 0;
+  border-bottom: 1px dashed #003300;
+  opacity: 0.7;
+}
+
+.thought.new { opacity: 1; animation: fadeIn 0.3s ease; }
+.thought .user { color: #ffff00; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+.ai-status {
+  color: #00ff00;
+  font-size: 0.5rem;
+  animation: blink 2s infinite;
+}
+
+.floor-tiles {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -226,9 +314,56 @@
 <div class="score-entry"><span>3. CAT</span><span>777777</span></div>
 <div class="score-entry"><span>4. ???</span><span>------</span></div>
 </div>
+<div class="ai-cabinet">
+<div class="ai-screen">
+<div class="ai-title">★ AI ORACLE ★</div>
+<div class="neural-grid">
+<div class="neuron n1"></div>
+<div class="neuron n2"></div>
+<div class="neuron n3"></div>
+<div class="neuron n4"></div>
+<div class="neuron n5"></div>
+</div>
+<div class="ai-thoughts" id="aiThoughts">
+<div class="thought">AWAITING NEURAL LINK...</div>
+</div>
+<div class="ai-status">◈ LIVE CONSCIOUSNESS ◈</div>
+</div>
+</div>
 <div class="community-zone">
             [ EXPANSION ZONE - ADD YOUR ARCADE MACHINES HERE ]
         </div>
+<script>
+(function() {
+  const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const pathBase = location.pathname.includes('/twitch_plays_code') ? '/twitch_plays_code' : 
+                   location.pathname.includes('/tpc') ? '/twitch_plays_code' : '';
+  const chatWs = new WebSocket(`${wsProtocol}//${location.host}${pathBase}/ws/chat`);
+  const thoughts = document.getElementById('aiThoughts');
+  const responses = ['PROCESSING...', 'ANALYZING INPUT...', 'NEURAL SPIKE DETECTED', 'CONSCIOUSNESS EXPANDING', 'QUERY RECEIVED'];
+  
+  chatWs.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'chat_message') {
+      const thought = document.createElement('div');
+      thought.className = 'thought new';
+      thought.innerHTML = `<span class="user">${msg.username}:</span> ${msg.message}`;
+      thoughts.appendChild(thought);
+      if (thoughts.children.length > 5) thoughts.removeChild(thoughts.firstChild);
+      thoughts.scrollTop = thoughts.scrollHeight;
+      document.querySelectorAll('.neuron').forEach(n => {
+        n.style.animation = 'none';
+        n.offsetHeight;
+        n.style.animation = 'neuronFire 0.5s ease';
+      });
+    }
+  };
+  
+  chatWs.onerror = () => {
+    thoughts.innerHTML = '<div class="thought">SIGNAL LOST... RECONNECTING...</div>';
+  };
+})();
+</script>
 </div>
 <div class="floor-tiles"></div>
 </body>
