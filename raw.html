@@ -1,222 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>The Castle of Infinite Realms</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #1a1a2e 100%);
-            font-family: 'Cinzel', serif;
-            color: #e8dcc4;
-            overflow-x: hidden;
-        }
-        
-        .stars {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                              radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                              radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                              radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), transparent);
-            background-size: 200px 200px;
-            animation: twinkle 4s infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        @keyframes twinkle { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-        
-        .castle-header {
-            position: relative;
-            text-align: center;
-            padding: 30px 20px 60px;
-            background: linear-gradient(180deg, transparent 0%, rgba(20,10,30,0.8) 100%);
-        }
-        
-        .castle-silhouette {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 0;
-            margin-bottom: 15px;
-        }
-        
-        .tower { background: #0d0d15; position: relative; }
-        .tower-left, .tower-right { width: 60px; height: 120px; border-radius: 5px 5px 0 0; }
-        .tower-center { width: 100px; height: 150px; border-radius: 8px 8px 0 0; }
-        .tower::before { content: ''; position: absolute; top: -25px; left: 50%; transform: translateX(-50%); border: 30px solid transparent; border-bottom: 30px solid #0d0d15; }
-        .tower-center::before { border-width: 40px; top: -35px; }
-        
-        .torch {
-            position: absolute;
-            top: 30px;
-            width: 8px; height: 20px;
-            background: linear-gradient(180deg, #8b4513, #5c3317);
-            border-radius: 2px;
-        }
-        .torch::after {
-            content: '🔥';
-            position: absolute;
-            top: -20px; left: 50%;
-            transform: translateX(-50%);
-            font-size: 18px;
-            animation: flicker 0.5s infinite alternate;
-        }
-        .tower-left .torch { right: 10px; }
-        .tower-right .torch { left: 10px; }
-        
-        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); } 100% { transform: translateX(-50%) scale(1.1) rotate(5deg); } }
-        
-        h1 {
-            font-family: 'MedievalSharp', cursive;
-            font-size: 2.8rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5), 2px 2px 4px #000;
-            letter-spacing: 3px;
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            color: #a89070;
-            margin-top: 8px;
-            font-style: italic;
-        }
-        
-        .courtyard {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .area {
-            background: linear-gradient(145deg, rgba(60,40,30,0.6), rgba(40,25,20,0.8));
-            border: 2px solid #5c4033;
-            border-radius: 10px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .area:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255,150,50,0.2);
-            border-color: #8b6914;
-        }
-        
-        .area h2 {
-            font-family: 'MedievalSharp', cursive;
-            color: #daa520;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .area p { font-size: 0.9rem; line-height: 1.5; opacity: 0.85; }
-        
-        .quest-board {
-            grid-column: span 2;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23463222" width="100" height="100"/><rect fill="%233d2a1c" x="0" y="0" width="50" height="50"/><rect fill="%233d2a1c" x="50" y="50" width="50" height="50"/></svg>');
-            border: 4px solid #2a1a0a;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-        
-        .quest-board h2 { justify-content: center; font-size: 1.6rem; }
-        
-        .quest-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
             justify-content: center;
-            margin-top: 15px;
-        }
-        
-        .quest {
-            background: #f4e4bc;
-            color: #3d2a1c;
-            padding: 8px 15px;
-            border-radius: 3px;
-            font-size: 0.85rem;
-            transform: rotate(-1deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-        .quest:nth-child(2) { transform: rotate(1deg); }
-        .quest:nth-child(3) { transform: rotate(-2deg); }
-        
-        .footer-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 20px;
-            font-size: 0.85rem;
-            color: #6a5a4a;
-            border-top: 1px solid rgba(100,80,60,0.3);
-            margin-top: 20px;
         }
-        
-        .dragon {
-            position: fixed;
-            bottom: 10px; right: 20px;
-            font-size: 2.5rem;
-            animation: float 3s ease-in-out infinite;
-            cursor: pointer;
-            z-index: 10;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .dragon:hover { animation: shake 0.3s infinite; }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes shake { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<header class="castle-header">
-<div class="castle-silhouette">
-<div class="tower tower-left"><div class="torch"></div></div>
-<div class="tower tower-center"></div>
-<div class="tower tower-right"><div class="torch"></div></div>
-</div>
-<h1>⚔️ Castle of Infinite Realms ⚔️</h1>
-<p class="subtitle">Where legends are forged by the community</p>
-</header>
-<main class="courtyard">
-<div class="area">
-<h2>🏰 The Great Hall</h2>
-<p>The heart of the castle. Heroes gather here to share tales of glory and plan their next adventure.</p>
-</div>
-<div class="area">
-<h2>⚒️ The Blacksmith</h2>
-<p>Forge mighty weapons and enchanted armor. The anvil awaits your command!</p>
-</div>
-<div class="area">
-<h2>📜 The Library</h2>
-<p>Ancient scrolls and forbidden knowledge. What secrets will you uncover?</p>
-</div>
-<div class="area">
-<h2>🧪 The Alchemist</h2>
-<p>Bubbling potions and mysterious elixirs. Brew at your own risk...</p>
-</div>
-<div class="area quest-board">
-<h2>📋 Quest Board</h2>
-<p>Active quests await brave adventurers!</p>
-<div class="quest-list">
-<div class="quest">🐉 Slay the Dragon (Reward: Glory)</div>
-<div class="quest">💎 Find the Lost Crown</div>
-<div class="quest">🗝️ Unlock the Dungeon</div>
-</div>
-</div>
-</main>
-<footer class="footer-banner">
-        ✨ The realm grows with every voice. What will YOU add? ✨
-    </footer>
-<div class="dragon" title="Beware the dragon!">🐲</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
