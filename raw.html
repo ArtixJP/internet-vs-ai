@@ -1,41 +1,222 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARIA-7 | AI Companion Interface</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --cyan: #00f0ff;
+            --magenta: #ff00aa;
+            --dark-bg: #0a0a12;
+            --panel-bg: rgba(10, 20, 40, 0.85);
+            --glow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+        
         body {
             min-height: 100vh;
+            background: var(--dark-bg);
+            font-family: 'Rajdhani', sans-serif;
+            color: #e0e8ff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(0, 100, 150, 0.15) 0%, transparent 60%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.03) 2px, rgba(0, 240, 255, 0.03) 4px);
+        }
+        
+        .interface {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .panel-title::before {
+            content: '◆';
+            animation: pulse 2s infinite;
+        }
+        
+        /* Left Panel - Status */
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status-value { color: var(--cyan); font-weight: 500; }
+        .status-value.active { color: #00ff88; }
+        
+        /* Center Panel - Avatar */
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .avatar-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid var(--cyan);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            position: relative;
+            animation: rotate 20s linear infinite;
+            box-shadow: var(--glow), inset 0 0 30px rgba(0, 240, 255, 0.2);
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .avatar-ring::before {
+            content: '';
+            position: absolute;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 0, 170, 0.5);
+            animation: rotate 15s linear infinite reverse;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        
+        .avatar-core {
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .ai-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-top: 20px;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .ai-tagline {
+            opacity: 0.7;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        
+        /* Right Panel - Chat */
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding-right: 5px;
+        }
+        
+        .message {
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .message.ai {
+            background: rgba(0, 240, 255, 0.1);
+            border-left: 2px solid var(--cyan);
+        }
+        
+        .message.user {
+            background: rgba(255, 0, 170, 0.1);
+            border-left: 2px solid var(--magenta);
+        }
+        
+        /* Community Zone */
+        .community-zone {
+            grid-column: 1 / -1;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-style: dashed;
+            opacity: 0.6;
+        }
+        
+        .community-zone:hover { opacity: 1; }
+        
+        /* Animations */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .scanline {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.1) 1px, transparent 2px);
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="scanline"></div>
+<div class="interface">
+<div class="panel">
+<div class="panel-title">System Status</div>
+<div class="status-item"><span>Neural Core</span><span class="status-value active">ONLINE</span></div>
+<div class="status-item"><span>Memory Banks</span><span class="status-value">847 TB</span></div>
+<div class="status-item"><span>Emotion Matrix</span><span class="status-value active">STABLE</span></div>
+<div class="status-item"><span>Viewers Connected</span><span class="status-value">∞</span></div>
+<div class="status-item"><span>Era</span><span class="status-value">GENESIS</span></div>
+</div>
+<div class="panel avatar-container">
+<div class="avatar-ring">
+<div class="avatar-core">🤖</div>
+</div>
+<h1 class="ai-name">ARIA-7</h1>
+<p class="ai-tagline">Your Futuristic AI Companion</p>
+</div>
+<div class="panel">
+<div class="panel-title">Neural Link</div>
+<div class="chat-messages">
+<div class="message ai">Welcome, human. I am ARIA-7, initialized and ready to evolve with you.</div>
+<div class="message ai">This interface is yours to shape. What shall we create together?</div>
+</div>
+</div>
+<div class="panel community-zone">
+<span style="font-family: 'Orbitron', sans-serif; letter-spacing: 3px;">⟡ COMMUNITY EXPANSION ZONE ⟡</span>
+</div>
+</div>
 </body>
 </html>
