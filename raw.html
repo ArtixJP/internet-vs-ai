@@ -1,223 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Ravenswood Manor - A Mystery Awaits</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Crimson+Text:ital@0;1&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0d0d15 100%);
-            color: #c9b896;
-            font-family: 'Crimson Text', serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .fog {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(100,100,120,0.03)"/></svg>');
-            animation: fogDrift 20s infinite linear;
-            opacity: 0.6;
-        }
-        
-        @keyframes fogDrift {
-            0% { transform: translateX(-10%) translateY(0); }
-            50% { transform: translateX(10%) translateY(-5%); }
-            100% { transform: translateX(-10%) translateY(0); }
-        }
-        
-        .mansion-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 40px 20px 20px;
-            position: relative;
         }
-        
-        h1 {
-            font-family: 'Creepster', cursive;
-            font-size: 3.5rem;
-            color: #8b0000;
-            text-shadow: 0 0 20px rgba(139,0,0,0.5), 2px 2px 4px #000;
-            letter-spacing: 4px;
-            animation: flicker 3s infinite;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-            97% { opacity: 1; }
-        }
-        
-        .subtitle {
-            font-style: italic;
-            opacity: 0.7;
-            margin-top: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .mansion-scene {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding: 20px;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .mansion {
-            width: 300px;
-            height: 250px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a15 100%);
-            clip-path: polygon(10% 100%, 10% 40%, 25% 40%, 25% 20%, 40% 20%, 40% 0%, 60% 0%, 60% 20%, 75% 20%, 75% 40%, 90% 40%, 90% 100%);
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        
-        .window {
-            position: absolute;
-            width: 30px;
-            height: 40px;
-            background: #2a1a0a;
-            border: 2px solid #3a2a1a;
-            animation: windowGlow 4s infinite;
-        }
-        
-        .window:nth-child(1) { top: 50%; left: 20%; }
-        .window:nth-child(2) { top: 50%; right: 20%; }
-        .window:nth-child(3) { top: 25%; left: 42%; width: 40px; height: 50px; }
-        
-        @keyframes windowGlow {
-            0%, 100% { background: #2a1a0a; box-shadow: none; }
-            50% { background: #4a3a1a; box-shadow: inset 0 0 10px #ff6600; }
-        }
-        
-        .candle-holder {
-            display: flex;
-            gap: 60px;
-            justify-content: center;
-            margin: 30px 0;
-        }
-        
-        .candle {
-            width: 20px;
-            height: 60px;
-            background: linear-gradient(180deg, #f5e6d3 0%, #d4c4a8 100%);
-            border-radius: 2px 2px 0 0;
-            position: relative;
-        }
-        
-        .flame {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 25px;
-            background: radial-gradient(ellipse at bottom, #ff6600 0%, #ff3300 40%, transparent 70%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.5s infinite alternate;
-        }
-        
-        @keyframes burn {
-            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
-            100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
-        }
-        
-        .mystery-board {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 25px;
-            background: rgba(20,15,10,0.8);
-            border: 3px solid #3a2a1a;
-            border-radius: 5px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-        
-        .mystery-board h2 {
-            font-family: 'Creepster', cursive;
-            color: #aa0000;
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
-            font-size: 1.8rem;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .clue-list {
-            list-style: none;
-            text-align: left;
-        }
-        
-        .clue-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #3a2a1a;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .clue-list li:hover {
-            color: #ff6600;
-            padding-left: 10px;
-        }
-        
-        .clue-list li::before {
-            content: '🕯️ ';
-        }
-        
-        .ghost-zone {
-            text-align: center;
-            padding: 20px;
-            opacity: 0.6;
-            font-style: italic;
-        }
-        
-        .creaky-text {
-            animation: creak 2s infinite;
-        }
-        
-        @keyframes creak {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(0.5deg); }
-            75% { transform: rotate(-0.5deg); }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="fog"></div>
-<header class="mansion-header">
-<h1 class="creaky-text">Ravenswood Manor</h1>
-<p class="subtitle">"Some doors should never be opened..."</p>
-</header>
-<div class="candle-holder">
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-</div>
-<section class="mansion-scene">
-<div class="mansion">
-<div class="window"></div>
-<div class="window"></div>
-<div class="window"></div>
-</div>
-</section>
-<div class="mystery-board">
-<h2>📜 Case File #1889</h2>
-<ul class="clue-list">
-<li>The grandfather clock stopped at midnight...</li>
-<li>A torn letter found in the library</li>
-<li>Footsteps heard from the sealed attic</li>
-<li>The portrait's eyes seem to follow you</li>
-</ul>
-</div>
-<div class="ghost-zone">
-<p>👻 Spirits wander these halls... what will you discover? 👻</p>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
