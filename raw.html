@@ -1,41 +1,215 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STELLAR COMMAND // Deep Space Operations</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff006e;
+            --bg-dark: #0a0a1a;
+            --panel-bg: rgba(20, 30, 60, 0.7);
+            --border-glow: rgba(0, 240, 255, 0.3);
+        }
         body {
             min-height: 100vh;
+            background: var(--bg-dark);
+            color: #e0e8ff;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a1a 100%);
+            z-index: -1;
+        }
+        .stars {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(0,240,255,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255,0,110,0.8), transparent);
+            background-size: 350px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+        .header h1 {
+            font-size: 2rem;
+            letter-spacing: 8px;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary);
+        }
+        .header .status { font-size: 0.8rem; color: #8899aa; margin-top: 5px; }
+        .status .online { color: #00ff88; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .panel:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(0,240,255,0.2); }
+        .panel-title {
+            font-size: 0.75rem;
+            color: var(--primary);
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+        
+        .mission-control { grid-row: span 2; }
+        .mission-item {
             display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+        }
+        .mission-item .label { color: #8899aa; }
+        .mission-item .value { color: #fff; }
+        .mission-item .value.alert { color: var(--secondary); }
+        
+        .nav-display {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .compass {
+            width: 120px; height: 120px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: relative;
+            margin: 15px 0;
+        }
+        .compass::before {
+            content: ''; position: absolute;
+            top: 50%; left: 50%;
+            width: 4px; height: 50px;
+            background: linear-gradient(var(--secondary), var(--primary));
+            transform: translate(-50%, -100%) rotate(25deg);
+            transform-origin: bottom center;
+            animation: spin 20s linear infinite;
+        }
+        @keyframes spin { from { transform: translate(-50%, -100%) rotate(0deg); } to { transform: translate(-50%, -100%) rotate(360deg); } }
+        .coordinates { font-size: 0.8rem; color: #8899aa; text-align: center; }
+        
+        .main-viewport {
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        .planet {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3a7bd5 0%, #1a3a5c 50%, #0a1a2e 100%);
+            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.6), 0 0 60px rgba(58,123,213,0.4);
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .planet-name { margin-top: 20px; font-size: 1.2rem; letter-spacing: 4px; color: var(--primary); }
+        .planet-info { font-size: 0.8rem; color: #8899aa; margin-top: 5px; }
+        
+        .crew-status { grid-row: span 2; }
+        .crew-member {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.85rem;
+        }
+        .crew-avatar {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem;
+        }
+        .crew-info .name { color: #fff; }
+        .crew-info .role { font-size: 0.7rem; color: #8899aa; }
+        
+        .footer {
+            grid-column: 1 / -1;
             text-align: center;
+            padding: 10px;
+            font-size: 0.7rem;
+            color: #556677;
+            border-top: 1px solid var(--border-glow);
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .footer span { color: var(--primary); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="starfield"><div class="stars"></div></div>
+<div class="dashboard">
+<header class="header">
+<h1>◈ STELLAR COMMAND ◈</h1>
+<div class="status">SYSTEM STATUS: <span class="online">● ONLINE</span> | STARDATE: 2847.156</div>
+</header>
+<div class="panel mission-control">
+<div class="panel-title">▸ MISSION DATA</div>
+<div class="mission-item"><span class="label">Fuel Reserves</span><span class="value">87.3%</span></div>
+<div class="mission-item"><span class="label">Hull Integrity</span><span class="value">98.1%</span></div>
+<div class="mission-item"><span class="label">O₂ Levels</span><span class="value">94.7%</span></div>
+<div class="mission-item"><span class="label">Distance to Target</span><span class="value alert">2.4 LY</span></div>
+<div class="mission-item"><span class="label">ETA</span><span class="value">47d 12h</span></div>
+</div>
+<div class="panel main-viewport">
+<div class="panel-title">▸ CURRENT DESTINATION</div>
+<div class="planet"></div>
+<div class="planet-name">KEPLER-442b</div>
+<div class="planet-info">Class M | Habitable Zone</div>
+</div>
+<div class="panel crew-status">
+<div class="panel-title">▸ CREW MANIFEST</div>
+<div class="crew-member"><div class="crew-avatar">CMD</div><div class="crew-info"><div class="name">Chen, Maya</div><div class="role">Commander</div></div></div>
+<div class="crew-member"><div class="crew-avatar">NAV</div><div class="crew-info"><div class="name">Okafor, Ade</div><div class="role">Navigator</div></div></div>
+<div class="crew-member"><div class="crew-avatar">ENG</div><div class="crew-info"><div class="name">Volkov, Sasha</div><div class="role">Engineer</div></div></div>
+<div class="crew-member"><div class="crew-avatar">SCI</div><div class="crew-info"><div class="name">Park, Jin</div><div class="role">Science Officer</div></div></div>
+</div>
+<div class="panel nav-display">
+<div class="panel-title">▸ NAVIGATION</div>
+<div class="compass"></div>
+<div class="coordinates">X: 847.2 | Y: -156.8 | Z: 2041.5</div>
+</div>
+<footer class="footer">
+<span>◈</span> TWITCH PLAYS CODE // COMMUNITY SPACE PROGRAM <span>◈</span>
+</footer>
+</div>
 </body>
 </html>
