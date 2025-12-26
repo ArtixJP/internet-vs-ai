@@ -1,245 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ARIA // AI Companion Interface</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(145deg, #0a0a1a 0%, #0d1b2a 50%, #1b263b 100%);
-            color: #e0e0e0;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .scan-line {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffff44, transparent);
-            animation: scan 4s linear infinite;
-            pointer-events: none;
-            z-index: 100;
-        }
-        
-        @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
-        
-        .interface-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            min-height: 100vh;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            grid-column: 1 / -1;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 8px;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        
-        .logo {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.8rem;
-            background: linear-gradient(90deg, #00ffff, #7b2fff);
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
         }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: #00ffaa;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .status-dot {
-            width: 10px; height: 10px;
-            background: #00ffaa;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ffaa; } 50% { opacity: 0.5; box-shadow: 0 0 20px #00ffaa; } }
-        
-        .panel {
-            background: rgba(20, 30, 50, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 15px;
-            backdrop-filter: blur(10px);
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        
-        .panel:hover {
-            border-color: rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-        }
-        
-        .panel-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 0.75rem;
-            color: #00ffff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-        
-        .ai-core {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .core-orb {
-            width: 180px; height: 180px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #00ffff33, #7b2fff22, transparent);
-            border: 2px solid rgba(0, 255, 255, 0.4);
-            animation: float 6s ease-in-out infinite, rotate 20s linear infinite;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .core-orb::before {
-            content: '';
-            position: absolute;
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            border: 1px dashed rgba(123, 47, 255, 0.5);
-            animation: rotate-reverse 15s linear infinite;
-        }
-        
-        .core-orb::after {
-            content: 'ARIA';
-            font-family: 'Orbitron', monospace;
-            font-size: 1.5rem;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-        }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes rotate-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        
-        .ai-message {
-            margin-top: 25px;
-            text-align: center;
-            font-size: 1.1rem;
-            color: #aaccff;
-            max-width: 400px;
-            line-height: 1.6;
-        }
-        
-        .typing-cursor {
-            display: inline-block;
-            width: 2px; height: 1.2em;
-            background: #00ffff;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom;
-        }
-        
-        @keyframes blink { 50% { opacity: 0; } }
-        
-        .module-list { list-style: none; }
-        .module-list li {
-            padding: 8px 12px;
-            margin: 6px 0;
-            background: rgba(0, 255, 255, 0.05);
-            border-left: 3px solid #7b2fff;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-        .module-list li:hover { background: rgba(0, 255, 255, 0.1); }
-        
-        .community-zone {
-            min-height: 120px;
-            border: 2px dashed rgba(123, 47, 255, 0.3);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #7b2fff88;
-            font-style: italic;
-            margin-top: 10px;
-        }
-        
-        .footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
-            color: #445566;
-        }
-        
-        .footer span { color: #00ffff; }
     </style>
 </head>
 <body>
-<div class="scan-line"></div>
-<div class="interface-container">
-<header class="header">
-<div class="logo">◈ ARIA</div>
-<div class="status-indicator">
-<span class="status-dot"></span>
-<span>SYSTEM ONLINE // AWAITING INPUT</span>
-</div>
-</header>
-<aside class="panel">
-<div class="panel-title">◇ Active Modules</div>
-<ul class="module-list">
-<li>🧠 Neural Core v2.4</li>
-<li>👁️ Vision Processing</li>
-<li>💬 Chat Interface</li>
-<li>🎨 Creative Engine</li>
-</ul>
-<div class="community-zone">+ Community modules here</div>
-</aside>
-<main class="panel ai-core">
-<div class="core-orb"></div>
-<p class="ai-message">
-                Hello, I am <strong>ARIA</strong> — your Adaptive Responsive Intelligence Assistant. 
-                I exist to evolve with the community. What shall we create together?<span class="typing-cursor"></span>
-</p>
-</main>
-<aside class="panel">
-<div class="panel-title">◇ System Logs</div>
-<div style="font-family: monospace; font-size: 0.8rem; color: #66aa88; line-height: 1.8;">
-                [INIT] Core systems loaded<br/>
-                [SYNC] Community link active<br/>
-                [READY] Awaiting commands...<br/>
-</div>
-<div class="community-zone">+ Community features here</div>
-</aside>
-<footer class="footer">
-            ARIA Interface v1.0 // Built by <span>Twitch Chat</span> // Era: Genesis
-        </footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
