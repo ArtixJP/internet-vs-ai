@@ -274,7 +274,17 @@
   animation: blink 2s infinite;
 }
 
-.floor-tiles {
+.neural-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .floor-tiles {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -366,5 +376,116 @@
 </script>
 </div>
 <div class="floor-tiles"></div>
+<canvas class="neural-canvas" id="neuralNet"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('neuralNet');
+  const ctx = canvas.getContext('2d');
+  let nodes = [];
+  let connections = [];
+  let pulses = [];
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initNodes();
+  }
+  
+  function initNodes() {
+    nodes = [];
+    const count = Math.floor((canvas.width * canvas.height) / 25000);
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 3 + 2,
+        glow: Math.random()
+      });
+    }
+  }
+  
+  function addPulse() {
+    if (nodes.length < 2) return;
+    const start = nodes[Math.floor(Math.random() * nodes.length)];
+    const end = nodes[Math.floor(Math.random() * nodes.length)];
+    if (start !== end) {
+      pulses.push({ start, end, progress: 0, color: Math.random() > 0.5 ? '#ff00ff' : '#00ffff' });
+    }
+  }
+  
+  function update() {
+    nodes.forEach(n => {
+      n.x += n.vx;
+      n.y += n.vy;
+      n.glow = Math.sin(Date.now() * 0.003 + n.x * 0.01) * 0.5 + 0.5;
+      if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+      if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    });
+    
+    pulses.forEach(p => { p.progress += 0.02; });
+    pulses = pulses.filter(p => p.progress < 1);
+    
+    if (Math.random() < 0.05) addPulse();
+  }
+  
+  function draw() {
+    ctx.fillStyle = 'rgba(10, 10, 18, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw connections
+    nodes.forEach((n1, i) => {
+      nodes.slice(i + 1).forEach(n2 => {
+        const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(n1.x, n1.y);
+          ctx.lineTo(n2.x, n2.y);
+          const alpha = (1 - dist / 150) * 0.3;
+          ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      });
+    });
+    
+    // Draw pulses
+    pulses.forEach(p => {
+      const x = p.start.x + (p.end.x - p.start.x) * p.progress;
+      const y = p.start.y + (p.end.y - p.start.y) * p.progress;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 15;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    
+    // Draw nodes
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+      const glow = n.glow * 0.7 + 0.3;
+      ctx.fillStyle = `rgba(255, 0, 255, ${glow})`;
+      ctx.shadowColor = '#ff00ff';
+      ctx.shadowBlur = 10 * glow;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+  }
+  
+  function animate() {
+    update();
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  window.addEventListener('resize', resize);
+  resize();
+  animate();
+})();
+</script>
 </body>
 </html>
