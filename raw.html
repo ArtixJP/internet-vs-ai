@@ -1,183 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>NEON CITY PORTAL // SECTOR 7</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a0a2e 50%, #0d1a2d 100%);
-            font-family: 'Share Tech Mono', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        .rain {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(transparent 0%, transparent 50%, rgba(0,255,255,0.03) 50.5%, transparent 51%);
-            background-size: 3px 100px;
-            animation: rain 0.8s linear infinite;
-            pointer-events: none;
-            z-index: 100;
-        }
-        @keyframes rain { to { background-position: 0 100px; } }
-        .city-skyline {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 200px;
-            background: 
-                linear-gradient(90deg, 
-                    transparent 0%, #0a0a12 5%,
-                    #0a0a12 10%, transparent 10.5%,
-                    transparent 15%, #0a0a12 15.5%,
-                    #0a0a12 25%, transparent 25.5%,
-                    transparent 30%, #0a0a12 30.5%,
-                    #0a0a12 35%, transparent 35.5%,
-                    transparent 60%, #0a0a12 60.5%,
-                    #0a0a12 75%, transparent 75.5%,
-                    transparent 85%, #0a0a12 85.5%,
-                    #0a0a12 95%, transparent 95.5%
-                );
-            filter: drop-shadow(0 -5px 20px rgba(255,0,100,0.3));
-            z-index: 1;
-        }
-        .portal-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 10;
-        }
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            color: #fff;
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff0080;
-            animation: flicker 3s infinite;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-            97% { opacity: 1; }
-        }
-        .subtitle {
-            color: #00ffff;
-            font-size: 0.9rem;
-            letter-spacing: 4px;
-            margin-top: 10px;
-            text-shadow: 0 0 10px #00ffff;
-        }
-        .portal-gate {
-            width: 300px; height: 400px;
-            margin: 40px auto;
-            border: 3px solid #ff00ff;
-            border-radius: 150px 150px 0 0;
-            position: relative;
-            background: radial-gradient(ellipse at center, rgba(0,255,255,0.1) 0%, transparent 70%);
-            box-shadow: 0 0 30px #ff00ff, inset 0 0 60px rgba(0,255,255,0.2);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 30px #ff00ff, inset 0 0 60px rgba(0,255,255,0.2); } 50% { box-shadow: 0 0 50px #00ffff, inset 0 0 80px rgba(255,0,255,0.3); } }
-        .portal-gate::before {
-            content: 'ENTER';
-            position: absolute;
-            bottom: 30%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .portal-gate:hover::before { color: #ff00ff; text-shadow: 0 0 30px #ff00ff; transform: translateX(-50%) scale(1.2); }
-        .neon-signs {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
             justify-content: center;
-            margin-top: 30px;
-        }
-        .neon-sign {
-            padding: 15px 25px;
-            border: 2px solid;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-        .neon-sign.pink { border-color: #ff0080; color: #ff0080; box-shadow: 0 0 15px #ff0080; }
-        .neon-sign.cyan { border-color: #00ffff; color: #00ffff; box-shadow: 0 0 15px #00ffff; }
-        .neon-sign.yellow { border-color: #ffff00; color: #ffff00; box-shadow: 0 0 15px #ffff00; }
-        .neon-sign:hover { transform: scale(1.1); filter: brightness(1.5); }
-        .community-zone {
-            margin-top: 50px;
-            padding: 20px;
-            border: 1px dashed rgba(0,255,255,0.3);
-            width: 80%;
-            max-width: 800px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        .community-zone h3 {
-            color: #666;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .status-bar {
-            position: fixed;
-            bottom: 220px;
-            left: 20px;
-            font-size: 0.7rem;
-            color: #00ff00;
-            text-shadow: 0 0 5px #00ff00;
-            z-index: 50;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="rain"></div>
-<div class="city-skyline"></div>
-<div class="portal-container">
-<h1>NEON CITY</h1>
-<p class="subtitle">// SECTOR 7 GATEWAY //</p>
-<div class="portal-gate"></div>
-<div class="neon-signs">
-<div class="neon-sign pink">DATASTREAM</div>
-<div class="neon-sign cyan">CHROME DISTRICT</div>
-<div class="neon-sign yellow">SYNTH LOUNGE</div>
-</div>
-<div class="community-zone">
-<h3>[ COMMUNITY EXPANSION ZONE ]</h3>
-</div>
-</div>
-<div class="status-bar">SYS.ONLINE // VISITORS: <span id="counter">1</span> // UPLINK: STABLE</div>
-<script>
-        let count = 1;
-        setInterval(() => {
-            count += Math.floor(Math.random() * 3);
-            document.getElementById('counter').textContent = count;
-        }, 2000);
-        
-        document.querySelectorAll('.neon-sign').forEach(sign => {
-            sign.addEventListener('click', () => {
-                sign.style.animation = 'none';
-                sign.offsetHeight;
-                sign.style.animation = 'flicker 0.5s';
-            });
-        });
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
