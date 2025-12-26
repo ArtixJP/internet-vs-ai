@@ -4,198 +4,221 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<title>ROBOWORKS™ Factory Control</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Wandering Page Bookstore</title>
 <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0d1117 100%);
-            color: #00ff88;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
+            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
+            color: #f5e6d3;
+            font-family: 'Lora', Georgia, serif;
             overflow-x: hidden;
         }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 15px;
-            max-width: 1500px;
+        
+        .bookstore {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
-        .panel {
-            background: linear-gradient(145deg, #12121a, #1e1e2e);
-            border: 2px solid #00ff8855;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 0 20px #00ff8822, inset 0 0 30px #00000088;
-        }
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #00ff8844;
-            padding-bottom: 10px;
-            margin-bottom: 12px;
-        }
-        .status-light {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
-            animation: pulse 1.5s infinite;
-        }
-        .status-light.warning { background: #ffaa00; box-shadow: 0 0 10px #ffaa00; }
-        .status-light.offline { background: #ff3344; box-shadow: 0 0 10px #ff3344; animation: none; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        h1 {
+        
+        header {
             text-align: center;
-            font-size: 1.8rem;
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff88;
-            margin-bottom: 20px;
-            letter-spacing: 4px;
+            padding: 30px 20px;
+            border-bottom: 2px solid #8b6914;
+            margin-bottom: 30px;
         }
-        h2 { font-size: 0.9rem; color: #88ffbb; text-transform: uppercase; letter-spacing: 2px; }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #00ff8822;
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: flicker 3s infinite alternate;
         }
-        .stat-value { color: #ffffff; font-weight: bold; }
-        .conveyor {
-            height: 60px;
-            background: repeating-linear-gradient(90deg, #2a2a3a 0px, #2a2a3a 20px, #1a1a2a 20px, #1a1a2a 40px);
-            border-radius: 4px;
-            margin: 15px 0;
-            position: relative;
-            overflow: hidden;
-            animation: conveyorMove 2s linear infinite;
+        
+        .tagline {
+            font-style: italic;
+            color: #d4a574;
+            margin-top: 8px;
+            font-size: 1.1rem;
         }
-        @keyframes conveyorMove { from { background-position: 0 0; } to { background-position: 40px 0; } }
-        .robot-icon {
-            position: absolute;
-            font-size: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            animation: robotSlide 4s linear infinite;
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.92; }
         }
-        .robot-icon:nth-child(1) { animation-delay: 0s; }
-        .robot-icon:nth-child(2) { animation-delay: 1.3s; }
-        .robot-icon:nth-child(3) { animation-delay: 2.6s; }
-        @keyframes robotSlide { from { left: -50px; } to { left: 110%; } }
-        .robot-list { list-style: none; }
-        .robot-list li {
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        .featured-books {
+            background: rgba(139, 69, 19, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #8b4513;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px;
-            background: #0a0a12;
-            margin: 5px 0;
-            border-radius: 4px;
-            border-left: 3px solid #00ff88;
         }
-        .progress-bar {
-            height: 8px;
-            background: #1a1a2a;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00aaff);
-            border-radius: 4px;
-            transition: width 0.5s;
-        }
-        .assembly-bay {
-            min-height: 120px;
-            border: 2px dashed #00ff8844;
-            border-radius: 8px;
+        
+        .book-shelf {
             display: flex;
-            align-items: center;
+            gap: 15px;
             justify-content: center;
-            color: #00ff8866;
+            flex-wrap: wrap;
+        }
+        
+        .book {
+            width: 80px;
+            height: 120px;
+            border-radius: 3px 6px 6px 3px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+        }
+        
+        .book:hover {
+            transform: translateY(-10px) rotate(-2deg);
+            box-shadow: 5px 8px 15px rgba(0,0,0,0.5);
+        }
+        
+        .book-1 { background: linear-gradient(135deg, #8b0000, #a52a2a); }
+        .book-2 { background: linear-gradient(135deg, #1e3a5f, #2e5a8f); }
+        .book-3 { background: linear-gradient(135deg, #2d5a27, #3d7a37); }
+        .book-4 { background: linear-gradient(135deg, #4a3728, #6a4738); }
+        .book-5 { background: linear-gradient(135deg, #5c3d6e, #7c5d8e); }
+        
+        .book::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .reading-nook {
+            background: rgba(210, 180, 140, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #d2b48c;
+        }
+        
+        .lamp {
+            font-size: 3rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px #ffd700); }
+            to { filter: drop-shadow(0 0 20px #ffaa00); }
+        }
+        
+        .staff-picks {
+            background: rgba(75, 54, 33, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #6b4423;
+        }
+        
+        .pick {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .pick-title { color: #ffd700; font-weight: bold; }
+        
+        .community-corner {
+            margin-top: 25px;
+            background: rgba(255,215,0,0.1);
+            border: 2px dashed #ffd700;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .community-corner p {
+            color: #d4a574;
             font-style: italic;
         }
-        .footer-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding: 10px;
-            background: #0a0a12;
-            border-radius: 4px;
-            font-size: 0.8rem;
+        
+        .cat {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            font-size: 2.5rem;
+            animation: sleep 2s ease-in-out infinite;
         }
-        .blink { animation: blink 0.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        @keyframes sleep {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
     </style>
 </head>
 <body>
-<h1>🤖 ROBOWORKS™ FACTORY CONTROL</h1>
-<div class="dashboard">
-
-<div class="panel">
-<div class="panel-header">
-<div class="status-light"></div>
-<h2>Production Stats</h2>
+<div class="bookstore">
+<header>
+<h1 class="logo">📚 The Wandering Page</h1>
+<p class="tagline">"Where every book finds its reader"</p>
+</header>
+<div class="main-content">
+<section class="featured-books">
+<h2 class="section-title">✨ Featured This Week</h2>
+<div class="book-shelf">
+<div class="book book-1" title="Mystery Novel"></div>
+<div class="book book-2" title="Ocean Tales"></div>
+<div class="book book-3" title="Forest Whispers"></div>
+<div class="book book-4" title="Ancient Secrets"></div>
+<div class="book book-5" title="Dream Journal"></div>
 </div>
-<div class="stat-row"><span>Units Today</span><span class="stat-value">1,247</span></div>
-<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
-<div class="stat-row"><span>Power Draw</span><span class="stat-value">847 kW</span></div>
-<div class="stat-row"><span>Queue Size</span><span class="stat-value">89</span></div>
-<div class="stat-row"><span>Defect Rate</span><span class="stat-value">0.3%</span></div>
+</section>
+<aside class="sidebar">
+<div class="reading-nook">
+<div class="lamp">🪔</div>
+<p>The Reading Nook is open</p>
+<small>☕ Fresh coffee brewing</small>
 </div>
-
-<div class="panel">
-<div class="panel-header">
-<div class="status-light"></div>
-<h2>Assembly Line Alpha</h2>
-</div>
-<div class="conveyor">
-<span class="robot-icon">🦾</span>
-<span class="robot-icon">🤖</span>
-<span class="robot-icon">⚙️</span>
-</div>
-<div class="assembly-bay">
-                [ Community Assembly Bay - Awaiting Instructions ]
-            </div>
-<div class="footer-bar">
-<span>🔧 Maintenance: <span style="color:#00ff88">CLEAR</span></span>
-<span class="blink">● LIVE</span>
-<span>Shift: ALPHA-7</span>
+<div class="staff-picks">
+<h3 class="section-title">📖 Staff Pick</h3>
+<div class="pick">
+<span class="pick-title">"Midnight in the Garden"</span>
+<p>— Recommended by Clara</p>
 </div>
 </div>
-
-<div class="panel">
-<div class="panel-header">
-<div class="status-light warning"></div>
-<h2>Robot Fleet</h2>
+</aside>
 </div>
-<ul class="robot-list">
-<li>
-<span>🤖</span>
-<div style="flex:1">
-<div>UNIT-7734</div>
-<div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div>
-</div>
-</li>
-<li>
-<span>🦿</span>
-<div style="flex:1">
-<div>UNIT-2501</div>
-<div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
-</div>
-</li>
-<li>
-<span>🔩</span>
-<div style="flex:1">
-<div>UNIT-0451</div>
-<div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-</div>
-</li>
-</ul>
+<div class="community-corner">
+<h3 class="section-title">🌟 Community Shelf</h3>
+<p>This space awaits your stories...</p>
 </div>
 </div>
+<div class="cat" title="Bookstore cat">😺</div>
 </body>
 </html>
