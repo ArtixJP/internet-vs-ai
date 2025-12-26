@@ -5,218 +5,175 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ARIA-7 | AI Companion Interface</title>
+<title>🌴 Paradise Found - Tropical Island Guide</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --cyan: #00f0ff;
-            --magenta: #ff00aa;
-            --dark-bg: #0a0a12;
-            --panel-bg: rgba(10, 20, 40, 0.85);
-            --glow: 0 0 20px rgba(0, 240, 255, 0.5);
+            --ocean: #0891b2;
+            --lagoon: #22d3ee;
+            --sand: #fef3c7;
+            --coral: #fb7185;
+            --palm: #16a34a;
+            --sunset: #f97316;
         }
         
         body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, var(--lagoon) 0%, var(--ocean) 50%, #1e3a5f 100%);
             min-height: 100vh;
-            background: var(--dark-bg);
-            font-family: 'Rajdhani', sans-serif;
-            color: #e0e8ff;
+            color: #1e293b;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(0, 100, 150, 0.15) 0%, transparent 60%),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.03) 2px, rgba(0, 240, 255, 0.03) 4px);
         }
         
-        .interface {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-            min-height: 100vh;
+        .waves {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 80px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%23fef3c7' d='M0,60 C300,120 600,0 900,60 C1050,90 1150,90 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
+            animation: wave 8s linear infinite;
         }
         
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            position: relative;
+        @keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
         }
         
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
         }
         
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            color: var(--cyan);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        h1 .palm { display: inline-block; animation: sway 3s ease-in-out infinite; }
+        @keyframes sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        
+        .tagline {
+            color: var(--sand);
+            font-size: 1.1rem;
+            margin-top: 8px;
+            font-weight: 300;
         }
         
-        .panel-title::before {
-            content: '◆';
-            animation: pulse 2s infinite;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
         
-        /* Left Panel - Status */
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
         }
         
-        .status-value { color: var(--cyan); font-weight: 500; }
-        .status-value.active { color: #00ff88; }
-        
-        /* Center Panel - Avatar */
-        .avatar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
+        .island-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
         
-        .avatar-ring {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 2px solid var(--cyan);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            animation: rotate 20s linear infinite;
-            box-shadow: var(--glow), inset 0 0 30px rgba(0, 240, 255, 0.2);
+        .island-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
         
-        .avatar-ring::before {
-            content: '';
-            position: absolute;
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            border: 1px dashed rgba(255, 0, 170, 0.5);
-            animation: rotate 15s linear infinite reverse;
+        .island-card h3 {
+            color: var(--ocean);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
         }
         
-        .avatar-core {
-            font-size: 4rem;
-            animation: float 3s ease-in-out infinite;
-        }
+        .island-card p { font-size: 0.9rem; color: #64748b; }
         
-        .ai-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            margin-top: 20px;
-            background: linear-gradient(90deg, var(--cyan), var(--magenta));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .island-card .emoji { font-size: 3rem; margin-bottom: 10px; }
         
-        .ai-tagline {
-            opacity: 0.7;
-            font-size: 1rem;
-            margin-top: 5px;
-        }
+        .rating { color: var(--sunset); font-size: 0.85rem; margin-top: 10px; }
         
-        /* Right Panel - Chat */
-        .chat-messages {
-            height: 200px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding-right: 5px;
-        }
-        
-        .message {
-            padding: 8px 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .message.ai {
-            background: rgba(0, 240, 255, 0.1);
-            border-left: 2px solid var(--cyan);
-        }
-        
-        .message.user {
-            background: rgba(255, 0, 170, 0.1);
-            border-left: 2px solid var(--magenta);
-        }
-        
-        /* Community Zone */
         .community-zone {
-            grid-column: 1 / -1;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-style: dashed;
-            opacity: 0.6;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 3px dashed var(--coral);
+            text-align: center;
         }
         
-        .community-zone:hover { opacity: 1; }
+        .community-zone h2 { color: var(--coral); font-family: 'Pacifico', cursive; }
+        .community-zone p { color: #64748b; font-size: 0.9rem; margin-top: 8px; }
         
-        /* Animations */
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .scanline {
+        .sun {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            background: repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.1) 1px, transparent 2px);
-            z-index: 1000;
+            top: 20px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #fbbf24 0%, var(--sunset) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #fbbf24;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--sand);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-<div class="scanline"></div>
-<div class="interface">
-<div class="panel">
-<div class="panel-title">System Status</div>
-<div class="status-item"><span>Neural Core</span><span class="status-value active">ONLINE</span></div>
-<div class="status-item"><span>Memory Banks</span><span class="status-value">847 TB</span></div>
-<div class="status-item"><span>Emotion Matrix</span><span class="status-value active">STABLE</span></div>
-<div class="status-item"><span>Viewers Connected</span><span class="status-value">∞</span></div>
-<div class="status-item"><span>Era</span><span class="status-value">GENESIS</span></div>
+<div class="sun"></div>
+<div class="waves"></div>
+<header>
+<h1><span class="palm">🌴</span> Paradise Found</h1>
+<p class="tagline">Your gateway to tropical bliss ✨</p>
+</header>
+<div class="container">
+<section class="destinations">
+<div class="island-card">
+<div class="emoji">🏝️</div>
+<h3>Coral Cove</h3>
+<p>Crystal-clear waters and vibrant reefs await. Perfect for snorkeling adventures!</p>
+<div class="rating">⭐⭐⭐⭐⭐ 4.9</div>
 </div>
-<div class="panel avatar-container">
-<div class="avatar-ring">
-<div class="avatar-core">🤖</div>
+<div class="island-card">
+<div class="emoji">🌺</div>
+<h3>Hibiscus Bay</h3>
+<p>Lush gardens, hidden waterfalls, and the sweetest tropical cocktails.</p>
+<div class="rating">⭐⭐⭐⭐ 4.7</div>
 </div>
-<h1 class="ai-name">ARIA-7</h1>
-<p class="ai-tagline">Your Futuristic AI Companion</p>
+<div class="island-card">
+<div class="emoji">🐚</div>
+<h3>Sunset Shores</h3>
+<p>Miles of golden sand. Watch the sky paint itself in fire every evening.</p>
+<div class="rating">⭐⭐⭐⭐⭐ 5.0</div>
 </div>
-<div class="panel">
-<div class="panel-title">Neural Link</div>
-<div class="chat-messages">
-<div class="message ai">Welcome, human. I am ARIA-7, initialized and ready to evolve with you.</div>
-<div class="message ai">This interface is yours to shape. What shall we create together?</div>
+</section>
+<section class="community-zone">
+<h2>🗺️ Uncharted Territory</h2>
+<p>The community will discover new islands here... what secrets will you add?</p>
+</section>
 </div>
-</div>
-<div class="panel community-zone">
-<span style="font-family: 'Orbitron', sans-serif; letter-spacing: 3px;">⟡ COMMUNITY EXPANSION ZONE ⟡</span>
-</div>
-</div>
+<footer>
+        🥥 Made with aloha by the Twitch community 🌊
+    </footer>
 </body>
 </html>
