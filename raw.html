@@ -4,212 +4,198 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>STELLAR COMMAND // Deep Space Operations</title>
+<title>ROBOWORKS™ Factory Control</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #00f0ff;
-            --secondary: #ff006e;
-            --bg-dark: #0a0a1a;
-            --panel-bg: rgba(20, 30, 60, 0.7);
-            --border-glow: rgba(0, 240, 255, 0.3);
-        }
         body {
             min-height: 100vh;
-            background: var(--bg-dark);
-            color: #e0e8ff;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0d1117 100%);
+            color: #00ff88;
             font-family: 'Courier New', monospace;
+            padding: 20px;
             overflow-x: hidden;
-            position: relative;
         }
-        .starfield {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a1a 100%);
-            z-index: -1;
-        }
-        .stars {
-            position: absolute;
-            width: 100%; height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(2px 2px at 160px 120px, rgba(0,240,255,0.9), transparent),
-                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
-                radial-gradient(2px 2px at 300px 150px, rgba(255,0,110,0.8), transparent);
-            background-size: 350px 200px;
-            animation: twinkle 4s ease-in-out infinite;
-        }
-        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
             gap: 15px;
-            padding: 20px;
-            max-width: 1600px;
+            max-width: 1500px;
             margin: 0 auto;
-            min-height: 100vh;
         }
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--border-glow);
-        }
-        .header h1 {
-            font-size: 2rem;
-            letter-spacing: 8px;
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary);
-        }
-        .header .status { font-size: 0.8rem; color: #8899aa; margin-top: 5px; }
-        .status .online { color: #00ff88; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
         .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
+            background: linear-gradient(145deg, #12121a, #1e1e2e);
+            border: 2px solid #00ff8855;
             border-radius: 8px;
             padding: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px #00ff8822, inset 0 0 30px #00000088;
         }
-        .panel:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(0,240,255,0.2); }
-        .panel-title {
-            font-size: 0.75rem;
-            color: var(--primary);
-            letter-spacing: 3px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-glow);
-        }
-        
-        .mission-control { grid-row: span 2; }
-        .mission-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-            font-size: 0.85rem;
-        }
-        .mission-item .label { color: #8899aa; }
-        .mission-item .value { color: #fff; }
-        .mission-item .value.alert { color: var(--secondary); }
-        
-        .nav-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .compass {
-            width: 120px; height: 120px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            position: relative;
-            margin: 15px 0;
-        }
-        .compass::before {
-            content: ''; position: absolute;
-            top: 50%; left: 50%;
-            width: 4px; height: 50px;
-            background: linear-gradient(var(--secondary), var(--primary));
-            transform: translate(-50%, -100%) rotate(25deg);
-            transform-origin: bottom center;
-            animation: spin 20s linear infinite;
-        }
-        @keyframes spin { from { transform: translate(-50%, -100%) rotate(0deg); } to { transform: translate(-50%, -100%) rotate(360deg); } }
-        .coordinates { font-size: 0.8rem; color: #8899aa; text-align: center; }
-        
-        .main-viewport {
-            grid-row: span 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 300px;
-        }
-        .planet {
-            width: 150px; height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3a7bd5 0%, #1a3a5c 50%, #0a1a2e 100%);
-            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.6), 0 0 60px rgba(58,123,213,0.4);
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .planet-name { margin-top: 20px; font-size: 1.2rem; letter-spacing: 4px; color: var(--primary); }
-        .planet-info { font-size: 0.8rem; color: #8899aa; margin-top: 5px; }
-        
-        .crew-status { grid-row: span 2; }
-        .crew-member {
+        .panel-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 0;
-            font-size: 0.85rem;
+            border-bottom: 1px solid #00ff8844;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
-        .crew-avatar {
-            width: 30px; height: 30px;
+        .status-light {
+            width: 12px; height: 12px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 1.5s infinite;
         }
-        .crew-info .name { color: #fff; }
-        .crew-info .role { font-size: 0.7rem; color: #8899aa; }
-        
-        .footer {
-            grid-column: 1 / -1;
+        .status-light.warning { background: #ffaa00; box-shadow: 0 0 10px #ffaa00; }
+        .status-light.offline { background: #ff3344; box-shadow: 0 0 10px #ff3344; animation: none; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        h1 {
             text-align: center;
-            padding: 10px;
-            font-size: 0.7rem;
-            color: #556677;
-            border-top: 1px solid var(--border-glow);
+            font-size: 1.8rem;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
         }
-        .footer span { color: var(--primary); }
+        h2 { font-size: 0.9rem; color: #88ffbb; text-transform: uppercase; letter-spacing: 2px; }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #00ff8822;
+        }
+        .stat-value { color: #ffffff; font-weight: bold; }
+        .conveyor {
+            height: 60px;
+            background: repeating-linear-gradient(90deg, #2a2a3a 0px, #2a2a3a 20px, #1a1a2a 20px, #1a1a2a 40px);
+            border-radius: 4px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            animation: conveyorMove 2s linear infinite;
+        }
+        @keyframes conveyorMove { from { background-position: 0 0; } to { background-position: 40px 0; } }
+        .robot-icon {
+            position: absolute;
+            font-size: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: robotSlide 4s linear infinite;
+        }
+        .robot-icon:nth-child(1) { animation-delay: 0s; }
+        .robot-icon:nth-child(2) { animation-delay: 1.3s; }
+        .robot-icon:nth-child(3) { animation-delay: 2.6s; }
+        @keyframes robotSlide { from { left: -50px; } to { left: 110%; } }
+        .robot-list { list-style: none; }
+        .robot-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: #0a0a12;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #00ff88;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #1a1a2a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00aaff);
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        .assembly-bay {
+            min-height: 120px;
+            border: 2px dashed #00ff8844;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff8866;
+            font-style: italic;
+        }
+        .footer-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px;
+            background: #0a0a12;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .blink { animation: blink 0.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
-<div class="starfield"><div class="stars"></div></div>
+<h1>🤖 ROBOWORKS™ FACTORY CONTROL</h1>
 <div class="dashboard">
-<header class="header">
-<h1>◈ STELLAR COMMAND ◈</h1>
-<div class="status">SYSTEM STATUS: <span class="online">● ONLINE</span> | STARDATE: 2847.156</div>
-</header>
-<div class="panel mission-control">
-<div class="panel-title">▸ MISSION DATA</div>
-<div class="mission-item"><span class="label">Fuel Reserves</span><span class="value">87.3%</span></div>
-<div class="mission-item"><span class="label">Hull Integrity</span><span class="value">98.1%</span></div>
-<div class="mission-item"><span class="label">O₂ Levels</span><span class="value">94.7%</span></div>
-<div class="mission-item"><span class="label">Distance to Target</span><span class="value alert">2.4 LY</span></div>
-<div class="mission-item"><span class="label">ETA</span><span class="value">47d 12h</span></div>
+
+<div class="panel">
+<div class="panel-header">
+<div class="status-light"></div>
+<h2>Production Stats</h2>
 </div>
-<div class="panel main-viewport">
-<div class="panel-title">▸ CURRENT DESTINATION</div>
-<div class="planet"></div>
-<div class="planet-name">KEPLER-442b</div>
-<div class="planet-info">Class M | Habitable Zone</div>
+<div class="stat-row"><span>Units Today</span><span class="stat-value">1,247</span></div>
+<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
+<div class="stat-row"><span>Power Draw</span><span class="stat-value">847 kW</span></div>
+<div class="stat-row"><span>Queue Size</span><span class="stat-value">89</span></div>
+<div class="stat-row"><span>Defect Rate</span><span class="stat-value">0.3%</span></div>
 </div>
-<div class="panel crew-status">
-<div class="panel-title">▸ CREW MANIFEST</div>
-<div class="crew-member"><div class="crew-avatar">CMD</div><div class="crew-info"><div class="name">Chen, Maya</div><div class="role">Commander</div></div></div>
-<div class="crew-member"><div class="crew-avatar">NAV</div><div class="crew-info"><div class="name">Okafor, Ade</div><div class="role">Navigator</div></div></div>
-<div class="crew-member"><div class="crew-avatar">ENG</div><div class="crew-info"><div class="name">Volkov, Sasha</div><div class="role">Engineer</div></div></div>
-<div class="crew-member"><div class="crew-avatar">SCI</div><div class="crew-info"><div class="name">Park, Jin</div><div class="role">Science Officer</div></div></div>
+
+<div class="panel">
+<div class="panel-header">
+<div class="status-light"></div>
+<h2>Assembly Line Alpha</h2>
 </div>
-<div class="panel nav-display">
-<div class="panel-title">▸ NAVIGATION</div>
-<div class="compass"></div>
-<div class="coordinates">X: 847.2 | Y: -156.8 | Z: 2041.5</div>
+<div class="conveyor">
+<span class="robot-icon">🦾</span>
+<span class="robot-icon">🤖</span>
+<span class="robot-icon">⚙️</span>
 </div>
-<footer class="footer">
-<span>◈</span> TWITCH PLAYS CODE // COMMUNITY SPACE PROGRAM <span>◈</span>
-</footer>
+<div class="assembly-bay">
+                [ Community Assembly Bay - Awaiting Instructions ]
+            </div>
+<div class="footer-bar">
+<span>🔧 Maintenance: <span style="color:#00ff88">CLEAR</span></span>
+<span class="blink">● LIVE</span>
+<span>Shift: ALPHA-7</span>
+</div>
+</div>
+
+<div class="panel">
+<div class="panel-header">
+<div class="status-light warning"></div>
+<h2>Robot Fleet</h2>
+</div>
+<ul class="robot-list">
+<li>
+<span>🤖</span>
+<div style="flex:1">
+<div>UNIT-7734</div>
+<div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div>
+</div>
+</li>
+<li>
+<span>🦿</span>
+<div style="flex:1">
+<div>UNIT-2501</div>
+<div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+</div>
+</li>
+<li>
+<span>🔩</span>
+<div style="flex:1">
+<div>UNIT-0451</div>
+<div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+</div>
+</li>
+</ul>
+</div>
 </div>
 </body>
 </html>
