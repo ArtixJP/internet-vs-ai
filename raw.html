@@ -1,41 +1,212 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>🌲 Enchanted Forest Adventure</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 30%, #2d4a3e 70%, #1a472a 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+            color: #e8f5e9;
+        }
+        .forest-container {
+            position: relative;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.8rem;
+            text-shadow: 0 0 20px #4ade80, 0 0 40px #22c55e;
+            color: #bbf7d0;
+            margin: 20px 0;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #4ade80, 0 0 40px #22c55e; }
+            to { text-shadow: 0 0 30px #86efac, 0 0 60px #4ade80, 0 0 80px #22c55e; }
+        }
+        .game-world {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 10px;
+        }
+        .panel {
+            background: rgba(13, 27, 42, 0.8);
+            border: 2px solid #2d5a4a;
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .panel h2 {
+            color: #86efac;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #2d5a4a;
+            padding-bottom: 8px;
+        }
+        .forest-view {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(180deg, transparent 0%, rgba(34, 197, 94, 0.1) 100%);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .tree {
+            position: absolute;
+            bottom: 0;
+            font-size: 4rem;
+            filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.5));
+            animation: sway 4s ease-in-out infinite;
+        }
+        .tree:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .tree:nth-child(2) { left: 30%; font-size: 5rem; animation-delay: 0.5s; }
+        .tree:nth-child(3) { left: 55%; animation-delay: 1s; }
+        .tree:nth-child(4) { left: 75%; font-size: 4.5rem; animation-delay: 1.5s; }
+        .tree:nth-child(5) { left: 90%; animation-delay: 2s; }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        .player {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            animation: bounce 1s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .player:hover { transform: translateX(-50%) scale(1.2); }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        .firefly {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fef08a;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fef08a, 0 0 20px #facc15;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            25% { transform: translate(30px, -40px) scale(1.2); opacity: 1; }
+            50% { transform: translate(-20px, -60px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(40px, -30px) scale(1.1); opacity: 1; }
+        }
+        .quest-item {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 3px solid #4ade80;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quest-item:hover {
+            background: rgba(74, 222, 128, 0.2);
+            transform: translateX(5px);
+        }
+        .inventory-slot {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: rgba(45, 90, 74, 0.5);
+            border: 2px dashed #4ade80;
+            border-radius: 8px;
+            margin: 5px;
+            font-size: 1.5rem;
+            line-height: 46px;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .stats {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .stat {
+            background: rgba(34, 197, 94, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .community-zone {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed #4ade80;
+            border-radius: 15px;
+            text-align: center;
+            opacity: 0.7;
+        }
+        .moon {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            font-size: 3rem;
+            filter: drop-shadow(0 0 20px rgba(254, 240, 138, 0.8));
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="forest-container">
+<h1>🌲 Enchanted Forest Adventure 🌲</h1>
+<div class="game-world">
+
+<div class="panel">
+<h2>📜 Quest Board</h2>
+<div class="quest-item">🗡️ Defeat the Shadow Wolf</div>
+<div class="quest-item">🍄 Collect 5 Magic Mushrooms</div>
+<div class="quest-item">💎 Find the Crystal Cave</div>
+<div class="community-zone">✨ More quests coming...</div>
+</div>
+
+<div class="panel forest-view">
+<div class="moon">🌙</div>
+<div class="tree">🌲</div>
+<div class="tree">🌳</div>
+<div class="tree">🌲</div>
+<div class="tree">🌳</div>
+<div class="tree">🌲</div>
+<div class="firefly" style="top: 20%; left: 20%;"></div>
+<div class="firefly" style="top: 40%; left: 60%; animation-delay: 1s;"></div>
+<div class="firefly" style="top: 30%; left: 80%; animation-delay: 2s;"></div>
+<div class="firefly" style="top: 50%; left: 40%; animation-delay: 3s;"></div>
+<div class="firefly" style="top: 25%; left: 70%; animation-delay: 4s;"></div>
+<div class="player" title="That's you!">🧙</div>
+</div>
+
+<div class="panel">
+<h2>🎒 Inventory</h2>
+<div class="inventory-slot">⚔️</div>
+<div class="inventory-slot">🧪</div>
+<div class="inventory-slot">🗝️</div>
+<div class="inventory-slot"></div>
+<div class="inventory-slot"></div>
+<div class="inventory-slot"></div>
+<div class="community-zone">🎁 Find more items...</div>
+</div>
+</div>
+<div class="stats">
+<div class="stat">❤️ HP: 100/100</div>
+<div class="stat">⭐ Level: 1</div>
+<div class="stat">🪙 Gold: 50</div>
+<div class="stat">✨ XP: 0/100</div>
+</div>
+</div>
 </body>
 </html>
