@@ -1,41 +1,143 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>Ravencrest Manor - A Mystery Awaits</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            background: linear-gradient(180deg, #0a0a12 0%, #1a0a20 50%, #0d0d15 100%);
+            color: #d4c4a8;
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+            position: relative;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .fog {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ffffff05"/></svg>');
+            opacity: 0.3; pointer-events: none; animation: fogDrift 20s linear infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes fogDrift { from { transform: translateX(-10%); } to { transform: translateX(10%); } }
+        .mansion-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        h1 {
+            font-family: 'Cinzel', serif; font-size: 2.8rem; color: #8b7355;
+            text-shadow: 0 0 20px #4a0e4e, 0 0 40px #2d0a2e;
+            letter-spacing: 4px; margin: 20px 0 10px; animation: flicker 3s infinite;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; }
+        }
+        .subtitle { font-style: italic; color: #6b5b4f; margin-bottom: 25px; font-size: 1.1rem; }
+        .mansion {
+            position: relative; width: 90%; max-width: 700px; height: 350px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 8px 8px 0 0; border: 2px solid #2a2a3e;
+            box-shadow: 0 0 50px #1a0a20, inset 0 0 30px #0a0a12;
+        }
+        .window {
+            position: absolute; width: 50px; height: 70px; background: #0a0815;
+            border: 3px solid #3a3a4e; border-radius: 3px 3px 0 0;
+            box-shadow: inset 0 0 15px #2d0a4e;
+        }
+        .window::after {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0;
+            height: 2px; background: #3a3a4e;
+        }
+        .window.lit { animation: windowGlow 4s ease-in-out infinite; }
+        @keyframes windowGlow {
+            0%, 100% { box-shadow: inset 0 0 15px #2d0a4e; }
+            50% { box-shadow: inset 0 0 25px #5a2a6e, 0 0 10px #4a1a5e; }
+        }
+        .w1 { top: 80px; left: 80px; } .w2 { top: 80px; left: 160px; }
+        .w3 { top: 80px; right: 80px; } .w4 { top: 80px; right: 160px; }
+        .w5 { top: 180px; left: 120px; } .w6 { top: 180px; right: 120px; }
+        .door {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 70px; height: 120px; background: linear-gradient(180deg, #2a1a15 0%, #1a0a0a 100%);
+            border: 4px solid #4a3a35; border-bottom: none; border-radius: 5px 5px 0 0;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .door:hover { box-shadow: 0 0 30px #6b1a1a; transform: translateX(-50%) scale(1.02); }
+        .door::before {
+            content: '🚪'; position: absolute; top: 50%; right: 10px;
+            transform: translateY(-50%); font-size: 0.8rem;
+        }
+        .door-knocker {
+            position: absolute; top: 40%; left: 50%; transform: translateX(-50%);
+            width: 15px; height: 20px; background: #8b7355; border-radius: 50% 50% 0 0;
+        }
+        .clock {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            font-family: 'Cinzel', serif; font-size: 1.5rem; color: #6b5b4f;
+        }
+        .ghost {
+            position: fixed; font-size: 1.5rem; opacity: 0.15; pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+        .g1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .g2 { top: 60%; right: 15%; animation-delay: 2s; }
+        .g3 { top: 40%; left: 80%; animation-delay: 4s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.1; }
+            50% { transform: translateY(-20px) rotate(5deg); opacity: 0.25; }
+        }
+        .mystery-board {
+            margin-top: 25px; padding: 15px 25px; background: rgba(20, 15, 25, 0.8);
+            border: 1px solid #3a2a3e; border-radius: 5px; max-width: 600px;
+        }
+        .mystery-board h2 { font-family: 'Cinzel', serif; color: #7a5a5f; margin-bottom: 10px; }
+        .clue-list { list-style: none; text-align: left; }
+        .clue-list li { padding: 8px 0; border-bottom: 1px dashed #2a2a3e; }
+        .clue-list li::before { content: '🕯️ '; }
+        .community-zone {
+            margin-top: 20px; padding: 15px; border: 2px dashed #3a3a4e;
+            border-radius: 8px; opacity: 0.7; font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="fog"></div>
+<div class="ghost g1">👻</div>
+<div class="ghost g2">👻</div>
+<div class="ghost g3">👻</div>
+<div class="mansion-container">
+<h1>🏚️ RAVENCREST MANOR 🏚️</h1>
+<p class="subtitle">"Some doors are better left unopened..."</p>
+<div class="mansion">
+<div class="clock" id="clock">XI:XX</div>
+<div class="window w1 lit"></div>
+<div class="window w2"></div>
+<div class="window w3 lit"></div>
+<div class="window w4"></div>
+<div class="window w5"></div>
+<div class="window w6 lit"></div>
+<div class="door" onclick="this.style.boxShadow='0 0 50px #ff4444'; setTimeout(()=&gt;this.style.boxShadow='', 500)">
+<div class="door-knocker"></div>
+</div>
+</div>
+<div class="mystery-board">
+<h2>📜 Current Mysteries</h2>
+<ul class="clue-list">
+<li>The Lady in White was last seen in the East Wing...</li>
+<li>A strange melody plays from the abandoned music room</li>
+<li>The portrait's eyes seem to follow visitors</li>
+</ul>
+</div>
+<div class="community-zone">
+            ✨ The mansion awaits your discoveries... ✨
+        </div>
+</div>
+<script>
+        function updateClock() {
+            const h = new Date().getHours(), m = new Date().getMinutes();
+            const roman = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+            document.getElementById('clock').textContent = roman[h % 12] + ':' + (m < 10 ? '0' : '') + m;
+        }
+        updateClock(); setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
