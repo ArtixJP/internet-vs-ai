@@ -1,41 +1,224 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>Castle Thornwood - A Medieval Adventure</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(to bottom, #1a0a2e 0%, #2d1b4e 30%, #1a1a2e 100%);
+            font-family: 'Cinzel', serif;
+            color: #e8d5b7;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; height: 40%;
+            background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                        radial-gradient(2px 2px at 40px 70px, #ffd, transparent),
+                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                        radial-gradient(2px 2px at 130px 80px, #ffa, transparent),
+                        radial-gradient(1px 1px at 200px 50px, #fff, transparent);
+            background-size: 250px 150px;
+            animation: twinkle 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes twinkle { 50% { opacity: 0.6; } }
+        
+        .castle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 3rem;
+            text-shadow: 0 0 20px #ff6b35, 0 0 40px #ff4500;
+            margin: 20px 0 10px;
+            letter-spacing: 4px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+        
+        .castle {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: linear-gradient(to bottom, #3d3d3d 0%, #2a2a2a 100%);
+            border: 4px solid #555;
+            border-radius: 8px 8px 0 0;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 2px 0 #666;
+        }
+        
+        .battlements {
+            position: absolute;
+            top: -20px; left: -4px; right: -4px;
+            height: 20px;
+            background: repeating-linear-gradient(90deg, #555 0px, #555 30px, transparent 30px, transparent 50px);
+        }
+        
+        .towers {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: -60px; left: -30px; right: -30px;
+        }
+        
+        .tower {
+            width: 50px;
+            height: 80px;
+            background: linear-gradient(to bottom, #4a4a4a, #333);
+            border: 3px solid #555;
+            position: relative;
+        }
+        
+        .tower::before {
+            content: '';
+            position: absolute;
+            top: -25px; left: -5px;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 25px solid #6b4423;
+        }
+        
+        .torch {
+            position: absolute;
+            width: 8px; height: 20px;
+            background: linear-gradient(to top, #4a3728, #2a1a0a);
+            top: 50%; transform: translateY(-50%);
+        }
+        
+        .torch::after {
+            content: '🔥';
+            position: absolute;
+            top: -20px; left: -6px;
+            font-size: 18px;
+            animation: flicker 0.5s ease-in-out infinite alternate;
+        }
+        
+        .torch.left { left: -20px; }
+        .torch.right { right: -20px; }
+        
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-5deg); opacity: 1; }
+            100% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
+        }
+        
+        .gate {
+            background: linear-gradient(to bottom, #1a0a00 0%, #2a1a10 100%);
+            border: 3px solid #5a4a3a;
+            border-radius: 50% 50% 0 0;
+            width: 120px; height: 150px;
+            margin: 30px auto 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+        
+        .gate:hover {
+            box-shadow: inset 0 0 30px rgba(255,107,53,0.3), 0 0 20px rgba(255,107,53,0.2);
+        }
+        
+        .gate-text {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 0.9rem;
             text-align: center;
+            padding: 10px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .quest-board {
+            background: #5a4a3a;
+            border: 4px solid #3a2a1a;
+            padding: 15px;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        
+        .quest-board h2 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #ffd700;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .quests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .quest {
+            background: #f4e4bc;
+            color: #2a1a0a;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border: 1px solid #8a7a5a;
+            transform: rotate(-1deg);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .quest:nth-child(2) { transform: rotate(1deg); }
+        .quest:nth-child(3) { transform: rotate(-0.5deg); }
+        .quest:hover { transform: scale(1.05) rotate(0deg); }
+        
+        .banner-area {
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0.6;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars"></div>
+<div class="castle-container">
+<h1>⚔️ Castle Thornwood ⚔️</h1>
+<p class="subtitle">A realm awaiting brave adventurers...</p>
+<div class="castle">
+<div class="battlements"></div>
+<div class="towers">
+<div class="tower"></div>
+<div class="tower"></div>
+</div>
+<div class="torch left"></div>
+<div class="torch right"></div>
+<div class="gate">
+<span class="gate-text">🚪 Enter the Keep</span>
+</div>
+</div>
+<div class="quest-board">
+<h2>📜 Quest Board</h2>
+<div class="quests">
+<div class="quest">🐉 Slay the Dragon</div>
+<div class="quest">👑 Find the Crown</div>
+<div class="quest">🗡️ Train a Knight</div>
+</div>
+</div>
+<div class="banner-area">
+<p>🏰 The kingdom grows with each visitor's contribution... 🏰</p>
+</div>
+</div>
 </body>
 </html>
