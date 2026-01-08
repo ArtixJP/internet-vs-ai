@@ -1,41 +1,199 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>ORBITAL STATION NEXUS-7</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0a0a12 0%, #0d1520 50%, #0a0a12 100%);
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        .station-frame {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 10px;
+            padding: 15px;
+        }
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(90deg, transparent, rgba(0,255,204,0.1), transparent);
+            border-bottom: 2px solid #00ffcc;
+            padding: 10px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .station-name {
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+            letter-spacing: 3px;
+        }
+        .datetime {
+            font-size: 0.9rem;
+            color: #66ffdd;
+        }
+        .panel {
+            background: rgba(0,20,30,0.8);
+            border: 1px solid #00ffcc44;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: inset 0 0 20px rgba(0,255,204,0.05), 0 0 10px rgba(0,255,204,0.1);
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            color: #00aa88;
+            border-bottom: 1px solid #00ffcc33;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .left-panels { display: flex; flex-direction: column; gap: 10px; }
+        .right-panels { display: flex; flex-direction: column; gap: 10px; }
+        .main-viewport {
+            background: radial-gradient(ellipse at center, #0a1628 0%, #050a10 100%);
+            border: 3px solid #00ffcc33;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                              radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                              radial-gradient(1px 1px at 90px 40px, #aaf, transparent),
+                              radial-gradient(2px 2px at 160px 120px, #fff, transparent),
+                              radial-gradient(1px 1px at 230px 80px, #ffa, transparent),
+                              radial-gradient(2px 2px at 300px 150px, #fff, transparent),
+                              radial-gradient(1px 1px at 350px 60px, #aff, transparent);
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle { from { opacity: 0.6; } to { opacity: 1; } }
+        .viewport-text {
+            z-index: 1;
+            font-size: 1.2rem;
+            color: #446688;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.8rem;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .status-ok { color: #00ff88; }
+        .status-warn { color: #ffaa00; }
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .indicator.green { background: #00ff88; box-shadow: 0 0 5px #00ff88; }
+        .indicator.yellow { background: #ffaa00; box-shadow: 0 0 5px #ffaa00; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn {
+            background: linear-gradient(180deg, #003344 0%, #001822 100%);
+            border: 1px solid #00ffcc66;
+            color: #00ffcc;
+            padding: 8px 12px;
+            margin: 3px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background: #00ffcc22;
+            box-shadow: 0 0 10px #00ffcc44;
+        }
+        .footer {
+            grid-column: 1 / -1;
+            border-top: 2px solid #00ffcc44;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .crew-slot {
+            background: #00ffcc11;
+            border: 1px dashed #00ffcc44;
+            padding: 8px;
+            font-size: 0.7rem;
+            color: #448888;
+            text-align: center;
+            min-width: 80px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="station-frame">
+<header class="header">
+<div class="station-name">⬡ NEXUS-7 ORBITAL STATION</div>
+<div class="datetime" id="clock">STARDATE 2847.156</div>
+</header>
+<aside class="left-panels">
+<div class="panel">
+<div class="panel-title">◈ LIFE SUPPORT</div>
+<div class="status-item"><span><span class="indicator green"></span>O₂ Level</span><span class="status-ok">98%</span></div>
+<div class="status-item"><span><span class="indicator green"></span>Pressure</span><span class="status-ok">1.01 atm</span></div>
+<div class="status-item"><span><span class="indicator yellow"></span>Temp</span><span class="status-warn">22°C</span></div>
+</div>
+<div class="panel">
+<div class="panel-title">◈ POWER GRID</div>
+<div class="status-item"><span>Solar Array</span><span class="status-ok">ONLINE</span></div>
+<div class="status-item"><span>Reactor</span><span class="status-ok">87%</span></div>
+<div class="status-item"><span>Backup</span><span class="status-ok">READY</span></div>
+</div>
+</aside>
+<main class="main-viewport">
+<div class="stars"></div>
+<div class="viewport-text">[ EXTERIOR VIEW ]<br/><br/>Awaiting crew commands...</div>
+</main>
+<aside class="right-panels">
+<div class="panel">
+<div class="panel-title">◈ COMMS ARRAY</div>
+<button class="btn">📡 HAIL EARTH</button>
+<button class="btn">🛰️ SCAN SECTOR</button>
+<button class="btn">📻 OPEN FREQ</button>
+</div>
+<div class="panel">
+<div class="panel-title">◈ NAVIGATION</div>
+<button class="btn">🌍 ORBIT VIEW</button>
+<button class="btn">🚀 PLOT COURSE</button>
+<button class="btn">⚓ DOCK STATUS</button>
+</div>
+</aside>
+<footer class="footer">
+<div class="crew-slot">👤 CREW SLOT 1<br/>[EMPTY]</div>
+<div class="crew-slot">👤 CREW SLOT 2<br/>[EMPTY]</div>
+<div class="crew-slot">👤 CREW SLOT 3<br/>[EMPTY]</div>
+<div class="crew-slot">🤖 MODULE BAY<br/>[AVAILABLE]</div>
+</footer>
+</div>
+<script>
+        function updateClock() {
+            const now = new Date();
+            const stardate = (2847 + now.getHours()/24).toFixed(3);
+            document.getElementById('clock').textContent = `STARDATE ${stardate} | ${now.toLocaleTimeString()}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
