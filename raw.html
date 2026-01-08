@@ -1,226 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>禅 Zen Garden Gallery</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2d3a3a 0%, #1a2626 50%, #0d1515 100%);
-            font-family: 'Noto Serif JP', serif;
-            color: #e8e4d9;
-            overflow-x: hidden;
-        }
-        
-        .garden {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            min-height: 100vh;
-            gap: 20px;
-            padding: 30px;
-        }
-        
-        header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 300;
-            letter-spacing: 0.3em;
-            color: #c4b896;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .subtitle {
-            font-size: 0.9rem;
-            opacity: 0.6;
-            margin-top: 8px;
-            letter-spacing: 0.2em;
-        }
-        
-        /* Bamboo Grove - Left */
-        .bamboo-grove {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .bamboo {
-            width: 8px;
-            height: 200px;
-            background: linear-gradient(90deg, #4a5d23 0%, #6b8e23 50%, #4a5d23 100%);
-            border-radius: 4px;
-            position: relative;
-            animation: sway 4s ease-in-out infinite;
-        }
-        
-        .bamboo:nth-child(2) { height: 260px; animation-delay: -1s; }
-        .bamboo:nth-child(3) { height: 180px; animation-delay: -2s; }
-        
-        .bamboo::before, .bamboo::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background: #3d4d1c;
-        }
-        .bamboo::before { top: 30%; }
-        .bamboo::after { top: 60%; }
-        
-        @keyframes sway {
-            0%, 100% { transform: rotate(-1deg); }
-            50% { transform: rotate(1deg); }
-        }
-        
-        /* Koi Pond - Center */
-        .koi-pond {
-            background: radial-gradient(ellipse at center, #1a3a4a 0%, #0d2030 70%, #061520 100%);
-            border-radius: 50% 50% 45% 55%;
-            position: relative;
-            min-height: 300px;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        
-        .koi {
-            position: absolute;
-            font-size: 2rem;
-            animation: swim 12s linear infinite;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-        }
-        
-        .koi:nth-child(1) { top: 30%; animation-delay: 0s; }
-        .koi:nth-child(2) { top: 60%; animation-delay: -4s; font-size: 1.5rem; }
-        .koi:nth-child(3) { top: 45%; animation-delay: -8s; }
-        
-        @keyframes swim {
-            0% { left: -10%; transform: scaleX(1); }
-            49% { transform: scaleX(1); }
-            50% { left: 110%; transform: scaleX(-1); }
-            99% { transform: scaleX(-1); }
-            100% { left: -10%; transform: scaleX(1); }
-        }
-        
-        .ripple {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            animation: ripple 3s ease-out infinite;
-        }
-        
-        .ripple:nth-child(4) { top: 20%; left: 30%; animation-delay: 0s; }
-        .ripple:nth-child(5) { top: 70%; left: 60%; animation-delay: -1s; }
-        
-        @keyframes ripple {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(3); opacity: 0; }
-        }
-        
-        /* Stone Lantern - Right */
-        .lantern-area {
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-        
-        .stone-lantern {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            cursor: pointer;
-            transition: filter 0.3s;
         }
-        
-        .stone-lantern:hover { filter: brightness(1.2); }
-        
-        .lantern-top { font-size: 2rem; }
-        .lantern-light {
-            font-size: 1.5rem;
-            animation: glow 2s ease-in-out infinite alternate;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .lantern-base { font-size: 1.2rem; opacity: 0.7; }
-        
-        @keyframes glow {
-            from { filter: brightness(0.8); }
-            to { filter: brightness(1.3) drop-shadow(0 0 10px #ffcc66); }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        /* Rock Garden Footer */
-        .rock-garden {
-            grid-column: 1 / -1;
-            background: linear-gradient(180deg, transparent 0%, #c4b896 20%, #b8a882 100%);
-            padding: 30px;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-            position: relative;
-        }
-        
-        .rocks {
-            font-size: 2rem;
-            letter-spacing: 1em;
-            margin-bottom: 10px;
-        }
-        
-        .sand-pattern {
-            font-size: 0.8rem;
-            color: #8b7d5c;
-            letter-spacing: 0.3em;
-        }
-        
-        /* Community Space */
-        .community-offerings {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #8b7d5c;
-            font-size: 0.85rem;
-            opacity: 0.7;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="garden">
-<header>
-<h1>禅 ZEN GARDEN</h1>
-<p class="subtitle">— a living gallery of tranquility —</p>
-</header>
-<div class="bamboo-grove">
-<div class="bamboo"></div>
-<div class="bamboo"></div>
-<div class="bamboo"></div>
-</div>
-<div class="koi-pond">
-<span class="koi">🐟</span>
-<span class="koi">🐠</span>
-<span class="koi">🐟</span>
-<div class="ripple"></div>
-<div class="ripple"></div>
-</div>
-<div class="lantern-area">
-<div class="stone-lantern" title="Click for wisdom">
-<div class="lantern-top">🏯</div>
-<div class="lantern-light">🔥</div>
-<div class="lantern-base">🪨</div>
-</div>
-</div>
-<div class="rock-garden">
-<div class="rocks">🪨 🪨 🪨</div>
-<div class="sand-pattern">〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️</div>
-<div class="community-offerings">
-                ✨ Place your offerings here ✨
-            </div>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
