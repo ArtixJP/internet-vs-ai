@@ -1,219 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Castle Drakenmoor</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #1a1a2e 100%);
-            font-family: 'Cinzel', serif;
-            color: #e8d5b7;
-            overflow-x: hidden;
-        }
-        
-        .stars {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='10' cy='20' r='0.5' fill='%23fff'/%3E%3Ccircle cx='80' cy='10' r='0.3' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='0.4' fill='%23fff'/%3E%3Ccircle cx='30' cy='70' r='0.3' fill='%23fff'/%3E%3Ccircle cx='90' cy='80' r='0.5' fill='%23fff'/%3E%3C/svg%3E");
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .castle-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 30px 20px 20px;
-            position: relative;
-            z-index: 1;
         }
-        
-        .castle-header h1 {
-            font-family: 'MedievalSharp', cursive;
-            font-size: 3rem;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px #000, 0 0 30px rgba(255, 150, 50, 0.5);
-            animation: flicker 3s infinite;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .castle-header .subtitle {
-            font-size: 1rem;
-            color: #a89070;
-            margin-top: 8px;
-            letter-spacing: 3px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.95; }
-            52% { opacity: 0.85; }
-            54% { opacity: 1; }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .courtyard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .location {
-            background: linear-gradient(145deg, #3d2914 0%, #2a1a0a 100%);
-            border: 3px solid #5a3d1a;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .location::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(255, 150, 50, 0.1) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        
-        .location:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 150, 50, 0.2);
-            border-color: #8b6914;
-        }
-        
-        .location .icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .location h2 {
-            font-family: 'MedievalSharp', cursive;
-            color: #ffd700;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
-        }
-        
-        .location p {
-            font-size: 0.9rem;
-            color: #b8a080;
-            line-height: 1.4;
-        }
-        
-        .torch {
-            position: fixed;
-            width: 30px;
-            height: 60px;
-            z-index: 2;
-        }
-        
-        .torch.left { left: 20px; top: 50%; }
-        .torch.right { right: 20px; top: 50%; }
-        
-        .torch .flame {
-            width: 20px;
-            height: 30px;
-            background: radial-gradient(ellipse at bottom, #ff6600 0%, #ff3300 40%, transparent 70%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.5s infinite alternate;
-            margin: 0 auto;
-        }
-        
-        .torch .handle {
-            width: 8px;
-            height: 35px;
-            background: linear-gradient(90deg, #4a3520 0%, #2a1a10 100%);
-            margin: 0 auto;
-            border-radius: 2px;
-        }
-        
-        @keyframes burn {
-            0% { transform: scaleY(1) scaleX(1); }
-            100% { transform: scaleY(1.1) scaleX(0.9); }
-        }
-        
-        .scroll-banner {
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Crect fill='%23d4b896' width='200' height='60' rx='5'/%3E%3C/svg%3E") center/cover;
-            background-color: #d4b896;
-            color: #3d2914;
-            padding: 15px 30px;
-            margin: 20px auto;
-            max-width: 600px;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            position: relative;
-            z-index: 1;
-        }
-        
-        .scroll-banner p {
-            font-style: italic;
-            font-size: 0.95rem;
-        }
-        
-        /* Community expansion area */
-        .expansion-zone {
-            border: 2px dashed #5a3d1a;
-            border-radius: 8px;
-            padding: 30px;
-            margin: 20px;
-            text-align: center;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        
-        .expansion-zone:hover { opacity: 0.9; }
-        .expansion-zone span { color: #8b6914; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="torch left"><div class="flame"></div><div class="handle"></div></div>
-<div class="torch right"><div class="flame"></div><div class="handle"></div></div>
-<header class="castle-header">
-<h1>⚔️ Castle Drakenmoor ⚔️</h1>
-<p class="subtitle">A Medieval Adventure Awaits</p>
-</header>
-<div class="scroll-banner">
-<p>"Brave traveler, you stand at the gates of Drakenmoor. What destiny shall you forge?"</p>
-</div>
-<main class="courtyard">
-<div class="location" onclick="this.style.background='linear-gradient(145deg, #4a3520 0%, #3d2914 100%)'">
-<span class="icon">🏰</span>
-<h2>The Great Hall</h2>
-<p>Where nobles feast and bards sing tales of glory.</p>
-</div>
-<div class="location" onclick="this.style.background='linear-gradient(145deg, #4a3520 0%, #3d2914 100%)'">
-<span class="icon">⚔️</span>
-<h2>The Armory</h2>
-<p>Ancient weapons line the walls, awaiting worthy hands.</p>
-</div>
-<div class="location" onclick="this.style.background='linear-gradient(145deg, #4a3520 0%, #3d2914 100%)'">
-<span class="icon">🗼</span>
-<h2>The Watchtower</h2>
-<p>Climb high and survey the realm from above.</p>
-</div>
-<div class="location" onclick="this.style.background='linear-gradient(145deg, #1a0a1a 0%, #2a1a2a 100%)'">
-<span class="icon">🚪</span>
-<h2>The Dungeon</h2>
-<p>Dark secrets lurk beneath the stone floors...</p>
-</div>
-</main>
-<div class="expansion-zone">
-<span>✨ The adventure expands here... ✨</span>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
