@@ -1,210 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>🎮 Pixel Arcade Showcase</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: #0f0f23;
-            font-family: 'Press Start 2P', monospace;
-            color: #00ff41;
-            overflow-x: hidden;
-            image-rendering: pixelated;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-            pointer-events: none;
-            z-index: 1000;
-        }
-        .arcade-header {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(180deg, #1a0a2e 0%, #0f0f23 100%);
-            border-bottom: 4px solid #ff00ff;
-            box-shadow: 0 4px 20px rgba(255,0,255,0.3);
-        }
-        .title {
-            font-size: 1.8rem;
-            color: #ffff00;
-            text-shadow: 4px 4px 0 #ff6600, -2px -2px 0 #00ffff;
-            animation: flicker 3s infinite;
-        }
-        .subtitle { font-size: 0.6rem; color: #00ffff; margin-top: 10px; }
-        @keyframes flicker {
-            0%, 95%, 100% { opacity: 1; }
-            96% { opacity: 0.8; }
-        }
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 250px;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .game-cabinet {
-            background: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
-            border: 4px solid #ff00ff;
-            border-radius: 8px;
-            padding: 20px;
-            position: relative;
-        }
-        .cabinet-screen {
-            background: #000;
-            border: 3px solid #333;
-            height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .pixel-hero {
-            width: 64px; height: 64px;
-            background: #ff6b6b;
-            position: relative;
-            animation: bounce 0.5s infinite alternate;
-            box-shadow: 
-                8px 0 0 #ff6b6b, 16px 0 0 #ff6b6b,
-                0 8px 0 #ff6b6b, 8px 8px 0 #ffcc00, 16px 8px 0 #ff6b6b,
-                0 16px 0 #4ecdc4, 8px 16px 0 #4ecdc4, 16px 16px 0 #4ecdc4,
-                0 24px 0 #4ecdc4, 16px 24px 0 #4ecdc4;
-        }
-        .pixel-enemy {
-            width: 48px; height: 48px;
-            background: #9b59b6;
-            position: absolute;
-            right: 80px;
-            animation: enemyMove 2s infinite ease-in-out;
-            box-shadow: 8px 0 0 #9b59b6, 0 8px 0 #e74c3c, 8px 8px 0 #e74c3c;
-        }
-        @keyframes bounce { to { transform: translateY(-10px); } }
-        @keyframes enemyMove { 50% { transform: translateX(-30px) translateY(-20px); } }
-        .cabinet-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .pixel-btn {
-            padding: 10px 20px;
-            font-family: inherit;
-            font-size: 0.5rem;
-            background: #e74c3c;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #c0392b;
-            transition: all 0.1s;
-        }
-        .pixel-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #c0392b; }
-        .pixel-btn.green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .leaderboard {
-            background: #1a0a2e;
-            border: 3px solid #00ffff;
-            padding: 15px;
-        }
-        .leaderboard h3 {
-            font-size: 0.7rem;
-            color: #ffff00;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
+        }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.5rem;
-            padding: 8px 0;
-            border-bottom: 1px dashed #333;
-        }
-        .score-entry:last-child { border: none; }
-        .rank { color: #ff00ff; }
-        .community-zone {
-            background: linear-gradient(135deg, #0a1628 0%, #1a0a2e 100%);
-            border: 3px dashed #00ff41;
-            padding: 15px;
-            text-align: center;
-        }
-        .community-zone h3 { font-size: 0.6rem; margin-bottom: 10px; }
-        .community-zone p { font-size: 0.4rem; color: #666; line-height: 1.8; }
-        .coin { 
-            display: inline-block;
-            width: 20px; height: 20px;
-            background: #ffcc00;
-            border-radius: 50%;
-            animation: spin 1s infinite linear;
-            box-shadow: inset -3px -3px 0 #ff9900;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .stars {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .star {
-            position: absolute;
-            width: 2px; height: 2px;
-            background: #fff;
-            animation: twinkle 2s infinite;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="stars" id="stars"></div>
-<header class="arcade-header">
-<h1 class="title">🕹️ PIXEL ARCADE 🕹️</h1>
-<p class="subtitle">INSERT COIN TO PLAY • HIGH SCORES AWAIT</p>
-</header>
-<main class="main-grid">
-<section class="game-cabinet">
-<div class="cabinet-screen">
-<div class="pixel-hero"></div>
-<div class="pixel-enemy"></div>
-</div>
-<div class="cabinet-controls">
-<button class="pixel-btn">◀ LEFT</button>
-<button class="pixel-btn green">JUMP ▲</button>
-<button class="pixel-btn">RIGHT ▶</button>
-</div>
-</section>
-<aside class="sidebar">
-<div class="leaderboard">
-<h3>🏆 HIGH SCORES</h3>
-<div class="score-entry"><span class="rank">1.</span><span>TWITCH</span><span>99999</span></div>
-<div class="score-entry"><span class="rank">2.</span><span>PLAYER</span><span>88888</span></div>
-<div class="score-entry"><span class="rank">3.</span><span>GAMER</span><span>77777</span></div>
-<div class="score-entry"><span class="rank">4.</span><span>???</span><span>-----</span></div>
-</div>
-<div class="community-zone">
-<h3><span class="coin"></span> COMMUNITY ZONE</h3>
-<p>Your ideas go here! Add characters, power-ups, new games...</p>
-</div>
-</aside>
-</main>
-<script>
-        const starsContainer = document.getElementById('stars');
-        for(let i = 0; i < 50; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 2 + 's';
-            starsContainer.appendChild(star);
-        }
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
