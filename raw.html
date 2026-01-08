@@ -1,41 +1,233 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>Ravenswood Manor - A Mystery Awaits</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1520 50%, #0d0d12 100%);
+            color: #c9c0b5;
+            font-family: 'Crimson Text', Georgia, serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .fog {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"><filter id="f"><feTurbulence baseFrequency="0.02" numOctaves="3"/><feDisplacementMap scale="50"/></filter><rect width="100%" height="100%" filter="url(%23f)" opacity="0.03" fill="white"/></svg>');
+            pointer-events: none;
+            animation: fogDrift 20s linear infinite;
+            opacity: 0.4;
+        }
+        
+        @keyframes fogDrift { from { transform: translateX(-10%); } to { transform: translateX(10%); } }
+        
+        .mansion-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
             text-align: center;
+            margin-bottom: 30px;
+            position: relative;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: #8b7355;
+            text-shadow: 0 0 20px rgba(139, 115, 85, 0.5), 2px 2px 4px #000;
+            letter-spacing: 4px;
         }
-        h1 { 
-            font-size: 2.5rem; 
+        
+        .subtitle {
+            font-style: italic;
+            color: #6a5a4a;
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .chandelier {
+            font-size: 3rem;
+            animation: flicker 3s infinite;
+            filter: drop-shadow(0 0 15px #ff9933);
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+            52% { opacity: 1; }
+            54% { opacity: 0.4; }
+            56% { opacity: 1; }
+        }
+        
+        .main-hall {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .panel {
+            background: linear-gradient(145deg, #1a1518 0%, #0f0d10 100%);
+            border: 1px solid #3d3035;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .panel h2 {
+            font-family: 'Cinzel', serif;
+            color: #a08060;
+            font-size: 1.3rem;
             margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            border-bottom: 1px solid #3d3035;
+            padding-bottom: 8px;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .clue-list { list-style: none; }
+        .clue-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #2a2428;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .clue-list li:hover {
+            color: #d4a574;
+            padding-left: 10px;
+        }
+        .clue-list li::before { content: '🔍 '; opacity: 0.6; }
+        
+        .mansion-portrait {
+            text-align: center;
+            position: relative;
+        }
+        
+        .portrait-frame {
+            font-size: 8rem;
+            filter: grayscale(50%) drop-shadow(0 0 20px rgba(100,80,60,0.3));
+            transition: filter 0.5s;
+        }
+        .portrait-frame:hover {
+            filter: grayscale(0%) drop-shadow(0 0 30px rgba(200,150,100,0.5));
+        }
+        
+        .portrait-caption {
+            font-style: italic;
+            color: #6a5a4a;
+            margin-top: 10px;
+        }
+        
+        .guest-book {
+            font-size: 0.95rem;
+        }
+        
+        .guest-entry {
+            background: rgba(60, 50, 45, 0.3);
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 3px solid #5a4a3a;
+            font-style: italic;
+        }
+        
+        .room-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .room-door {
+            background: linear-gradient(180deg, #2a2025 0%, #1a1518 100%);
+            border: 2px solid #4a3a35;
+            padding: 12px 25px;
+            color: #b0a090;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        
+        .room-door:hover {
+            background: linear-gradient(180deg, #3a3035 0%, #2a2528 100%);
+            border-color: #7a6a55;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #4a4040;
+            font-size: 0.85rem;
+        }
+        
+        .lightning {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            animation: lightning 15s infinite;
+        }
+        
+        @keyframes lightning {
+            0%, 89%, 91%, 93%, 100% { opacity: 0; }
+            90%, 92% { opacity: 0.1; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="fog"></div>
+<div class="lightning"></div>
+<div class="mansion-container">
+<header>
+<div class="chandelier">🕯️</div>
+<h1>Ravenswood Manor</h1>
+<p class="subtitle">"Some doors are better left unopened..."</p>
+</header>
+<main class="main-hall">
+<div class="panel clues-panel">
+<h2>📜 Discovered Clues</h2>
+<ul class="clue-list">
+<li>A torn letter in the library</li>
+<li>Footprints near the cellar</li>
+<li>The clock stopped at midnight</li>
+</ul>
+</div>
+<div class="panel mansion-portrait">
+<div class="portrait-frame">🏚️</div>
+<p class="portrait-caption">The manor has stood since 1847...<br/>Its secrets run deep.</p>
+</div>
+<div class="panel guest-book">
+<h2>📖 Guest Book</h2>
+<div class="guest-entry">"I heard whispers from the walls..." — Anonymous</div>
+<div class="guest-entry">"The butler knows more than he reveals." — E.M.</div>
+</div>
+</main>
+<nav class="room-nav">
+<button class="room-door">🚪 Grand Foyer</button>
+<button class="room-door">📚 Library</button>
+<button class="room-door">🍷 Dining Hall</button>
+<button class="room-door">🌙 Tower</button>
+</nav>
+<footer>
+<p>⚰️ Est. 1847 • The truth awaits those who dare to seek ⚰️</p>
+</footer>
+</div>
 </body>
 </html>
