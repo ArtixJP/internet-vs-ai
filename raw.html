@@ -1,41 +1,192 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🌴 Paradise Cove - Tropical Island Guide</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500;700&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #40E0D0 30%, #20B2AA 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            color: #2d3436;
+            overflow-x: hidden;
+        }
+        
+        .sun {
+            position: fixed;
+            top: 20px;
+            right: 60px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA50080;
+            animation: pulse 3s ease-in-out infinite;
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px #FFD700; }
+            50% { transform: scale(1.05); box-shadow: 0 0 80px #FFD700; }
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #f0f8ff;
+            margin-top: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .palm-left, .palm-right {
+            position: fixed;
+            font-size: 4rem;
+            bottom: 10px;
+            z-index: 5;
+            animation: sway 5s ease-in-out infinite;
+        }
+        .palm-left { left: 10px; }
+        .palm-right { right: 10px; transform: scaleX(-1); animation-delay: -2s; }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .dest-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .dest-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .dest-card .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .dest-card h3 { color: #00796b; font-size: 1.1rem; }
+        .dest-card p { font-size: 0.85rem; color: #666; margin-top: 5px; }
+        
+        .weather-widget {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffecb3 100%);
+            border-radius: 20px;
+            padding: 15px 25px;
+            margin: 20px auto;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(255,193,7,0.3);
+        }
+        
+        .weather-widget .temp { font-size: 2.5rem; font-weight: 700; color: #ff6f00; }
+        .weather-widget .condition { color: #795548; }
+        
+        .community-zone {
+            background: rgba(255,255,255,0.7);
+            border: 3px dashed #26a69a;
+            border-radius: 20px;
+            margin: 30px auto;
+            padding: 25px;
+            max-width: 600px;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .community-zone h2 { color: #00695c; font-size: 1.3rem; }
+        .community-zone p { color: #555; font-size: 0.9rem; margin-top: 8px; }
+        
+        .wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%23f4e9c9' d='M0,60 C300,120 600,0 900,60 C1050,90 1150,30 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
+            background-size: 600px 60px;
+            animation: waves 8s linear infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        @keyframes waves {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 600px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="sun"></div>
+<div class="palm-left">🌴</div>
+<div class="palm-right">🌴</div>
+<header class="header">
+<h1>🏝️ Paradise Cove</h1>
+<p>Your Ultimate Tropical Island Guide</p>
+</header>
+<div class="weather-widget">
+<div class="temp">☀️ 28°C</div>
+<div class="condition">Perfect beach weather!</div>
+</div>
+<section class="destinations">
+<div class="dest-card">
+<div class="icon">🏖️</div>
+<h3>Crystal Beach</h3>
+<p>White sand paradise</p>
+</div>
+<div class="dest-card">
+<div class="icon">🤿</div>
+<h3>Coral Reef</h3>
+<p>Snorkeling heaven</p>
+</div>
+<div class="dest-card">
+<div class="icon">🌋</div>
+<h3>Volcano Trail</h3>
+<p>Scenic hike adventure</p>
+</div>
+<div class="dest-card">
+<div class="icon">🍹</div>
+<h3>Tiki Bar</h3>
+<p>Sunset cocktails</p>
+</div>
+</section>
+<div class="community-zone">
+<h2>🗺️ Community Discoveries</h2>
+<p>Chat will add more island secrets here...</p>
+</div>
+<div class="wave"></div>
 </body>
 </html>
