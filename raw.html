@@ -1,204 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Ravenshollow Manor</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Crimson+Text:ital@0;1&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a0a20 50%, #0d0d15 100%);
-            color: #c9b896;
-            font-family: 'Crimson Text', serif;
-            overflow-x: hidden;
-        }
-        .mansion-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 20px;
-            position: relative;
-        }
-        h1 {
-            font-family: 'Creepster', cursive;
-            font-size: 3rem;
-            color: #8b0000;
-            text-shadow: 0 0 20px #ff000066, 0 0 40px #8b000044;
-            letter-spacing: 4px;
-            animation: flicker 3s infinite;
-        }
-        .subtitle {
-            font-style: italic;
-            opacity: 0.7;
-            margin-top: 5px;
-            font-size: 1.1rem;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.3; }
-            94% { opacity: 1; }
-            96% { opacity: 0.5; }
-            97% { opacity: 1; }
-        }
-        .mansion {
-            width: 400px;
-            height: 280px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-            margin: 20px auto;
-            position: relative;
-            clip-path: polygon(50% 0%, 85% 15%, 85% 100%, 15% 100%, 15% 15%);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 100px rgba(139,0,0,0.1);
-        }
-        .window {
-            position: absolute;
-            width: 35px;
-            height: 50px;
-            background: #1a0a10;
-            border: 2px solid #2a1a20;
-            animation: windowGlow 4s infinite ease-in-out;
-        }
-        .window:nth-child(1) { top: 60px; left: 100px; animation-delay: 0s; }
-        .window:nth-child(2) { top: 60px; right: 100px; animation-delay: 1.5s; }
-        .window:nth-child(3) { top: 140px; left: 80px; animation-delay: 0.8s; }
-        .window:nth-child(4) { top: 140px; right: 80px; animation-delay: 2.2s; }
-        @keyframes windowGlow {
-            0%, 100% { background: #1a0a10; box-shadow: none; }
-            50% { background: #3d1a1a; box-shadow: 0 0 15px #ff6b0066, inset 0 0 10px #ff4500; }
-        }
-        .door {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 80px;
-            background: linear-gradient(180deg, #2a1515 0%, #1a0a0a 100%);
-            border: 3px solid #3d2020;
-            border-bottom: none;
-            cursor: pointer;
-            transition: all 0.5s ease;
-        }
-        .door::after {
-            content: '🚪';
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            font-size: 0.5rem;
-        }
-        .door:hover {
-            box-shadow: 0 0 30px #8b0000, inset 0 0 20px #ff000033;
-            transform: translateX(-50%) scale(1.05);
-        }
-        .candles {
-            display: flex;
             justify-content: center;
-            gap: 100px;
-            margin: 20px 0;
-        }
-        .candle {
-            width: 20px;
-            height: 60px;
-            background: linear-gradient(180deg, #f5e6c8 0%, #d4c4a8 100%);
-            border-radius: 2px 2px 0 0;
-            position: relative;
-        }
-        .flame {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 25px;
-            background: radial-gradient(ellipse at bottom, #ffcc00 0%, #ff6600 50%, transparent 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.5s infinite alternate;
-            box-shadow: 0 0 20px #ff9900, 0 0 40px #ff660066;
-        }
-        @keyframes burn {
-            from { transform: translateX(-50%) scaleY(1) scaleX(1); }
-            to { transform: translateX(-50%) scaleY(1.1) scaleX(0.9); }
-        }
-        .ghost {
-            position: fixed;
-            font-size: 2rem;
-            opacity: 0.3;
-            animation: float 8s infinite ease-in-out;
-            pointer-events: none;
-        }
-        .ghost:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .ghost:nth-child(2) { top: 60%; right: 8%; animation-delay: 3s; }
-        .ghost:nth-child(3) { top: 40%; left: 85%; animation-delay: 5s; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.2; }
-            50% { transform: translateY(-30px) rotate(5deg); opacity: 0.5; }
-        }
-        .mystery-box {
-            background: rgba(20, 10, 15, 0.8);
-            border: 1px solid #3d2020;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 500px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        .mystery-box h2 {
-            font-family: 'Creepster', cursive;
-            color: #9b4d4d;
-            margin-bottom: 10px;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .guest-book {
-            background: rgba(30, 15, 20, 0.9);
-            border: 2px solid #4a2020;
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 400px;
-            font-style: italic;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .guest-book h3 { color: #8b6b4b; margin-bottom: 10px; }
-        .guest-entry { opacity: 0.7; margin: 5px 0; font-size: 0.9rem; }
-        .fog {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(transparent, rgba(100, 80, 100, 0.15));
-            pointer-events: none;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="ghost">👻</div>
-<div class="ghost">👻</div>
-<div class="ghost">👻</div>
-<div class="mansion-container">
-<h1>Ravenshollow Manor</h1>
-<p class="subtitle">"Some doors are better left unopened..."</p>
-<div class="mansion">
-<div class="window"></div>
-<div class="window"></div>
-<div class="window"></div>
-<div class="window"></div>
-<div class="door" title="Dare to enter?"></div>
-</div>
-<div class="candles">
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-</div>
-<div class="mystery-box">
-<h2>🔮 Tonight's Mystery</h2>
-<p>The previous owner vanished on a stormy night in 1887. Only a cryptic note remained: <em>"The truth lies where shadows dance at midnight."</em></p>
-</div>
-<div class="guest-book">
-<h3>📜 Guest Book</h3>
-<p class="guest-entry">"I heard whispers in the east wing..." — Anonymous</p>
-<p class="guest-entry">"The portrait's eyes follow you." — A Brave Soul</p>
-
-</div>
-</div>
-<div class="fog"></div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
