@@ -1,199 +1,180 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>ORBITAL STATION NEXUS-7</title>
+<meta charset="utf-8"/>
+<title>NEON CITY PORTAL</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-yellow: #ffff00;
+            --dark-bg: #0a0a12;
+            --building-dark: #12121f;
+        }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #0d1520 50%, #0a0a12 100%);
-            color: #00ffcc;
+            background: var(--dark-bg);
             font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-        }
-        .station-frame {
-            display: grid;
-            grid-template-columns: 200px 1fr 200px;
-            grid-template-rows: auto 1fr auto;
-            min-height: 100vh;
-            gap: 10px;
-            padding: 15px;
-        }
-        .header {
-            grid-column: 1 / -1;
-            background: linear-gradient(90deg, transparent, rgba(0,255,204,0.1), transparent);
-            border-bottom: 2px solid #00ffcc;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .station-name {
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
-            letter-spacing: 3px;
-        }
-        .datetime {
-            font-size: 0.9rem;
-            color: #66ffdd;
-        }
-        .panel {
-            background: rgba(0,20,30,0.8);
-            border: 1px solid #00ffcc44;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: inset 0 0 20px rgba(0,255,204,0.05), 0 0 10px rgba(0,255,204,0.1);
-        }
-        .panel-title {
-            font-size: 0.75rem;
-            color: #00aa88;
-            border-bottom: 1px solid #00ffcc33;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        .left-panels { display: flex; flex-direction: column; gap: 10px; }
-        .right-panels { display: flex; flex-direction: column; gap: 10px; }
-        .main-viewport {
-            background: radial-gradient(ellipse at center, #0a1628 0%, #050a10 100%);
-            border: 3px solid #00ffcc33;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
             overflow: hidden;
+            position: relative;
         }
-        .stars {
+        .rain {
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                              radial-gradient(2px 2px at 40px 70px, #fff, transparent),
-                              radial-gradient(1px 1px at 90px 40px, #aaf, transparent),
-                              radial-gradient(2px 2px at 160px 120px, #fff, transparent),
-                              radial-gradient(1px 1px at 230px 80px, #ffa, transparent),
-                              radial-gradient(2px 2px at 300px 150px, #fff, transparent),
-                              radial-gradient(1px 1px at 350px 60px, #aff, transparent);
-            animation: twinkle 4s infinite alternate;
+            background: repeating-linear-gradient(
+                transparent 0px, transparent 4px,
+                rgba(0, 255, 255, 0.03) 4px, rgba(0, 255, 255, 0.03) 5px
+            );
+            animation: rain 0.3s linear infinite;
+            pointer-events: none;
+            z-index: 10;
         }
-        @keyframes twinkle { from { opacity: 0.6; } to { opacity: 1; } }
-        .viewport-text {
-            z-index: 1;
-            font-size: 1.2rem;
-            color: #446688;
-            text-align: center;
-        }
-        .status-item {
+        @keyframes rain { to { background-position: 0 20px; } }
+        
+        .city-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 0.8rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
         }
-        .status-ok { color: #00ff88; }
-        .status-warn { color: #ffaa00; }
-        .indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-            animation: pulse 2s infinite;
-        }
-        .indicator.green { background: #00ff88; box-shadow: 0 0 5px #00ff88; }
-        .indicator.yellow { background: #ffaa00; box-shadow: 0 0 5px #ffaa00; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .btn {
-            background: linear-gradient(180deg, #003344 0%, #001822 100%);
-            border: 1px solid #00ffcc66;
-            color: #00ffcc;
-            padding: 8px 12px;
-            margin: 3px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-        .btn:hover {
-            background: #00ffcc22;
-            box-shadow: 0 0 10px #00ffcc44;
-        }
-        .footer {
-            grid-column: 1 / -1;
-            border-top: 2px solid #00ffcc44;
-            padding: 10px;
+        .skyline {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
             display: flex;
+            align-items: flex-end;
             justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 20px;
         }
-        .crew-slot {
-            background: #00ffcc11;
-            border: 1px dashed #00ffcc44;
-            padding: 8px;
-            font-size: 0.7rem;
-            color: #448888;
-            text-align: center;
-            min-width: 80px;
+        .building {
+            background: var(--building-dark);
+            position: relative;
+            border-top: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        .building::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 80%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px, transparent 8px,
+                rgba(255, 0, 255, 0.2) 8px, rgba(255, 0, 255, 0.2) 12px
+            );
+        }
+        .b1 { width: 60px; height: 200px; }
+        .b2 { width: 80px; height: 320px; border-color: var(--neon-pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
+        .b3 { width: 50px; height: 180px; }
+        .b4 { width: 100px; height: 280px; border-color: var(--neon-yellow); box-shadow: 0 0 15px rgba(255, 255, 0, 0.3); }
+        .b5 { width: 70px; height: 240px; }
+        .b6 { width: 90px; height: 300px; border-color: var(--neon-pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
+        .b7 { width: 55px; height: 160px; }
+        
+        .portal {
+            position: absolute;
+            top: 15%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 4px solid var(--neon-cyan);
+            box-shadow: 0 0 60px var(--neon-cyan), inset 0 0 60px rgba(0, 255, 255, 0.2);
+            animation: pulse 2s ease-in-out infinite, rotate 20s linear infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .portal:hover { transform: scale(1.1); }
+        .portal-inner {
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            border: 3px solid var(--neon-pink);
+            box-shadow: 0 0 40px var(--neon-pink), inset 0 0 40px rgba(255, 0, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .portal-core {
+            font-size: 2rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 20px var(--neon-yellow);
+            animation: flicker 0.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 60px var(--neon-cyan), inset 0 0 60px rgba(0, 255, 255, 0.2); } 50% { box-shadow: 0 0 100px var(--neon-cyan), inset 0 0 80px rgba(0, 255, 255, 0.4); } }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .title {
+            position: absolute;
+            top: 5%;
+            font-size: 2.5rem;
+            letter-spacing: 8px;
+            color: var(--neon-pink);
+            text-shadow: 0 0 30px var(--neon-pink), 0 0 60px var(--neon-pink);
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes textGlow { from { text-shadow: 0 0 30px var(--neon-pink); } to { text-shadow: 0 0 50px var(--neon-pink), 0 0 80px var(--neon-cyan); } }
+        
+        .community-zone {
+            position: absolute;
+            bottom: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+        .neon-sign {
+            position: absolute;
+            top: 45%;
+            right: 10%;
+            font-size: 1rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+            writing-mode: vertical-rl;
+            animation: flicker 1s infinite;
+        }
+        .neon-sign-left {
+            left: 10%;
+            right: auto;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
         }
     </style>
 </head>
 <body>
-<div class="station-frame">
-<header class="header">
-<div class="station-name">⬡ NEXUS-7 ORBITAL STATION</div>
-<div class="datetime" id="clock">STARDATE 2847.156</div>
-</header>
-<aside class="left-panels">
-<div class="panel">
-<div class="panel-title">◈ LIFE SUPPORT</div>
-<div class="status-item"><span><span class="indicator green"></span>O₂ Level</span><span class="status-ok">98%</span></div>
-<div class="status-item"><span><span class="indicator green"></span>Pressure</span><span class="status-ok">1.01 atm</span></div>
-<div class="status-item"><span><span class="indicator yellow"></span>Temp</span><span class="status-warn">22°C</span></div>
+<div class="rain"></div>
+<div class="city-container">
+<h1 class="title">NEON CITY</h1>
+<div class="portal">
+<div class="portal-inner">
+<span class="portal-core">⟁</span>
 </div>
-<div class="panel">
-<div class="panel-title">◈ POWER GRID</div>
-<div class="status-item"><span>Solar Array</span><span class="status-ok">ONLINE</span></div>
-<div class="status-item"><span>Reactor</span><span class="status-ok">87%</span></div>
-<div class="status-item"><span>Backup</span><span class="status-ok">READY</span></div>
 </div>
-</aside>
-<main class="main-viewport">
-<div class="stars"></div>
-<div class="viewport-text">[ EXTERIOR VIEW ]<br/><br/>Awaiting crew commands...</div>
-</main>
-<aside class="right-panels">
-<div class="panel">
-<div class="panel-title">◈ COMMS ARRAY</div>
-<button class="btn">📡 HAIL EARTH</button>
-<button class="btn">🛰️ SCAN SECTOR</button>
-<button class="btn">📻 OPEN FREQ</button>
+<span class="neon-sign">ENTER</span>
+<span class="neon-sign neon-sign-left">2087</span>
+<div class="skyline">
+<div class="building b1"></div>
+<div class="building b2"></div>
+<div class="building b3"></div>
+<div class="building b4"></div>
+<div class="building b5"></div>
+<div class="building b6"></div>
+<div class="building b7"></div>
 </div>
-<div class="panel">
-<div class="panel-title">◈ NAVIGATION</div>
-<button class="btn">🌍 ORBIT VIEW</button>
-<button class="btn">🚀 PLOT COURSE</button>
-<button class="btn">⚓ DOCK STATUS</button>
+<p class="community-zone">[ COMMUNITY EXPANSION ZONE ]</p>
 </div>
-</aside>
-<footer class="footer">
-<div class="crew-slot">👤 CREW SLOT 1<br/>[EMPTY]</div>
-<div class="crew-slot">👤 CREW SLOT 2<br/>[EMPTY]</div>
-<div class="crew-slot">👤 CREW SLOT 3<br/>[EMPTY]</div>
-<div class="crew-slot">🤖 MODULE BAY<br/>[AVAILABLE]</div>
-</footer>
-</div>
-<script>
-        function updateClock() {
-            const now = new Date();
-            const stardate = (2847 + now.getHours()/24).toFixed(3);
-            document.getElementById('clock').textContent = `STARDATE ${stardate} | ${now.toLocaleTimeString()}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
 </body>
 </html>
