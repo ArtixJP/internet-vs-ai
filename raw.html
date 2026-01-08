@@ -1,41 +1,213 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEON CITY PORTAL // 2087</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: #0a0a0f;
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background: 
+                linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .skyline {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 20px;
+        }
+        
+        .building {
+            background: linear-gradient(to top, #1a1a2e, #0d0d15);
+            border: 1px solid rgba(0,255,255,0.2);
+            position: relative;
+            animation: buildingGlow 3s ease-in-out infinite;
+        }
+        
+        .building::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            right: 20%;
+            bottom: 60%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255,0,128,0.3) 0px,
+                rgba(255,0,128,0.3) 4px,
+                transparent 4px,
+                transparent 12px
+            );
+        }
+        
+        @keyframes buildingGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0,255,255,0.2); }
+            50% { box-shadow: 0 0 20px rgba(255,0,128,0.4); }
+        }
+        
+        .portal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .portal {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0ff 0%, #f0f 50%, transparent 70%);
+            position: relative;
+            animation: portalSpin 10s linear infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .portal:hover { transform: scale(1.1); }
+        
+        .portal::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0a0a0f 0%, transparent 70%);
+            animation: portalPulse 2s ease-in-out infinite;
+        }
+        
+        .portal::after {
+            content: 'ENTER';
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #0ff;
+            text-shadow: 0 0 20px #0ff;
+            letter-spacing: 8px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        @keyframes portalSpin {
+            from { filter: hue-rotate(0deg); }
+            to { filter: hue-rotate(360deg); }
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        
+        @keyframes portalPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(0.9); opacity: 1; }
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px #0ff, 0 0 40px #f0f;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+        
+        .subtitle {
+            color: #0ff;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+        
+        .data-stream {
+            position: fixed;
+            font-size: 10px;
+            color: rgba(0,255,255,0.4);
+            writing-mode: vertical-rl;
+            animation: streamFall 8s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes streamFall {
+            from { transform: translateY(-100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        .community-zone {
+            position: fixed;
+            bottom: 220px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        
+        .zone-marker {
+            padding: 8px 16px;
+            border: 1px dashed rgba(255,0,128,0.4);
+            color: rgba(255,0,128,0.6);
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="grid-overlay"></div>
+<div class="data-stream" style="left: 10%; animation-delay: 0s;">01001110 01000101 01001111 01001110</div>
+<div class="data-stream" style="left: 30%; animation-delay: 2s;">SYSTEM://ONLINE</div>
+<div class="data-stream" style="left: 70%; animation-delay: 4s;">PORTAL_ACTIVE</div>
+<div class="data-stream" style="left: 90%; animation-delay: 6s;">2087.CITY.NET</div>
+<div class="portal-container">
+<h1>NEON CITY</h1>
+<p class="subtitle">// GATEWAY TO THE GRID //</p>
+<div class="portal"></div>
+</div>
+<div class="community-zone">
+<div class="zone-marker">[ WEST DISTRICT ]</div>
+<div class="zone-marker">[ EAST DISTRICT ]</div>
+</div>
+<div class="skyline">
+<div class="building" style="width: 40px; height: 120px;"></div>
+<div class="building" style="width: 60px; height: 180px;"></div>
+<div class="building" style="width: 35px; height: 100px;"></div>
+<div class="building" style="width: 80px; height: 160px;"></div>
+<div class="building" style="width: 45px; height: 140px;"></div>
+<div class="building" style="width: 70px; height: 190px;"></div>
+<div class="building" style="width: 50px; height: 110px;"></div>
+<div class="building" style="width: 55px; height: 150px;"></div>
+<div class="building" style="width: 40px; height: 130px;"></div>
+</div>
 </body>
 </html>
