@@ -1,180 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>NEON CITY PORTAL</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --neon-pink: #ff00ff;
-            --neon-cyan: #00ffff;
-            --neon-yellow: #ffff00;
-            --dark-bg: #0a0a12;
-            --building-dark: #12121f;
-        }
         body {
             min-height: 100vh;
-            background: var(--dark-bg);
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-            position: relative;
-        }
-        .rain {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                transparent 0px, transparent 4px,
-                rgba(0, 255, 255, 0.03) 4px, rgba(0, 255, 255, 0.03) 5px
-            );
-            animation: rain 0.3s linear infinite;
-            pointer-events: none;
-            z-index: 10;
-        }
-        @keyframes rain { to { background-position: 0 20px; } }
-        
-        .city-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        .skyline {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 60%;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 8px;
-            padding: 0 20px;
-        }
-        .building {
-            background: var(--building-dark);
-            position: relative;
-            border-top: 3px solid var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-        }
-        .building::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 80%;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent 0px, transparent 8px,
-                rgba(255, 0, 255, 0.2) 8px, rgba(255, 0, 255, 0.2) 12px
-            );
-        }
-        .b1 { width: 60px; height: 200px; }
-        .b2 { width: 80px; height: 320px; border-color: var(--neon-pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
-        .b3 { width: 50px; height: 180px; }
-        .b4 { width: 100px; height: 280px; border-color: var(--neon-yellow); box-shadow: 0 0 15px rgba(255, 255, 0, 0.3); }
-        .b5 { width: 70px; height: 240px; }
-        .b6 { width: 90px; height: 300px; border-color: var(--neon-pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
-        .b7 { width: 55px; height: 160px; }
-        
-        .portal {
-            position: absolute;
-            top: 15%;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            border: 4px solid var(--neon-cyan);
-            box-shadow: 0 0 60px var(--neon-cyan), inset 0 0 60px rgba(0, 255, 255, 0.2);
-            animation: pulse 2s ease-in-out infinite, rotate 20s linear infinite;
-            cursor: pointer;
-            transition: transform 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .portal:hover { transform: scale(1.1); }
-        .portal-inner {
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
-            border: 3px solid var(--neon-pink);
-            box-shadow: 0 0 40px var(--neon-pink), inset 0 0 40px rgba(255, 0, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .portal-core {
-            font-size: 2rem;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 20px var(--neon-yellow);
-            animation: flicker 0.5s infinite;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 60px var(--neon-cyan), inset 0 0 60px rgba(0, 255, 255, 0.2); } 50% { box-shadow: 0 0 100px var(--neon-cyan), inset 0 0 80px rgba(0, 255, 255, 0.4); } }
-        @keyframes rotate { to { transform: rotate(360deg); } }
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        
-        .title {
-            position: absolute;
-            top: 5%;
-            font-size: 2.5rem;
-            letter-spacing: 8px;
-            color: var(--neon-pink);
-            text-shadow: 0 0 30px var(--neon-pink), 0 0 60px var(--neon-pink);
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-        @keyframes textGlow { from { text-shadow: 0 0 30px var(--neon-pink); } to { text-shadow: 0 0 50px var(--neon-pink), 0 0 80px var(--neon-cyan); } }
-        
-        .community-zone {
-            position: absolute;
-            bottom: 10px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-        }
-        .neon-sign {
-            position: absolute;
-            top: 45%;
-            right: 10%;
-            font-size: 1rem;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px var(--neon-yellow);
-            writing-mode: vertical-rl;
-            animation: flicker 1s infinite;
-        }
-        .neon-sign-left {
-            left: 10%;
-            right: auto;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan);
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="rain"></div>
-<div class="city-container">
-<h1 class="title">NEON CITY</h1>
-<div class="portal">
-<div class="portal-inner">
-<span class="portal-core">⟁</span>
-</div>
-</div>
-<span class="neon-sign">ENTER</span>
-<span class="neon-sign neon-sign-left">2087</span>
-<div class="skyline">
-<div class="building b1"></div>
-<div class="building b2"></div>
-<div class="building b3"></div>
-<div class="building b4"></div>
-<div class="building b5"></div>
-<div class="building b6"></div>
-<div class="building b7"></div>
-</div>
-<p class="community-zone">[ COMMUNITY EXPANSION ZONE ]</p>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
