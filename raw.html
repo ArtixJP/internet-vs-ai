@@ -4,208 +4,216 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>☕ The Cozy Bean - Coffee Shop</title>
+<title>STELLAR COMMAND // Space Exploration Dashboard</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
-            --espresso: #3c2415;
-            --cream: #f5f0e8;
-            --caramel: #c4a35a;
-            --latte: #d4c4a8;
-            --mocha: #6f4e37;
+            --void: #0a0a12;
+            --nebula: #1a1a2e;
+            --stardust: #e0e6ff;
+            --plasma-blue: #00d4ff;
+            --plasma-purple: #a855f7;
+            --warning-orange: #ff6b35;
+            --success-green: #22c55e;
         }
-        
         body {
             min-height: 100vh;
-            background: var(--cream);
-            font-family: 'Lato', sans-serif;
-            color: var(--espresso);
+            background: var(--void);
+            color: var(--stardust);
+            font-family: 'Courier New', monospace;
             overflow-x: hidden;
-        }
-        
-        header {
-            background: var(--espresso);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(60, 36, 21, 0.3);
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--cream);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo span { animation: steam 2s ease-in-out infinite; }
-        
-        @keyframes steam {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(5deg); }
-        }
-        
-        nav a {
-            color: var(--latte);
-            text-decoration: none;
-            margin-left: 25px;
-            transition: color 0.3s, transform 0.3s;
-            display: inline-block;
-        }
-        
-        nav a:hover { color: var(--caramel); transform: translateY(-2px); }
-        
-        .hero {
-            background: linear-gradient(135deg, var(--mocha) 0%, var(--espresso) 100%);
-            padding: 60px 30px;
-            text-align: center;
             position: relative;
+        }
+        .starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, var(--plasma-blue), var(--plasma-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px var(--plasma-blue)); }
+            50% { filter: drop-shadow(0 0 20px var(--plasma-purple)); }
+        }
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .panel {
+            background: linear-gradient(135deg, rgba(26,26,46,0.9) 0%, rgba(10,10,18,0.95) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .panel:hover {
+            border-color: var(--plasma-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        .panel-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--plasma-blue);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mission-status { grid-column: span 2; }
+        .mission-name { font-size: 1.3rem; margin-bottom: 5px; }
+        .mission-objective { opacity: 0.6; font-size: 0.85rem; }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 12px;
             overflow: hidden;
         }
-        
-        .hero::before {
-            content: '☕';
-            position: absolute;
-            font-size: 15rem;
-            opacity: 0.05;
-            right: -20px;
-            top: -30px;
+        .progress-fill {
+            height: 100%;
+            width: 34%;
+            background: linear-gradient(90deg, var(--plasma-blue), var(--plasma-purple));
+            border-radius: 3px;
+            animation: pulse 2s infinite;
         }
-        
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: var(--cream);
-            margin-bottom: 15px;
+        @keyframes pulse { 50% { opacity: 0.7; } }
+        .coordinates { text-align: center; }
+        .coord-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--plasma-purple);
         }
-        
-        .hero p {
-            color: var(--latte);
+        .coord-label { font-size: 0.65rem; opacity: 0.5; }
+        .fuel-gauge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gauge {
+            width: 80px; height: 80px;
+            border: 3px solid var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
-            max-width: 500px;
-            margin: 0 auto;
+            font-weight: bold;
+            color: var(--success-green);
         }
-        
-        .menu-section {
-            padding: 40px 30px;
-            max-width: 900px;
-            margin: 0 auto;
+        .comms-panel { grid-column: span 2; }
+        .comm-log {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            max-height: 60px;
+            overflow-y: auto;
         }
-        
-        .menu-section h2 {
-            font-family: 'Playfair Display', serif;
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: var(--mocha);
-        }
-        
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .menu-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(60, 36, 21, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(60, 36, 21, 0.2);
-        }
-        
-        .menu-item .icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .menu-item h3 { font-family: 'Playfair Display', serif; color: var(--espresso); }
-        .menu-item p { color: var(--mocha); font-size: 0.9rem; margin-top: 5px; }
-        .menu-item .price { color: var(--caramel); font-weight: bold; margin-top: 10px; }
-        
-        .community-board {
-            background: var(--latte);
-            padding: 30px;
-            margin: 20px 30px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .community-board h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--espresso);
-            margin-bottom: 10px;
-        }
-        
-        .community-board p { color: var(--mocha); font-style: italic; }
-        
-        footer {
-            background: var(--espresso);
-            color: var(--latte);
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
+        .comm-entry { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .timestamp { color: var(--plasma-blue); }
+        .community-zone {
+            border: 2px dashed rgba(168, 85, 247, 0.4);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
-<header>
-<div class="logo"><span>☕</span> The Cozy Bean</div>
-<nav>
-<a href="#">Menu</a>
-<a href="#">About</a>
-<a href="#">Visit Us</a>
-</nav>
+<div class="starfield" id="stars"></div>
+<div class="dashboard">
+<header class="header">
+<h1>🚀 Stellar Command</h1>
+<div class="status-bar">
+<span>◉ SYSTEMS ONLINE</span>
+<span>📡 SIGNAL STRONG</span>
+<span>🛡️ SHIELDS 100%</span>
+</div>
 </header>
-<section class="hero">
-<h1>Welcome to The Cozy Bean</h1>
-<p>Where every cup tells a story. Handcrafted coffee, warm atmosphere, endless possibilities.</p>
-</section>
-<section class="menu-section">
-<h2>Today's Favorites</h2>
-<div class="menu-grid">
-<div class="menu-item">
-<div class="icon">☕</div>
-<h3>House Blend</h3>
-<p>Rich &amp; smooth</p>
-<div class="price">$3.50</div>
+<div class="grid">
+<div class="panel mission-status">
+<div class="panel-title">📋 Active Mission</div>
+<div class="mission-name">OPERATION: GENESIS DAWN</div>
+<div class="mission-objective">Establish first contact with the Twitch Nebula inhabitants</div>
+<div class="progress-bar"><div class="progress-fill"></div></div>
 </div>
-<div class="menu-item">
-<div class="icon">🥐</div>
-<h3>Fresh Croissant</h3>
-<p>Buttery &amp; flaky</p>
-<div class="price">$4.00</div>
+<div class="panel coordinates">
+<div class="panel-title">🧭 Navigation</div>
+<div class="coord-value">X: 47.82</div>
+<div class="coord-value">Y: -12.09</div>
+<div class="coord-label">SECTOR ALPHA-7</div>
 </div>
-<div class="menu-item">
-<div class="icon">🍵</div>
-<h3>Matcha Latte</h3>
-<p>Earthy &amp; creamy</p>
-<div class="price">$5.00</div>
+<div class="panel fuel-gauge">
+<div class="panel-title">⛽ Fuel Reserve</div>
+<div class="gauge">87%</div>
 </div>
-<div class="menu-item">
-<div class="icon">🧁</div>
-<h3>Daily Muffin</h3>
-<p>Baker's choice</p>
-<div class="price">$3.00</div>
+<div class="panel comms-panel">
+<div class="panel-title">📻 Communications Log</div>
+<div class="comm-log">
+<div class="comm-entry"><span class="timestamp">[00:01]</span> Mission control: Dashboard initialized</div>
+<div class="comm-entry"><span class="timestamp">[00:02]</span> Awaiting community transmissions...</div>
 </div>
 </div>
-</section>
-<div class="community-board">
-<h3>📋 Community Board</h3>
-<p>"This space is waiting for your ideas..."</p>
+<div class="panel community-zone">
+<span>🌌 EXPANSION ZONE — Community ideas go here!</span>
 </div>
-<footer>
-<p>☕ The Cozy Bean · Open Daily 7am-9pm · Built by Twitch Chat</p>
-</footer>
+</div>
+</div>
+<script>
+        // Generate starfield
+        const starfield = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starfield.appendChild(star);
+        }
+    </script>
 </body>
 </html>
