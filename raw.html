@@ -4,230 +4,207 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<title>Ravenswood Manor - A Mystery Awaits</title>
+<title>🎮 Pixel Arcade Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a0f 0%, #1a1520 50%, #0d0d12 100%);
-            color: #c9c0b5;
-            font-family: 'Crimson Text', Georgia, serif;
+            background: #0f0f23;
+            font-family: 'Press Start 2P', monospace;
+            color: #00ff41;
             overflow-x: hidden;
-            position: relative;
+            image-rendering: pixelated;
         }
-        
-        .fog {
+        body::before {
+            content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml,<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"><filter id="f"><feTurbulence baseFrequency="0.02" numOctaves="3"/><feDisplacementMap scale="50"/></filter><rect width="100%" height="100%" filter="url(%23f)" opacity="0.03" fill="white"/></svg>');
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
             pointer-events: none;
-            animation: fogDrift 20s linear infinite;
-            opacity: 0.4;
+            z-index: 1000;
         }
-        
-        @keyframes fogDrift { from { transform: translateX(-10%); } to { transform: translateX(10%); } }
-        
-        .mansion-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .arcade-header {
+            text-align: center;
             padding: 20px;
-            max-width: 1200px;
+            background: linear-gradient(180deg, #1a0a2e 0%, #0f0f23 100%);
+            border-bottom: 4px solid #ff00ff;
+            box-shadow: 0 4px 20px rgba(255,0,255,0.3);
+        }
+        .title {
+            font-size: 1.8rem;
+            color: #ffff00;
+            text-shadow: 4px 4px 0 #ff6600, -2px -2px 0 #00ffff;
+            animation: flicker 3s infinite;
+        }
+        .subtitle { font-size: 0.6rem; color: #00ffff; margin-top: 10px; }
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96% { opacity: 0.8; }
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 250px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            color: #8b7355;
-            text-shadow: 0 0 20px rgba(139, 115, 85, 0.5), 2px 2px 4px #000;
-            letter-spacing: 4px;
-        }
-        
-        .subtitle {
-            font-style: italic;
-            color: #6a5a4a;
-            margin-top: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .chandelier {
-            font-size: 3rem;
-            animation: flicker 3s infinite;
-            filter: drop-shadow(0 0 15px #ff9933);
-        }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-            52% { opacity: 1; }
-            54% { opacity: 0.4; }
-            56% { opacity: 1; }
-        }
-        
-        .main-hall {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 20px;
-            width: 100%;
-        }
-        
-        .panel {
-            background: linear-gradient(145deg, #1a1518 0%, #0f0d10 100%);
-            border: 1px solid #3d3035;
+        .game-cabinet {
+            background: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
+            border: 4px solid #ff00ff;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 4px 15px rgba(0,0,0,0.3);
-        }
-        
-        .panel h2 {
-            font-family: 'Cinzel', serif;
-            color: #a08060;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #3d3035;
-            padding-bottom: 8px;
-        }
-        
-        .clue-list { list-style: none; }
-        .clue-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #2a2428;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .clue-list li:hover {
-            color: #d4a574;
-            padding-left: 10px;
-        }
-        .clue-list li::before { content: '🔍 '; opacity: 0.6; }
-        
-        .mansion-portrait {
-            text-align: center;
             position: relative;
         }
-        
-        .portrait-frame {
-            font-size: 8rem;
-            filter: grayscale(50%) drop-shadow(0 0 20px rgba(100,80,60,0.3));
-            transition: filter 0.5s;
+        .cabinet-screen {
+            background: #000;
+            border: 3px solid #333;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
-        .portrait-frame:hover {
-            filter: grayscale(0%) drop-shadow(0 0 30px rgba(200,150,100,0.5));
+        .pixel-hero {
+            width: 64px; height: 64px;
+            background: #ff6b6b;
+            position: relative;
+            animation: bounce 0.5s infinite alternate;
+            box-shadow: 
+                8px 0 0 #ff6b6b, 16px 0 0 #ff6b6b,
+                0 8px 0 #ff6b6b, 8px 8px 0 #ffcc00, 16px 8px 0 #ff6b6b,
+                0 16px 0 #4ecdc4, 8px 16px 0 #4ecdc4, 16px 16px 0 #4ecdc4,
+                0 24px 0 #4ecdc4, 16px 24px 0 #4ecdc4;
         }
-        
-        .portrait-caption {
-            font-style: italic;
-            color: #6a5a4a;
-            margin-top: 10px;
+        .pixel-enemy {
+            width: 48px; height: 48px;
+            background: #9b59b6;
+            position: absolute;
+            right: 80px;
+            animation: enemyMove 2s infinite ease-in-out;
+            box-shadow: 8px 0 0 #9b59b6, 0 8px 0 #e74c3c, 8px 8px 0 #e74c3c;
         }
-        
-        .guest-book {
-            font-size: 0.95rem;
-        }
-        
-        .guest-entry {
-            background: rgba(60, 50, 45, 0.3);
-            padding: 10px;
-            margin: 8px 0;
-            border-left: 3px solid #5a4a3a;
-            font-style: italic;
-        }
-        
-        .room-nav {
+        @keyframes bounce { to { transform: translateY(-10px); } }
+        @keyframes enemyMove { 50% { transform: translateX(-30px) translateY(-20px); } }
+        .cabinet-controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
+            margin-top: 15px;
         }
-        
-        .room-door {
-            background: linear-gradient(180deg, #2a2025 0%, #1a1518 100%);
-            border: 2px solid #4a3a35;
-            padding: 12px 25px;
-            color: #b0a090;
-            font-family: 'Cinzel', serif;
+        .pixel-btn {
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 0.5rem;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 4px;
+            box-shadow: 0 4px 0 #c0392b;
+            transition: all 0.1s;
         }
-        
-        .room-door:hover {
-            background: linear-gradient(180deg, #3a3035 0%, #2a2528 100%);
-            border-color: #7a6a55;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        .pixel-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #c0392b; }
+        .pixel-btn.green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-        
-        footer {
-            margin-top: 30px;
+        .leaderboard {
+            background: #1a0a2e;
+            border: 3px solid #00ffff;
+            padding: 15px;
+        }
+        .leaderboard h3 {
+            font-size: 0.7rem;
+            color: #ffff00;
             text-align: center;
-            color: #4a4040;
-            font-size: 0.85rem;
+            margin-bottom: 15px;
         }
-        
-        .lightning {
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.5rem;
+            padding: 8px 0;
+            border-bottom: 1px dashed #333;
+        }
+        .score-entry:last-child { border: none; }
+        .rank { color: #ff00ff; }
+        .community-zone {
+            background: linear-gradient(135deg, #0a1628 0%, #1a0a2e 100%);
+            border: 3px dashed #00ff41;
+            padding: 15px;
+            text-align: center;
+        }
+        .community-zone h3 { font-size: 0.6rem; margin-bottom: 10px; }
+        .community-zone p { font-size: 0.4rem; color: #666; line-height: 1.8; }
+        .coin { 
+            display: inline-block;
+            width: 20px; height: 20px;
+            background: #ffcc00;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            box-shadow: inset -3px -3px 0 #ff9900;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .stars {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: white;
-            opacity: 0;
             pointer-events: none;
-            animation: lightning 15s infinite;
+            z-index: -1;
         }
-        
-        @keyframes lightning {
-            0%, 89%, 91%, 93%, 100% { opacity: 0; }
-            90%, 92% { opacity: 0.1; }
+        .star {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: #fff;
+            animation: twinkle 2s infinite;
         }
     </style>
 </head>
 <body>
-<div class="fog"></div>
-<div class="lightning"></div>
-<div class="mansion-container">
-<header>
-<div class="chandelier">🕯️</div>
-<h1>Ravenswood Manor</h1>
-<p class="subtitle">"Some doors are better left unopened..."</p>
+<div class="stars" id="stars"></div>
+<header class="arcade-header">
+<h1 class="title">🕹️ PIXEL ARCADE 🕹️</h1>
+<p class="subtitle">INSERT COIN TO PLAY • HIGH SCORES AWAIT</p>
 </header>
-<main class="main-hall">
-<div class="panel clues-panel">
-<h2>📜 Discovered Clues</h2>
-<ul class="clue-list">
-<li>A torn letter in the library</li>
-<li>Footprints near the cellar</li>
-<li>The clock stopped at midnight</li>
-</ul>
+<main class="main-grid">
+<section class="game-cabinet">
+<div class="cabinet-screen">
+<div class="pixel-hero"></div>
+<div class="pixel-enemy"></div>
 </div>
-<div class="panel mansion-portrait">
-<div class="portrait-frame">🏚️</div>
-<p class="portrait-caption">The manor has stood since 1847...<br/>Its secrets run deep.</p>
+<div class="cabinet-controls">
+<button class="pixel-btn">◀ LEFT</button>
+<button class="pixel-btn green">JUMP ▲</button>
+<button class="pixel-btn">RIGHT ▶</button>
 </div>
-<div class="panel guest-book">
-<h2>📖 Guest Book</h2>
-<div class="guest-entry">"I heard whispers from the walls..." — Anonymous</div>
-<div class="guest-entry">"The butler knows more than he reveals." — E.M.</div>
+</section>
+<aside class="sidebar">
+<div class="leaderboard">
+<h3>🏆 HIGH SCORES</h3>
+<div class="score-entry"><span class="rank">1.</span><span>TWITCH</span><span>99999</span></div>
+<div class="score-entry"><span class="rank">2.</span><span>PLAYER</span><span>88888</span></div>
+<div class="score-entry"><span class="rank">3.</span><span>GAMER</span><span>77777</span></div>
+<div class="score-entry"><span class="rank">4.</span><span>???</span><span>-----</span></div>
 </div>
+<div class="community-zone">
+<h3><span class="coin"></span> COMMUNITY ZONE</h3>
+<p>Your ideas go here! Add characters, power-ups, new games...</p>
+</div>
+</aside>
 </main>
-<nav class="room-nav">
-<button class="room-door">🚪 Grand Foyer</button>
-<button class="room-door">📚 Library</button>
-<button class="room-door">🍷 Dining Hall</button>
-<button class="room-door">🌙 Tower</button>
-</nav>
-<footer>
-<p>⚰️ Est. 1847 • The truth awaits those who dare to seek ⚰️</p>
-</footer>
-</div>
+<script>
+        const starsContainer = document.getElementById('stars');
+        for(let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
 </body>
 </html>
