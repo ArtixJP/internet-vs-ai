@@ -4,225 +4,223 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<title>Castle Thornwick - A Medieval Adventure</title>
+<title>禅 Zen Garden Gallery</title>
 <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --stone: #4a4a4a;
-            --stone-light: #6b6b6b;
-            --torch-orange: #ff6b35;
-            --torch-yellow: #ffd700;
-            --parchment: #f4e4bc;
-            --wood: #8b4513;
-            --night-sky: #0d1b2a;
-        }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(to bottom, var(--night-sky) 0%, #1b263b 40%, #2d3a4f 100%);
-            font-family: 'Times New Roman', serif;
-            color: var(--parchment);
+            background: linear-gradient(180deg, #2d3a3a 0%, #1a2626 50%, #0d1515 100%);
+            font-family: 'Noto Serif JP', serif;
+            color: #e8e4d9;
             overflow-x: hidden;
         }
-        .stars {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 40vh;
-            background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                        radial-gradient(2px 2px at 40px 70px, #ffd, transparent),
-                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                        radial-gradient(2px 2px at 160px 80px, #ffd, transparent),
-                        radial-gradient(1px 1px at 230px 50px, #fff, transparent),
-                        radial-gradient(2px 2px at 300px 90px, #fff, transparent);
-            background-size: 350px 120px;
-            animation: twinkle 4s ease-in-out infinite alternate;
-            pointer-events: none;
+        
+        .garden {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 30px;
         }
-        @keyframes twinkle { from { opacity: 0.7; } to { opacity: 1; } }
-        .castle-header {
+        
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: #c4b896;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin-top: 8px;
+            letter-spacing: 0.2em;
+        }
+        
+        /* Bamboo Grove - Left */
+        .bamboo-grove {
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-top: 20px;
-            gap: 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
-        .tower {
-            width: 80px;
-            height: 140px;
-            background: linear-gradient(180deg, var(--stone) 0%, var(--stone-light) 100%);
+        
+        .bamboo {
+            width: 8px;
+            height: 200px;
+            background: linear-gradient(90deg, #4a5d23 0%, #6b8e23 50%, #4a5d23 100%);
+            border-radius: 4px;
             position: relative;
-            border: 2px solid #333;
+            animation: sway 4s ease-in-out infinite;
         }
-        .tower::before {
+        
+        .bamboo:nth-child(2) { height: 260px; animation-delay: -1s; }
+        .bamboo:nth-child(3) { height: 180px; animation-delay: -2s; }
+        
+        .bamboo::before, .bamboo::after {
             content: '';
             position: absolute;
-            top: -40px; left: -10px;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 40px solid #5a3e2b;
+            width: 100%;
+            height: 3px;
+            background: #3d4d1c;
         }
-        .tower-window {
-            width: 20px; height: 30px;
-            background: linear-gradient(180deg, var(--torch-yellow) 0%, var(--torch-orange) 100%);
-            margin: 20px auto;
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 0 20px var(--torch-orange);
-            animation: flicker 0.5s ease-in-out infinite alternate;
+        .bamboo::before { top: 30%; }
+        .bamboo::after { top: 60%; }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-1deg); }
+            50% { transform: rotate(1deg); }
         }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; box-shadow: 0 0 20px var(--torch-orange); }
-            50% { opacity: 0.8; box-shadow: 0 0 15px var(--torch-orange); }
-        }
-        .main-wall {
-            width: 300px;
-            height: 100px;
-            background: var(--stone);
-            border: 2px solid #333;
+        
+        /* Koi Pond - Center */
+        .koi-pond {
+            background: radial-gradient(ellipse at center, #1a3a4a 0%, #0d2030 70%, #061520 100%);
+            border-radius: 50% 50% 45% 55%;
             position: relative;
+            min-height: 300px;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        .battlements {
-            display: flex;
+        
+        .koi {
             position: absolute;
-            top: -20px; left: 0; right: 0;
+            font-size: 2rem;
+            animation: swim 12s linear infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
-        .battlement {
-            width: 30px; height: 20px;
-            background: var(--stone);
-            border: 2px solid #333;
-            margin-right: 15px;
+        
+        .koi:nth-child(1) { top: 30%; animation-delay: 0s; }
+        .koi:nth-child(2) { top: 60%; animation-delay: -4s; font-size: 1.5rem; }
+        .koi:nth-child(3) { top: 45%; animation-delay: -8s; }
+        
+        @keyframes swim {
+            0% { left: -10%; transform: scaleX(1); }
+            49% { transform: scaleX(1); }
+            50% { left: 110%; transform: scaleX(-1); }
+            99% { transform: scaleX(-1); }
+            100% { left: -10%; transform: scaleX(1); }
         }
-        .gate {
-            width: 60px; height: 80px;
-            background: linear-gradient(180deg, var(--wood) 0%, #5a3a1a 100%);
-            margin: 0 auto;
-            border-radius: 30px 30px 0 0;
-            border: 3px solid #3a2a0a;
-            position: relative;
-            top: 20px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .gate:hover { transform: scale(1.05); }
-        .gate::after {
-            content: '⚔️';
+        
+        .ripple {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: ripple 3s ease-out infinite;
         }
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin: 30px 0 10px;
-            text-shadow: 2px 2px 4px #000, 0 0 30px var(--torch-orange);
-            letter-spacing: 3px;
+        
+        .ripple:nth-child(4) { top: 20%; left: 30%; animation-delay: 0s; }
+        .ripple:nth-child(5) { top: 70%; left: 60%; animation-delay: -1s; }
+        
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
         }
-        .subtitle {
-            text-align: center;
-            font-style: italic;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-        .courtyard {
+        
+        /* Stone Lantern - Right */
+        .lantern-area {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
         }
-        .location {
-            background: rgba(0,0,0,0.5);
-            border: 2px solid var(--stone-light);
-            border-radius: 10px;
-            padding: 20px;
-            width: 250px;
+        
+        .stone-lantern {
             text-align: center;
-            transition: all 0.3s;
             cursor: pointer;
+            transition: filter 0.3s;
         }
-        .location:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255,107,53,0.3);
-            border-color: var(--torch-orange);
+        
+        .stone-lantern:hover { filter: brightness(1.2); }
+        
+        .lantern-top { font-size: 2rem; }
+        .lantern-light {
+            font-size: 1.5rem;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        .location-icon { font-size: 40px; margin-bottom: 10px; }
-        .location h3 { color: var(--torch-yellow); margin-bottom: 8px; }
-        .location p { font-size: 0.9rem; opacity: 0.8; }
-        .quest-board {
-            background: var(--wood);
-            border: 4px solid #3a2a0a;
-            max-width: 500px;
-            margin: 30px auto;
-            padding: 20px;
-            border-radius: 5px;
+        .lantern-base { font-size: 1.2rem; opacity: 0.7; }
+        
+        @keyframes glow {
+            from { filter: brightness(0.8); }
+            to { filter: brightness(1.3) drop-shadow(0 0 10px #ffcc66); }
         }
-        .quest-board h2 {
+        
+        /* Rock Garden Footer */
+        .rock-garden {
+            grid-column: 1 / -1;
+            background: linear-gradient(180deg, transparent 0%, #c4b896 20%, #b8a882 100%);
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
             text-align: center;
-            color: var(--parchment);
-            text-shadow: 1px 1px 2px #000;
+            position: relative;
         }
-        .quest {
-            background: var(--parchment);
-            color: #333;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 3px;
-            font-size: 0.9rem;
+        
+        .rocks {
+            font-size: 2rem;
+            letter-spacing: 1em;
+            margin-bottom: 10px;
         }
-        .footer-banner {
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
+        
+        .sand-pattern {
             font-size: 0.8rem;
-            opacity: 0.6;
+            color: #8b7d5c;
+            letter-spacing: 0.3em;
+        }
+        
+        /* Community Space */
+        .community-offerings {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #8b7d5c;
+            font-size: 0.85rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="castle-header">
-<div class="tower"><div class="tower-window"></div></div>
-<div class="main-wall">
-<div class="battlements">
-<div class="battlement"></div>
-<div class="battlement"></div>
-<div class="battlement"></div>
-<div class="battlement"></div>
-<div class="battlement"></div>
-<div class="battlement"></div>
+<div class="garden">
+<header>
+<h1>禅 ZEN GARDEN</h1>
+<p class="subtitle">— a living gallery of tranquility —</p>
+</header>
+<div class="bamboo-grove">
+<div class="bamboo"></div>
+<div class="bamboo"></div>
+<div class="bamboo"></div>
 </div>
-<div class="gate" title="Enter the Castle"></div>
+<div class="koi-pond">
+<span class="koi">🐟</span>
+<span class="koi">🐠</span>
+<span class="koi">🐟</span>
+<div class="ripple"></div>
+<div class="ripple"></div>
 </div>
-<div class="tower"><div class="tower-window"></div></div>
-</div>
-<h1>🏰 Castle Thornwick</h1>
-<p class="subtitle">Where legends are forged and adventures begin...</p>
-<div class="courtyard">
-<div class="location">
-<div class="location-icon">⚔️</div>
-<h3>The Armory</h3>
-<p>Weapons and armor await brave souls</p>
-</div>
-<div class="location">
-<div class="location-icon">🍺</div>
-<h3>The Tavern</h3>
-<p>Rest, rumors, and revelry</p>
-</div>
-<div class="location">
-<div class="location-icon">🔮</div>
-<h3>Wizard's Tower</h3>
-<p>Mysteries and magic dwell within</p>
+<div class="lantern-area">
+<div class="stone-lantern" title="Click for wisdom">
+<div class="lantern-top">🏯</div>
+<div class="lantern-light">🔥</div>
+<div class="lantern-base">🪨</div>
 </div>
 </div>
-<div class="quest-board">
-<h2>📜 Quest Board</h2>
-<div class="quest">🐉 Dragon sighted in the Northern Mountains - Reward: 500 gold</div>
-<div class="quest">🗝️ Lost key needed for the dungeon - Speak to the Blacksmith</div>
-<div class="quest">👻 Strange noises in the crypt - Investigate at your own risk</div>
+<div class="rock-garden">
+<div class="rocks">🪨 🪨 🪨</div>
+<div class="sand-pattern">〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️</div>
+<div class="community-offerings">
+                ✨ Place your offerings here ✨
+            </div>
 </div>
-<div class="footer-banner">
-        ~ The realm awaits your contributions, brave adventurer ~
-    </div>
+</div>
 </body>
 </html>
