@@ -1,213 +1,190 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEON CITY PORTAL // 2087</title>
+<title>🎮 Pixel Arcade Showcase</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        :root {
+            --pixel-pink: #ff6b9d;
+            --pixel-cyan: #00fff7;
+            --pixel-yellow: #ffe66d;
+            --pixel-purple: #9b5de5;
+            --pixel-green: #00f5a0;
+            --bg-dark: #0d0d1a;
+            --bg-mid: #1a1a2e;
+        }
         body {
             min-height: 100vh;
-            background: #0a0a0f;
-            font-family: 'Share Tech Mono', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .grid-overlay {
-            position: fixed;
-            inset: 0;
-            background: 
-                linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            animation: gridPulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes gridPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
-        }
-        
-        .skyline {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 8px;
-            padding: 0 20px;
-        }
-        
-        .building {
-            background: linear-gradient(to top, #1a1a2e, #0d0d15);
-            border: 1px solid rgba(0,255,255,0.2);
-            position: relative;
-            animation: buildingGlow 3s ease-in-out infinite;
-        }
-        
-        .building::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 20%;
-            right: 20%;
-            bottom: 60%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255,0,128,0.3) 0px,
-                rgba(255,0,128,0.3) 4px,
-                transparent 4px,
-                transparent 12px
-            );
-        }
-        
-        @keyframes buildingGlow {
-            0%, 100% { box-shadow: 0 0 10px rgba(0,255,255,0.2); }
-            50% { box-shadow: 0 0 20px rgba(255,0,128,0.4); }
-        }
-        
-        .portal-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .portal {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #0ff 0%, #f0f 50%, transparent 70%);
-            position: relative;
-            animation: portalSpin 10s linear infinite;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .portal:hover { transform: scale(1.1); }
-        
-        .portal::before {
-            content: '';
-            position: absolute;
-            inset: 20px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #0a0a0f 0%, transparent 70%);
-            animation: portalPulse 2s ease-in-out infinite;
-        }
-        
-        .portal::after {
-            content: 'ENTER';
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #0ff;
-            text-shadow: 0 0 20px #0ff;
-            letter-spacing: 8px;
-        }
-        
-        @keyframes portalSpin {
-            from { filter: hue-rotate(0deg); }
-            to { filter: hue-rotate(360deg); }
-        }
-        
-        @keyframes portalPulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(0.9); opacity: 1; }
-        }
-        
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
+            background: var(--bg-dark);
+            font-family: 'Press Start 2P', monospace;
             color: #fff;
-            text-shadow: 0 0 10px #0ff, 0 0 40px #f0f;
-            margin-bottom: 10px;
-            letter-spacing: 4px;
+            overflow-x: hidden;
+            image-rendering: pixelated;
         }
-        
+        /* CRT Scanline Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .arcade-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, var(--bg-mid) 0%, transparent 100%);
+        }
+        .title {
+            font-size: 1.8rem;
+            color: var(--pixel-cyan);
+            text-shadow: 4px 4px 0 var(--pixel-pink), -2px -2px 0 var(--pixel-purple);
+            animation: glitch 3s infinite;
+        }
         .subtitle {
-            color: #0ff;
-            font-size: 0.9rem;
-            margin-bottom: 40px;
-            opacity: 0.8;
+            font-size: 0.6rem;
+            color: var(--pixel-yellow);
+            margin-top: 10px;
+            letter-spacing: 2px;
         }
-        
-        .data-stream {
-            position: fixed;
-            font-size: 10px;
-            color: rgba(0,255,255,0.4);
-            writing-mode: vertical-rl;
-            animation: streamFall 8s linear infinite;
-            pointer-events: none;
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
+            96% { transform: translate(-1px, 2px); }
         }
-        
-        @keyframes streamFall {
-            from { transform: translateY(-100vh); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            to { transform: translateY(100vh); opacity: 0; }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        
-        .community-zone {
-            position: fixed;
-            bottom: 220px;
-            left: 20px;
-            right: 20px;
+        .game-card {
+            background: var(--bg-mid);
+            border: 4px solid var(--pixel-cyan);
+            padding: 15px;
+            position: relative;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 4px 4px 0 var(--pixel-pink), 8px 8px 0 var(--pixel-purple);
+        }
+        .game-card:nth-child(2) { border-color: var(--pixel-pink); }
+        .game-card:nth-child(3) { border-color: var(--pixel-yellow); }
+        .game-preview {
+            height: 120px;
+            background: #000;
             display: flex;
-            justify-content: space-between;
-            pointer-events: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 10px;
         }
-        
-        .zone-marker {
-            padding: 8px 16px;
-            border: 1px dashed rgba(255,0,128,0.4);
-            color: rgba(255,0,128,0.6);
+        .game-title {
             font-size: 0.7rem;
-            background: rgba(0,0,0,0.5);
+            color: var(--pixel-green);
+            margin-bottom: 5px;
         }
+        .game-desc {
+            font-size: 0.5rem;
+            color: #888;
+            line-height: 1.6;
+        }
+        .coin-counter {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: var(--pixel-yellow);
+            z-index: 100;
+        }
+        .coin-counter span { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        .community-zone {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 1200px;
+            border: 4px dashed var(--pixel-purple);
+            text-align: center;
+        }
+        .zone-title {
+            font-size: 0.6rem;
+            color: var(--pixel-purple);
+            margin-bottom: 10px;
+        }
+        .zone-hint {
+            font-size: 0.45rem;
+            color: #666;
+        }
+        .pixel-decorations {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce { to { transform: translateX(-50%) translateY(-5px); } }
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
-<div class="grid-overlay"></div>
-<div class="data-stream" style="left: 10%; animation-delay: 0s;">01001110 01000101 01001111 01001110</div>
-<div class="data-stream" style="left: 30%; animation-delay: 2s;">SYSTEM://ONLINE</div>
-<div class="data-stream" style="left: 70%; animation-delay: 4s;">PORTAL_ACTIVE</div>
-<div class="data-stream" style="left: 90%; animation-delay: 6s;">2087.CITY.NET</div>
-<div class="portal-container">
-<h1>NEON CITY</h1>
-<p class="subtitle">// GATEWAY TO THE GRID //</p>
-<div class="portal"></div>
+<div class="stars">
+<div class="star" style="top:10%;left:15%;animation-delay:0s"></div>
+<div class="star" style="top:20%;left:80%;animation-delay:0.5s"></div>
+<div class="star" style="top:60%;left:25%;animation-delay:1s"></div>
+<div class="star" style="top:40%;left:70%;animation-delay:1.5s"></div>
+<div class="star" style="top:80%;left:50%;animation-delay:0.3s"></div>
 </div>
+<div class="coin-counter">🪙 CREDITS: <span>INSERT COIN</span></div>
+<header class="arcade-header">
+<h1 class="title">PIXEL ARCADE</h1>
+<p class="subtitle">★ COMMUNITY GAME SHOWCASE ★</p>
+</header>
+<main class="game-grid">
+<div class="game-card">
+<div class="game-preview">🚀</div>
+<h2 class="game-title">SPACE BLASTER</h2>
+<p class="game-desc">Defend the galaxy from pixel invaders!</p>
+</div>
+<div class="game-card">
+<div class="game-preview">🗡️</div>
+<h2 class="game-title">DUNGEON QUEST</h2>
+<p class="game-desc">Explore 8-bit dungeons for treasure.</p>
+</div>
+<div class="game-card">
+<div class="game-preview">🏎️</div>
+<h2 class="game-title">TURBO RACER</h2>
+<p class="game-desc">Retro racing at maximum speed!</p>
+</div>
+</main>
 <div class="community-zone">
-<div class="zone-marker">[ WEST DISTRICT ]</div>
-<div class="zone-marker">[ EAST DISTRICT ]</div>
+<h3 class="zone-title">[ COMMUNITY EXPANSION ZONE ]</h3>
+<p class="zone-hint">Chat suggestions appear here... what game will YOU add?</p>
 </div>
-<div class="skyline">
-<div class="building" style="width: 40px; height: 120px;"></div>
-<div class="building" style="width: 60px; height: 180px;"></div>
-<div class="building" style="width: 35px; height: 100px;"></div>
-<div class="building" style="width: 80px; height: 160px;"></div>
-<div class="building" style="width: 45px; height: 140px;"></div>
-<div class="building" style="width: 70px; height: 190px;"></div>
-<div class="building" style="width: 50px; height: 110px;"></div>
-<div class="building" style="width: 55px; height: 150px;"></div>
-<div class="building" style="width: 40px; height: 130px;"></div>
-</div>
+<div class="pixel-decorations">👾 👻 🍄 ⭐ 🎮</div>
 </body>
 </html>
