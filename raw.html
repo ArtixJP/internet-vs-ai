@@ -1,41 +1,216 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>📚 The Dusty Page Bookstore</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
+            font-family: 'Lora', Georgia, serif;
+            color: #f5e6d3;
+            overflow-x: hidden;
+        }
+        
+        .store-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
+            border-bottom: 3px solid #8b5a2b;
+        }
+        
+        .store-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #ffd699;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+        
+        .tagline {
+            font-style: italic;
+            color: #d4a574;
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .bookshelf {
+            background: linear-gradient(135deg, #5c3d2e 0%, #4a2f20 100%);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3);
+            border: 2px solid #8b5a2b;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #ffd699;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+        
+        .books-row {
+            display: flex;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .book {
+            width: 60px;
+            height: 90px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+        }
+        
+        .book:hover {
+            transform: translateY(-10px) rotate(-3deg);
+            box-shadow: 4px 8px 15px rgba(0,0,0,0.5);
+        }
+        
+        .book-1 { background: linear-gradient(90deg, #8b0000, #a52a2a); }
+        .book-2 { background: linear-gradient(90deg, #2f4f4f, #3d5c5c); }
+        .book-3 { background: linear-gradient(90deg, #4a3728, #5c4636); }
+        .book-4 { background: linear-gradient(90deg, #1a3a5c, #2a4a6c); }
+        .book-5 { background: linear-gradient(90deg, #5c4a1a, #6c5a2a); }
+        
+        .reading-nook {
+            background: linear-gradient(135deg, #3d2a1f 0%, #2c1810 100%);
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
+            border: 2px solid #6b4423;
+            position: relative;
+            overflow: hidden;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .armchair {
+            font-size: 4rem;
+            margin: 15px 0;
+            animation: gentle-rock 4s ease-in-out infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
+        
+        @keyframes gentle-rock {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        
+        .lamp-glow {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            animation: flicker 3s ease-in-out infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.8; filter: brightness(1.2); }
+        }
+        
+        .community-board {
+            grid-column: 1 / -1;
+            background: #c4a77d;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            border: 8px solid #8b5a2b;
+        }
+        
+        .board-title {
+            font-family: 'Playfair Display', serif;
+            color: #3d2317;
+            font-size: 1.3rem;
+            text-align: center;
             margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .pinned-notes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .note {
+            background: #fffacd;
+            padding: 15px;
+            width: 140px;
+            transform: rotate(-2deg);
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+            color: #333;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .note:nth-child(2) { transform: rotate(3deg); background: #ffe4e1; }
+        .note:nth-child(3) { transform: rotate(-1deg); background: #e0ffff; }
+        
+        .note:hover { transform: scale(1.05) rotate(0deg); }
+        
+        .footer-quote {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #d4a574;
+            border-top: 1px solid #6b4423;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<header class="store-header">
+<h1 class="store-name">📚 The Dusty Page</h1>
+<p class="tagline">"Where every book finds its reader"</p>
+</header>
+<main class="main-content">
+<section class="bookshelf">
+<h2 class="section-title">✨ Staff Picks</h2>
+<div class="books-row">
+<div class="book book-1" title="Mystery Novel"></div>
+<div class="book book-2" title="Classic Literature"></div>
+<div class="book book-3" title="Poetry Collection"></div>
+<div class="book book-4" title="Sci-Fi Adventure"></div>
+<div class="book book-5" title="Historical Fiction"></div>
+</div>
+</section>
+<section class="reading-nook">
+<span class="lamp-glow">💡</span>
+<h2 class="section-title">🪑 Reading Nook</h2>
+<div class="armchair">🛋️</div>
+<p>Grab a cup of tea and stay awhile...</p>
+</section>
+<section class="community-board">
+<h2 class="board-title">📌 Community Board</h2>
+<div class="pinned-notes">
+<div class="note">Book club meets Thursdays! 📖</div>
+<div class="note">Looking for: rare first editions 🔍</div>
+<div class="note">Free bookmarks at the counter! 🔖</div>
+</div>
+</section>
+</main>
+<footer class="footer-quote">
+        "A room without books is like a body without a soul." — Cicero
+    </footer>
 </body>
 </html>
