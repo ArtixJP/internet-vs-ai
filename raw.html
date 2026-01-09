@@ -1,41 +1,179 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>ORBITAL STATION NEXUS-7</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000008 100%);
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        .station-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 10px;
+            padding: 15px;
+        }
+        .header {
+            grid-column: 1 / -1;
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid #00ff8855;
+            padding-bottom: 10px;
+        }
+        .station-name {
+            font-size: 1.8rem;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866;
+            letter-spacing: 4px;
+        }
+        .clock {
+            font-size: 1.2rem;
+            color: #ff6600;
+            text-shadow: 0 0 10px #ff6600;
+        }
+        .panel {
+            background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
+            border: 1px solid #00ff8844;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: inset 0 0 30px #00ff8811, 0 0 15px #00ff8822;
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            color: #00aaff;
+            border-bottom: 1px solid #00aaff44;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .viewport {
+            position: relative;
+            background: radial-gradient(ellipse at 30% 40%, #0a1a3a 0%, #000 100%);
+            border-radius: 50% / 30%;
+            overflow: hidden;
+        }
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #fff8, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 130px 80px, #fff6, transparent),
+                radial-gradient(1px 1px at 160px 120px, #fff, transparent);
+            background-size: 200px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+        .earth {
+            position: absolute;
+            bottom: -60px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4a90d9 0%, #1a4a7a 50%, #0a2040 100%);
+            box-shadow: inset -20px -20px 40px #00000088, 0 0 60px #4a90d966;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px dashed #00ff8822;
+        }
+        .status-ok { color: #00ff88; }
+        .status-warn { color: #ffaa00; animation: blink 1s infinite; }
+        .command-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 15px;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            padding-top: 10px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .cmd-btn {
+            background: linear-gradient(180deg, #1a3a5a 0%, #0a1a2a 100%);
+            border: 2px solid #00aaff;
+            color: #00aaff;
+            padding: 12px 25px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .cmd-btn:hover {
+            background: #00aaff;
+            color: #000;
+            box-shadow: 0 0 25px #00aaff88;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .cmd-btn.alert {
+            border-color: #ff3333;
+            color: #ff3333;
         }
+        .cmd-btn.alert:hover {
+            background: #ff3333;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .crew-slot { padding: 5px 0; font-size: 0.75rem; color: #888; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="station-grid">
+<header class="header">
+<div class="station-name">⬡ NEXUS-7 ORBITAL STATION</div>
+<div class="clock" id="clock">2157.03.15 | 14:32:07 UTC</div>
+</header>
+<aside class="panel left-panel">
+<div class="panel-title">◈ SYSTEM STATUS</div>
+<div class="status-item"><span>Life Support</span><span class="status-ok">● ONLINE</span></div>
+<div class="status-item"><span>Reactor Core</span><span class="status-ok">● 98.2%</span></div>
+<div class="status-item"><span>O₂ Levels</span><span class="status-ok">● NOMINAL</span></div>
+<div class="status-item"><span>Hull Integrity</span><span class="status-warn">● 87%</span></div>
+<div class="status-item"><span>Comms Array</span><span class="status-ok">● ACTIVE</span></div>
+</aside>
+<main class="panel viewport">
+<div class="stars"></div>
+<div class="earth"></div>
+</main>
+<aside class="panel right-panel">
+<div class="panel-title">◈ CREW MANIFEST</div>
+<div class="crew-slot">[ Slot 1 - Awaiting Assignment ]</div>
+<div class="crew-slot">[ Slot 2 - Awaiting Assignment ]</div>
+<div class="crew-slot">[ Slot 3 - Awaiting Assignment ]</div>
+<div class="crew-slot">[ Slot 4 - Awaiting Assignment ]</div>
+</aside>
+<nav class="command-bar">
+<button class="cmd-btn">◇ Navigation</button>
+<button class="cmd-btn">◇ Scan Sector</button>
+<button class="cmd-btn">◇ Comms</button>
+<button class="cmd-btn alert">⚠ Alerts</button>
+</nav>
+</div>
+<script>
+        function updateClock() {
+            const now = new Date();
+            const y = 2157, m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+            const t = now.toTimeString().slice(0,8);
+            document.getElementById('clock').textContent = `${y}.${m}.${d} | ${t} UTC`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
