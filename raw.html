@@ -1,183 +1,220 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Castle Grimhold - A Medieval Adventure</title>
-<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&amp;family=Cinzel:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<title>PIXEL PALACE ARCADE - Est. 1984</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --stone: #4a4a4a;
-            --stone-dark: #2d2d2d;
-            --torch-orange: #ff6b35;
-            --torch-yellow: #ffd700;
-            --parchment: #f4e4bc;
-            --blood-red: #8b0000;
-        }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%);
-            font-family: 'Cinzel', serif;
-            color: var(--parchment);
+            background: #0a0a0f;
+            font-family: 'Press Start 2P', monospace;
             overflow-x: hidden;
-        }
-        .castle-header {
-            text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
             position: relative;
         }
-        .castle-header h1 {
-            font-family: 'MedievalSharp', cursive;
-            font-size: 3rem;
-            text-shadow: 0 0 20px var(--torch-orange), 2px 2px 4px #000;
-            animation: flicker 3s infinite;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.1) 0px,
+                rgba(0,0,0,0.1) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 1000;
         }
-        .castle-header .subtitle {
-            font-size: 1rem;
-            opacity: 0.7;
-            margin-top: 5px;
-            letter-spacing: 3px;
+        .arcade-zone {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .neon-sign {
+            font-size: 2rem;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 5px #ff00ff,
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff;
+            animation: flicker 3s infinite;
+            letter-spacing: 4px;
         }
         @keyframes flicker {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.95; }
-            52% { opacity: 0.85; }
-            54% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+            96% { opacity: 0.9; }
+            97% { opacity: 1; }
         }
-        .castle-silhouette {
-            width: 100%;
-            height: 120px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 150'%3E%3Cpath fill='%231a1a2e' d='M0,150 L0,100 L30,100 L30,60 L50,60 L50,80 L70,80 L70,40 L90,40 L90,80 L120,80 L120,50 L140,30 L160,50 L160,80 L200,80 L200,100 L250,100 L250,70 L270,70 L270,90 L300,90 L300,60 L320,40 L340,60 L340,90 L380,90 L380,50 L400,30 L420,50 L420,90 L460,90 L460,70 L500,70 L500,100 L550,100 L550,80 L570,80 L570,40 L590,40 L590,80 L620,80 L620,50 L640,30 L660,50 L660,80 L700,80 L700,100 L750,100 L750,60 L770,60 L770,100 L800,100 L800,150 Z'/%3E%3C/svg%3E") repeat-x bottom;
-            background-size: contain;
+        .subtitle {
+            color: #00ffff;
+            font-size: 0.6rem;
+            text-shadow: 0 0 10px #00ffff;
+            margin-top: -20px;
         }
-        .main-hall {
+        .cabinet-row {
             display: flex;
+            gap: 30px;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
         }
-        .torch {
-            position: fixed;
-            width: 30px;
-            height: 60px;
-            z-index: 10;
-        }
-        .torch.left { left: 20px; top: 150px; }
-        .torch.right { right: 20px; top: 150px; }
-        .torch::before {
-            content: '🔥';
-            font-size: 2rem;
-            animation: torchFlame 0.5s infinite alternate;
-            display: block;
-        }
-        @keyframes torchFlame {
-            from { transform: scaleY(1) rotate(-5deg); filter: brightness(1); }
-            to { transform: scaleY(1.1) rotate(5deg); filter: brightness(1.2); }
-        }
-        .quest-board {
-            background: linear-gradient(145deg, #5c4033, #3d2817);
-            border: 8px solid #2a1a0a;
-            border-radius: 5px;
-            padding: 20px;
-            width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .quest-board h2 {
-            font-family: 'MedievalSharp', cursive;
-            color: var(--torch-yellow);
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-        .quest-item {
-            background: var(--parchment);
-            color: #2a1a0a;
+        .arcade-cabinet {
+            width: 140px;
+            height: 200px;
+            background: linear-gradient(180deg, #2a2a3a 0%, #1a1a2a 100%);
+            border: 3px solid #444;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 10px;
-            margin: 8px 0;
-            border-radius: 3px;
-            font-size: 0.85rem;
-            transform: rotate(-1deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
-        .quest-item:nth-child(odd) { transform: rotate(1deg); }
-        .dungeon-entrance {
-            background: radial-gradient(ellipse at center, #0a0a0a 0%, #1a1a2e 100%);
-            border: 10px solid var(--stone);
-            border-radius: 50% 50% 0 0;
-            width: 200px;
-            height: 150px;
+        .arcade-cabinet:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,0,255,0.5);
+        }
+        .cabinet-screen {
+            width: 100px;
+            height: 80px;
+            background: #000;
+            border: 2px solid #666;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            overflow: hidden;
         }
-        .dungeon-entrance:hover {
-            box-shadow: 0 0 30px var(--blood-red), inset 0 0 50px rgba(139,0,0,0.3);
-        }
-        .dungeon-entrance span {
-            font-size: 0.9rem;
+        .screen-content {
+            font-size: 0.4rem;
+            color: #0f0;
             text-align: center;
-            opacity: 0.6;
+            animation: blink 1s infinite;
         }
-        .dungeon-entrance:hover span { opacity: 1; color: var(--blood-red); }
-        .throne-room {
+        @keyframes blink { 50% { opacity: 0.7; } }
+        .cabinet-title {
+            font-size: 0.35rem;
+            color: #ffff00;
+            margin-top: 8px;
             text-align: center;
+        }
+        .joystick {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff0000 0%, #aa0000 100%);
+            border-radius: 50%;
+            margin-top: 10px;
+            box-shadow: 0 4px 0 #660000;
+        }
+        .high-scores {
+            background: linear-gradient(180deg, #1a0a2e 0%, #0a0a1e 100%);
+            border: 3px solid #ff00ff;
             padding: 15px;
-            background: linear-gradient(180deg, rgba(139,0,0,0.2), transparent);
-            border-top: 3px solid var(--blood-red);
-            width: 100%;
+            min-width: 280px;
+            box-shadow: 0 0 20px rgba(255,0,255,0.3);
         }
-        .throne-room .throne { font-size: 3rem; }
-        .throne-room p { font-size: 0.8rem; opacity: 0.6; margin-top: 5px; }
-        .community-space {
-            border: 3px dashed rgba(244,228,188,0.3);
-            padding: 20px;
+        .high-scores h2 {
+            color: #ffff00;
+            font-size: 0.7rem;
             text-align: center;
-            border-radius: 10px;
-            width: 300px;
-            opacity: 0.5;
-            transition: opacity 0.3s;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ffff00;
         }
-        .community-space:hover { opacity: 0.8; }
-        .community-space p { font-size: 0.8rem; }
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            color: #00ffff;
+            font-size: 0.5rem;
+            padding: 5px 0;
+            border-bottom: 1px dashed #333;
+        }
+        .floor {
+            width: 100%;
+            height: 60px;
+            background: repeating-linear-gradient(
+                45deg,
+                #1a1a2a,
+                #1a1a2a 20px,
+                #2a2a3a 20px,
+                #2a2a3a 40px
+            );
+            margin-top: 20px;
+        }
+        .coin-slot {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #ffcc00;
+            color: #000;
+            padding: 10px 15px;
+            font-size: 0.5rem;
+            border-radius: 5px;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+            z-index: 100;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px #ffcc00; }
+            50% { box-shadow: 0 0 30px #ffcc00, 0 0 50px #ffcc00; }
+        }
+        .community-zone {
+            border: 2px dashed #666;
+            padding: 20px;
+            margin: 20px;
+            color: #666;
+            font-size: 0.4rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-<div class="torch left"></div>
-<div class="torch right"></div>
-<header class="castle-header">
-<h1>⚔️ Castle Grimhold ⚔️</h1>
-<p class="subtitle">A Medieval Adventure Awaits</p>
-</header>
-<div class="castle-silhouette"></div>
-<main class="main-hall">
-<section class="quest-board">
-<h2>📜 Quest Board</h2>
-<div class="quest-item">🐉 Slay the dragon in the eastern tower</div>
-<div class="quest-item">🗝️ Find the lost key to the treasury</div>
-<div class="quest-item">👻 Investigate strange noises in the cellar</div>
-
-</section>
-<div class="dungeon-entrance">
-<span>🚪 Enter the<br/>Dungeon<br/>⚠️ if you dare...</span>
+<div class="arcade-zone">
+<h1 class="neon-sign">PIXEL PALACE</h1>
+<p class="subtitle">INSERT COIN TO PLAY</p>
+<div class="cabinet-row">
+<div class="arcade-cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">SPACE<br/>BLASTER<br/>▲</div>
 </div>
-<div class="community-space">
-<p>🏰 Empty Chamber</p>
-<p>The community shall fill this space...</p>
+<div class="cabinet-title">SPACE BLASTER</div>
+<div class="joystick"></div>
 </div>
-</main>
-<footer class="throne-room">
-<div class="throne">👑🪑👑</div>
-<p>The throne awaits its ruler...</p>
-</footer>
+<div class="arcade-cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">PAC<br/>CHASE<br/>ᗧ···</div>
+</div>
+<div class="cabinet-title">PAC CHASE</div>
+<div class="joystick"></div>
+</div>
+<div class="arcade-cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">NEON<br/>RACER<br/>🏎</div>
+</div>
+<div class="cabinet-title">NEON RACER</div>
+<div class="joystick"></div>
+</div>
+</div>
+<div class="high-scores">
+<h2>★ HIGH SCORES ★</h2>
+<div class="score-entry"><span>1. AAA</span><span>999999</span></div>
+<div class="score-entry"><span>2. BOB</span><span>888888</span></div>
+<div class="score-entry"><span>3. CAT</span><span>777777</span></div>
+<div class="score-entry"><span>4. ???</span><span>------</span></div>
+<div class="score-entry"><span>5. ???</span><span>------</span></div>
+</div>
+<div class="community-zone">
+            [ EXPANSION ZONE - MORE GAMES COMING SOON ]
+        </div>
+<div class="floor"></div>
+</div>
+<div class="coin-slot" onclick="this.textContent='★ CREDIT 1 ★'">INSERT COIN</div>
 </body>
 </html>
