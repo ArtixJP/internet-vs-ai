@@ -1,41 +1,188 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>The Bubbling Cauldron - Mystical Potions</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0d0d1a 0%, #1a0a2e 50%, #0d0d1a 100%);
+            color: #e8d5b7;
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+        }
+        .shop {
             display: flex;
+            flex-direction: column;
             align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        .shop-sign {
+            font-size: 2.8rem;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 20px #9b59b6, 0 0 40px #8e44ad;
+            color: #f4d03f;
+            animation: flicker 3s infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+            75% { opacity: 0.95; }
+        }
+        .shelves {
+            display: flex;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+        }
+        .shelf {
+            background: linear-gradient(180deg, #2d1f3d 0%, #1a1025 100%);
+            border: 2px solid #4a3660;
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 200px;
+            box-shadow: inset 0 0 30px rgba(155, 89, 182, 0.2);
+        }
+        .shelf h3 {
+            text-align: center;
+            color: #bb8fce;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .potions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .potion {
+            width: 50px;
+            height: 70px;
+            border-radius: 5px 5px 25px 25px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+        .potion:hover {
+            transform: scale(1.2) translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+        }
+        .potion::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            background: #4a3660;
+            border-radius: 3px;
+        }
+        .potion.red { background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%); box-shadow: 0 0 20px #e74c3c; }
+        .potion.blue { background: linear-gradient(180deg, #3498db 0%, #2980b9 100%); box-shadow: 0 0 20px #3498db; animation-delay: 0.5s; }
+        .potion.green { background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); box-shadow: 0 0 20px #2ecc71; animation-delay: 1s; }
+        .potion.purple { background: linear-gradient(180deg, #9b59b6 0%, #8e44ad 100%); box-shadow: 0 0 20px #9b59b6; animation-delay: 1.5s; }
+        .potion.gold { background: linear-gradient(180deg, #f1c40f 0%, #f39c12 100%); box-shadow: 0 0 20px #f1c40f; animation-delay: 2s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .cauldron-area {
+            margin: 30px 0;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .cauldron {
+            font-size: 5rem;
+            animation: bubble 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px #9b59b6);
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes bubble {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .cauldron-text {
+            color: #bb8fce;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: #9b59b6;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rise 8s linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes rise {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .community-board {
+            background: rgba(45, 31, 61, 0.8);
+            border: 2px dashed #6c3483;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+        .community-board h4 {
+            color: #f4d03f;
+            margin-bottom: 10px;
+        }
+        .community-board p {
+            font-size: 0.9rem;
+            color: #a9a9a9;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="shop">
+<h1 class="shop-sign">🔮 The Bubbling Cauldron 🔮</h1>
+<div class="shelves">
+<div class="shelf">
+<h3>✨ Healing Elixirs</h3>
+<div class="potions">
+<div class="potion red" title="Health Potion"></div>
+<div class="potion green" title="Regeneration Brew"></div>
+</div>
+</div>
+<div class="shelf">
+<h3>🌙 Arcane Mixtures</h3>
+<div class="potions">
+<div class="potion blue" title="Mana Essence"></div>
+<div class="potion purple" title="Mystic Vapor"></div>
+</div>
+</div>
+<div class="shelf">
+<h3>⚗️ Rare Concoctions</h3>
+<div class="potions">
+<div class="potion gold" title="Liquid Luck"></div>
+</div>
+</div>
+</div>
+<div class="cauldron-area">
+<div class="cauldron">🫕</div>
+<p class="cauldron-text">"What shall we brew today?"</p>
+</div>
+<div class="community-board">
+<h4>📜 Customer Requests</h4>
+<p>The shop awaits your magical suggestions...</p>
+</div>
+</div>
+<div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+<div class="particle" style="left: 25%; animation-delay: 2s;"></div>
+<div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+<div class="particle" style="left: 75%; animation-delay: 6s;"></div>
+<div class="particle" style="left: 90%; animation-delay: 1s;"></div>
 </body>
 </html>
