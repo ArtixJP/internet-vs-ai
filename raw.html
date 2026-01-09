@@ -1,220 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>PIXEL PALACE ARCADE - Est. 1984</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: #0a0a0f;
-            font-family: 'Press Start 2P', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.1) 0px,
-                rgba(0,0,0,0.1) 1px,
-                transparent 1px,
-                transparent 3px
-            );
-            pointer-events: none;
-            z-index: 1000;
-        }
-        .arcade-zone {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
-        .neon-sign {
-            font-size: 2rem;
-            color: #ff00ff;
-            text-shadow: 
-                0 0 5px #ff00ff,
-                0 0 10px #ff00ff,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff;
-            animation: flicker 3s infinite;
-            letter-spacing: 4px;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-            97% { opacity: 1; }
-        }
-        .subtitle {
-            color: #00ffff;
-            font-size: 0.6rem;
-            text-shadow: 0 0 10px #00ffff;
-            margin-top: -20px;
-        }
-        .cabinet-row {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .arcade-cabinet {
-            width: 140px;
-            height: 200px;
-            background: linear-gradient(180deg, #2a2a3a 0%, #1a1a2a 100%);
-            border: 3px solid #444;
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        .arcade-cabinet:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255,0,255,0.5);
-        }
-        .cabinet-screen {
-            width: 100px;
-            height: 80px;
-            background: #000;
-            border: 2px solid #666;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-        }
-        .screen-content {
-            font-size: 0.4rem;
-            color: #0f0;
-            text-align: center;
-            animation: blink 1s infinite;
-        }
-        @keyframes blink { 50% { opacity: 0.7; } }
-        .cabinet-title {
-            font-size: 0.35rem;
-            color: #ffff00;
-            margin-top: 8px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        .joystick {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #ff0000 0%, #aa0000 100%);
-            border-radius: 50%;
-            margin-top: 10px;
-            box-shadow: 0 4px 0 #660000;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .high-scores {
-            background: linear-gradient(180deg, #1a0a2e 0%, #0a0a1e 100%);
-            border: 3px solid #ff00ff;
-            padding: 15px;
-            min-width: 280px;
-            box-shadow: 0 0 20px rgba(255,0,255,0.3);
-        }
-        .high-scores h2 {
-            color: #ffff00;
-            font-size: 0.7rem;
-            text-align: center;
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
-            text-shadow: 0 0 10px #ffff00;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            color: #00ffff;
-            font-size: 0.5rem;
-            padding: 5px 0;
-            border-bottom: 1px dashed #333;
-        }
-        .floor {
-            width: 100%;
-            height: 60px;
-            background: repeating-linear-gradient(
-                45deg,
-                #1a1a2a,
-                #1a1a2a 20px,
-                #2a2a3a 20px,
-                #2a2a3a 40px
-            );
-            margin-top: 20px;
-        }
-        .coin-slot {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #ffcc00;
-            color: #000;
-            padding: 10px 15px;
-            font-size: 0.5rem;
-            border-radius: 5px;
-            animation: pulse 2s infinite;
-            cursor: pointer;
-            z-index: 100;
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 10px #ffcc00; }
-            50% { box-shadow: 0 0 30px #ffcc00, 0 0 50px #ffcc00; }
-        }
-        .community-zone {
-            border: 2px dashed #666;
-            padding: 20px;
-            margin: 20px;
-            color: #666;
-            font-size: 0.4rem;
-            text-align: center;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="arcade-zone">
-<h1 class="neon-sign">PIXEL PALACE</h1>
-<p class="subtitle">INSERT COIN TO PLAY</p>
-<div class="cabinet-row">
-<div class="arcade-cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">SPACE<br/>BLASTER<br/>▲</div>
-</div>
-<div class="cabinet-title">SPACE BLASTER</div>
-<div class="joystick"></div>
-</div>
-<div class="arcade-cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">PAC<br/>CHASE<br/>ᗧ···</div>
-</div>
-<div class="cabinet-title">PAC CHASE</div>
-<div class="joystick"></div>
-</div>
-<div class="arcade-cabinet">
-<div class="cabinet-screen">
-<div class="screen-content">NEON<br/>RACER<br/>🏎</div>
-</div>
-<div class="cabinet-title">NEON RACER</div>
-<div class="joystick"></div>
-</div>
-</div>
-<div class="high-scores">
-<h2>★ HIGH SCORES ★</h2>
-<div class="score-entry"><span>1. AAA</span><span>999999</span></div>
-<div class="score-entry"><span>2. BOB</span><span>888888</span></div>
-<div class="score-entry"><span>3. CAT</span><span>777777</span></div>
-<div class="score-entry"><span>4. ???</span><span>------</span></div>
-<div class="score-entry"><span>5. ???</span><span>------</span></div>
-</div>
-<div class="community-zone">
-            [ EXPANSION ZONE - MORE GAMES COMING SOON ]
-        </div>
-<div class="floor"></div>
-</div>
-<div class="coin-slot" onclick="this.textContent='★ CREDIT 1 ★'">INSERT COIN</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
