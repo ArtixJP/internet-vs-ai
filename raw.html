@@ -1,189 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>📚 The Cozy Chapter - Bookstore</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;family=Lora:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
-            font-family: 'Lora', Georgia, serif;
-            color: #f5e6d3;
-            overflow-x: hidden;
-        }
-        .bookstore {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background: rgba(62, 39, 24, 0.9);
-            border-radius: 12px;
-            border: 2px solid #8b6914;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-        }
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .open-sign {
-            background: #1a0f0a;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: 3px solid #ffd700;
-            color: #ff6b35;
-            font-weight: bold;
-            animation: glow 2s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(255,107,53,0.5);
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(255,107,53,0.5); }
-            50% { box-shadow: 0 0 35px rgba(255,107,53,0.8), 0 0 50px rgba(255,215,0,0.3); }
-        }
-        .main-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-            margin-top: 25px;
-        }
-        .bookshelf {
-            background: linear-gradient(180deg, #5c3d2e 0%, #4a2f20 100%);
-            border-radius: 12px;
-            padding: 25px;
-            border: 3px solid #8b6914;
-            box-shadow: inset 0 -5px 15px rgba(0,0,0,0.4);
-        }
-        .shelf-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-            border-bottom: 2px dashed #8b6914;
-            padding-bottom: 10px;
-        }
-        .books {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .book {
-            width: 70px;
-            height: 110px;
-            border-radius: 3px 6px 6px 3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 0.7rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
-        }
-        .book:hover {
-            transform: translateY(-10px) rotate(-5deg);
-            box-shadow: 5px 8px 15px rgba(0,0,0,0.5);
-        }
-        .book:nth-child(1) { background: linear-gradient(90deg, #8b0000, #a52a2a); }
-        .book:nth-child(2) { background: linear-gradient(90deg, #1e3a5f, #2e5a8f); height: 100px; }
-        .book:nth-child(3) { background: linear-gradient(90deg, #2d5a27, #3d7a37); height: 115px; }
-        .book:nth-child(4) { background: linear-gradient(90deg, #6b4423, #8b6433); }
-        .book:nth-child(5) { background: linear-gradient(90deg, #4a1a4a, #6a2a6a); height: 105px; }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .bulletin-board {
-            background: #c4a574;
-            border-radius: 10px;
-            padding: 20px;
-            border: 8px solid #5c3d2e;
-            min-height: 200px;
-            position: relative;
-        }
-        .bulletin-title {
-            font-family: 'Playfair Display', serif;
-            color: #3d2317;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
+        }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .pin-note {
-            background: #fffacd;
-            padding: 10px;
-            transform: rotate(-2deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            font-size: 0.85rem;
-            color: #333;
-        }
-        .reading-corner {
-            background: rgba(139,105,20,0.2);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            border: 2px dashed #8b6914;
-        }
-        .lamp {
-            font-size: 3rem;
-            animation: flicker 3s ease-in-out infinite;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px #ffd700); }
-            50% { opacity: 0.9; filter: drop-shadow(0 0 15px #ffaa00); }
-        }
-        footer {
-            margin-top: 25px;
-            text-align: center;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            color: #c4a574;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="bookstore">
-<header>
-<div class="logo">📚 The Cozy Chapter</div>
-<div class="open-sign">✨ OPEN ✨</div>
-</header>
-<div class="main-content">
-<div class="bookshelf">
-<h2 class="shelf-title">📖 Staff Picks This Week</h2>
-<div class="books">
-<div class="book">Mystery Tales</div>
-<div class="book">Ocean Dreams</div>
-<div class="book">Forest Magic</div>
-<div class="book">Old Recipes</div>
-<div class="book">Star Maps</div>
-</div>
-</div>
-<div class="sidebar">
-<div class="bulletin-board">
-<h3 class="bulletin-title">📌 Community Board</h3>
-<div class="pin-note">Book club meets Thursdays! 🍵</div>
-</div>
-<div class="reading-corner">
-<div class="lamp">🪔</div>
-<p>Find your cozy spot...</p>
-</div>
-</div>
-</div>
-<footer>☕ Est. 2024 • Where every page feels like home • 🐱 Cat-friendly!</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
