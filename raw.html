@@ -1,41 +1,224 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>枯山水 | Zen Garden Gallery</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --sand: #e8e0d5;
+            --stone: #5a5a5a;
+            --moss: #6b8e6b;
+            --bamboo: #7d9c6c;
+            --water: #7ba3b5;
+            --paper: #f5f2eb;
+            --ink: #2c2c2c;
+        }
+        
         body {
             min-height: 100vh;
+            background: var(--sand);
+            font-family: 'Noto Serif JP', serif;
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+        
+        .garden-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--stone);
+        }
+        
+        header h1 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            letter-spacing: 0.3em;
+            color: var(--ink);
+        }
+        
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+        
+        .bamboo-grove {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px;
+        }
+        
+        .bamboo {
+            width: 12px;
+            background: linear-gradient(to top, var(--bamboo), #9ab88a);
+            border-radius: 6px;
+            animation: sway 4s ease-in-out infinite;
+        }
+        
+        .bamboo:nth-child(1) { height: 180px; animation-delay: 0s; }
+        .bamboo:nth-child(2) { height: 220px; animation-delay: 0.5s; }
+        .bamboo:nth-child(3) { height: 160px; animation-delay: 1s; }
+        .bamboo:nth-child(4) { height: 200px; animation-delay: 1.5s; }
+        .bamboo:nth-child(5) { height: 170px; animation-delay: 2s; }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-1deg); }
+            50% { transform: rotate(1deg); }
+        }
+        
+        .stone-garden {
+            background: linear-gradient(135deg, var(--sand) 0%, #d9d1c4 100%);
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stone-garden::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 8px,
+                rgba(0,0,0,0.03) 8px,
+                rgba(0,0,0,0.03) 10px
+            );
+            border-radius: 8px;
+        }
+        
+        .stones {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stone {
+            background: var(--stone);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .stone-1 { width: 80px; height: 60px; }
+        .stone-2 { width: 50px; height: 40px; transform: translateY(20px); }
+        .stone-3 { width: 100px; height: 70px; }
+        
+        .koi-pond {
+            background: var(--water);
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .koi {
+            position: absolute;
+            font-size: 24px;
+            animation: swim 8s linear infinite;
+        }
+        
+        @keyframes swim {
+            0% { transform: translate(30px, 60px) rotate(0deg); }
+            25% { transform: translate(100px, 40px) rotate(45deg); }
+            50% { transform: translate(80px, 100px) rotate(180deg); }
+            75% { transform: translate(20px, 80px) rotate(270deg); }
+            100% { transform: translate(30px, 60px) rotate(360deg); }
+        }
+        
+        .gallery-wall {
+            background: var(--paper);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .gallery-wall h2 {
+            font-weight: 300;
+            font-size: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 10px;
+        }
+        
+        .scroll-frame {
+            background: #f9f7f2;
+            border: 2px solid var(--ink);
+            padding: 15px;
+            text-align: center;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-style: italic;
+            opacity: 0.5;
+        }
+        
+        footer {
+            grid-column: 1 / -1;
             text-align: center;
-        }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 15px;
+            font-size: 0.8rem;
+            opacity: 0.6;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="garden-container">
+<header>
+<h1>枯山水</h1>
+<p>A Zen Garden Gallery — 静寂の中の美</p>
+</header>
+<aside class="bamboo-grove">
+<div class="bamboo"></div>
+<div class="bamboo"></div>
+<div class="bamboo"></div>
+<div class="bamboo"></div>
+<div class="bamboo"></div>
+</aside>
+<main class="stone-garden">
+<div class="stones">
+<div class="stone stone-1"></div>
+<div class="stone stone-2"></div>
+<div class="stone stone-3"></div>
+</div>
+<div class="koi-pond">
+<span class="koi">🐟</span>
+</div>
+</main>
+<aside class="gallery-wall">
+<h2>展示 Gallery</h2>
+<div class="scroll-frame">~ awaiting art ~</div>
+<div class="scroll-frame">~ community space ~</div>
+<div class="scroll-frame">~ your vision here ~</div>
+</aside>
+<footer>
+            🍃 Tend the garden. Add your stone. Leave your mark. 🍃
+        </footer>
+</div>
 </body>
 </html>
