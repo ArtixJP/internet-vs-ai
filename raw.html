@@ -1,121 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>🤖 RoboForge Industries - Factory Dashboard</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --metal-dark: #1a1d23;
-            --metal-mid: #2d323c;
-            --metal-light: #3d424f;
-            --neon-orange: #ff6b35;
-            --neon-cyan: #00f5d4;
-            --neon-yellow: #ffe66d;
-            --warning-red: #ff4757;
-        }
         body {
             min-height: 100vh;
-            background: var(--metal-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            background-image: 
-                repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(255,255,255,0.02) 50px, rgba(255,255,255,0.02) 51px),
-                repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(255,255,255,0.02) 50px, rgba(255,255,255,0.02) 51px);
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .dashboard { max-width: 1500px; margin: 0 auto; }
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 25px; background: var(--metal-mid);
-            border: 2px solid var(--neon-orange); border-radius: 8px;
-            margin-bottom: 20px; box-shadow: 0 0 20px rgba(255,107,53,0.3);
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .logo { font-size: 1.8rem; font-weight: bold; color: var(--neon-orange); text-shadow: 0 0 10px var(--neon-orange); }
-        .status-light { display: flex; align-items: center; gap: 10px; }
-        .light { width: 15px; height: 15px; border-radius: 50%; background: var(--neon-cyan); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 5px var(--neon-cyan); } 50% { box-shadow: 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan); } }
-        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .panel {
-            background: var(--metal-mid); border-radius: 8px;
-            border: 1px solid var(--metal-light); padding: 20px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .panel-title { color: var(--neon-yellow); font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--metal-light); padding-bottom: 10px; }
-        .assembly-line {
-            height: 120px; background: var(--metal-dark); border-radius: 5px;
-            position: relative; overflow: hidden; border: 2px solid var(--metal-light);
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .conveyor {
-            position: absolute; bottom: 10px; left: 0; right: 0; height: 20px;
-            background: repeating-linear-gradient(90deg, #444 0px, #444 20px, #555 20px, #555 40px);
-            animation: conveyorMove 2s linear infinite;
-        }
-        @keyframes conveyorMove { from { background-position-x: 0; } to { background-position-x: 40px; } }
-        .robot-arm {
-            position: absolute; top: 20px; width: 8px; height: 60px;
-            background: linear-gradient(to bottom, var(--neon-orange), #aa4420);
-            border-radius: 4px; transform-origin: top center;
-        }
-        .robot-arm:nth-child(2) { left: 25%; animation: armWork 1.5s ease-in-out infinite; }
-        .robot-arm:nth-child(3) { left: 50%; animation: armWork 1.5s ease-in-out infinite 0.5s; }
-        .robot-arm:nth-child(4) { left: 75%; animation: armWork 1.5s ease-in-out infinite 1s; }
-        @keyframes armWork { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
-        .stat-box { background: var(--metal-dark); padding: 15px; border-radius: 5px; text-align: center; }
-        .stat-value { font-size: 2rem; color: var(--neon-cyan); font-weight: bold; }
-        .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
-        .alerts { max-height: 200px; overflow-y: auto; }
-        .alert { padding: 10px; margin-bottom: 8px; border-radius: 4px; font-size: 0.85rem; border-left: 3px solid; }
-        .alert-warning { background: rgba(255,230,109,0.1); border-color: var(--neon-yellow); }
-        .alert-success { background: rgba(0,245,212,0.1); border-color: var(--neon-cyan); }
-        .alert-danger { background: rgba(255,71,87,0.1); border-color: var(--warning-red); }
-        .community-zone {
-            margin-top: 20px; padding: 30px; border: 2px dashed var(--metal-light);
-            border-radius: 8px; text-align: center; color: #666;
-        }
-        .robot-counter { font-size: 3rem; color: var(--neon-orange); text-shadow: 0 0 20px var(--neon-orange); }
     </style>
 </head>
 <body>
-<div class="dashboard">
-<header class="header">
-<div class="logo">🤖 ROBOFORGE INDUSTRIES</div>
-<div class="status-light"><div class="light"></div><span>SYSTEMS ONLINE</span></div>
-</header>
-<div class="main-grid">
-<div class="panel">
-<div class="panel-title">⚙️ ASSEMBLY LINE ALPHA</div>
-<div class="assembly-line">
-<div class="robot-arm"></div>
-<div class="robot-arm"></div>
-<div class="robot-arm"></div>
-<div class="conveyor"></div>
-</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-value">1,247</div><div class="stat-label">ROBOTS BUILT TODAY</div></div>
-<div class="stat-box"><div class="stat-value">98.7%</div><div class="stat-label">EFFICIENCY</div></div>
-<div class="stat-box"><div class="stat-value">42</div><div class="stat-label">WORKERS ONLINE</div></div>
-<div class="stat-box"><div class="stat-value">3.2MW</div><div class="stat-label">POWER USAGE</div></div>
-</div>
-</div>
-<div class="panel">
-<div class="panel-title">📊 TOTAL PRODUCTION</div>
-<div class="robot-counter">50,847</div>
-<div style="text-align:center;color:#888;margin-top:10px;">UNITS MANUFACTURED</div>
-<div class="panel-title" style="margin-top:20px;">🚨 SYSTEM ALERTS</div>
-<div class="alerts">
-<div class="alert alert-success">✓ Sector 7 maintenance complete</div>
-<div class="alert alert-warning">⚠ Coolant levels at 34%</div>
-<div class="alert alert-danger">⚡ Power surge detected in Bay 3</div>
-<div class="alert alert-success">✓ New shipment of titanium arrived</div>
-</div>
-</div>
-</div>
-<div class="community-zone">
-<p>🔧 EXPANSION BAY - Community modifications welcome here! 🔧</p>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
