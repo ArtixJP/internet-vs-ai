@@ -1,194 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>STELLAR COMMAND // Deep Space Operations</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --void: #0a0a12;
-            --nebula: #1a1a2e;
-            --stellar-blue: #00d4ff;
-            --plasma-purple: #7b2cbf;
-            --alert-orange: #ff6b35;
-            --hull-gray: #2a2a3e;
-        }
         body {
             min-height: 100vh;
-            background: var(--void);
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-        }
-        .starfield {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse at center, var(--nebula) 0%, var(--void) 70%);
-            z-index: -1;
-        }
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
-        }
-        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .header {
-            grid-column: 1 / -1;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--stellar-blue);
-            padding-bottom: 10px;
-        }
-        .logo {
-            font-size: 1.5rem;
-            color: var(--stellar-blue);
-            text-shadow: 0 0 10px var(--stellar-blue);
-            letter-spacing: 3px;
-        }
-        .status-bar {
-            display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
-        }
-        .status-item { color: var(--stellar-blue); }
-        .status-item.warning { color: var(--alert-orange); }
-        
-        .panel {
-            background: rgba(26, 26, 46, 0.8);
-            border: 1px solid var(--stellar-blue);
-            border-radius: 8px;
-            padding: 15px;
-            backdrop-filter: blur(5px);
-        }
-        .panel-title {
-            color: var(--stellar-blue);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .nav-panel { grid-row: 2; }
-        .main-view { grid-row: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .resources-panel { grid-row: 2; }
-        
-        .ship-display {
-            width: 200px; height: 200px;
-            border: 2px solid var(--plasma-purple);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-            animation: pulse-ring 3s infinite;
-        }
-        @keyframes pulse-ring { 0%, 100% { box-shadow: 0 0 20px var(--plasma-purple); } 50% { box-shadow: 0 0 40px var(--stellar-blue); } }
-        .ship-icon { font-size: 4rem; animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .coord-display { margin-top: 20px; font-size: 0.9rem; color: var(--stellar-blue); }
-        
-        .mission-list { list-style: none; font-size: 0.85rem; }
-        .mission-list li { padding: 8px 0; border-bottom: 1px solid var(--hull-gray); display: flex; justify-content: space-between; }
-        .mission-status { color: var(--alert-orange); font-size: 0.75rem; }
-        .mission-status.active { color: #00ff88; }
-        
-        .resource-bar { margin: 10px 0; }
-        .resource-label { font-size: 0.75rem; display: flex; justify-content: space-between; }
-        .bar-bg { height: 8px; background: var(--hull-gray); border-radius: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 4px; transition: width 1s; }
-        .bar-fill.fuel { background: linear-gradient(90deg, var(--alert-orange), #ffcc00); width: 72%; }
-        .bar-fill.oxygen { background: linear-gradient(90deg, var(--stellar-blue), #00ff88); width: 94%; }
-        .bar-fill.power { background: linear-gradient(90deg, var(--plasma-purple), #ff66cc); width: 58%; }
-        
-        .footer {
-            grid-column: 1 / -1;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            font-size: 0.75rem;
-            color: #666;
-            border-top: 1px solid var(--hull-gray);
-            padding-top: 10px;
         }
-        .community-zone {
-            border: 1px dashed var(--plasma-purple);
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: var(--plasma-purple);
-            text-align: center;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="starfield" id="stars"></div>
-<div class="dashboard">
-<header class="header">
-<div class="logo">⟨ STELLAR COMMAND ⟩</div>
-<div class="status-bar">
-<span class="status-item">◉ SYSTEMS ONLINE</span>
-<span class="status-item warning">⚠ SECTOR 7-G ANOMALY</span>
-<span class="status-item">CYCLE: 2847.3</span>
-</div>
-</header>
-<div class="panel nav-panel">
-<div class="panel-title">// Active Missions</div>
-<ul class="mission-list">
-<li>Kepler-442b Survey <span class="mission-status active">● ACTIVE</span></li>
-<li>Asteroid Mining Op <span class="mission-status">◌ PENDING</span></li>
-<li>Distress Signal Alpha <span class="mission-status">◌ QUEUED</span></li>
-</ul>
-<div class="community-zone">[ MISSION SLOTS AVAILABLE ]</div>
-</div>
-<div class="panel main-view">
-<div class="panel-title">// Vessel Status</div>
-<div class="ship-display">
-<span class="ship-icon">🚀</span>
-</div>
-<div class="coord-display">POSITION: X-4721 Y-8834 Z-0012</div>
-<div class="community-zone">[ SHIP UPGRADES GO HERE ]</div>
-</div>
-<div class="panel resources-panel">
-<div class="panel-title">// Resources</div>
-<div class="resource-bar">
-<div class="resource-label"><span>FUEL</span><span>72%</span></div>
-<div class="bar-bg"><div class="bar-fill fuel"></div></div>
-</div>
-<div class="resource-bar">
-<div class="resource-label"><span>OXYGEN</span><span>94%</span></div>
-<div class="bar-bg"><div class="bar-fill oxygen"></div></div>
-</div>
-<div class="resource-bar">
-<div class="resource-label"><span>POWER</span><span>58%</span></div>
-<div class="bar-bg"><div class="bar-fill power"></div></div>
-</div>
-<div class="community-zone">[ MORE RESOURCES HERE ]</div>
-</div>
-<footer class="footer">
-            STELLAR COMMAND v0.1 // Twitch Plays Code // The void awaits your commands...
-        </footer>
-</div>
-<script>
-        // Generate starfield
-        const starfield = document.getElementById('stars');
-        for(let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-            star.style.animationDelay = Math.random() * 2 + 's';
-            starfield.appendChild(star);
-        }
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
