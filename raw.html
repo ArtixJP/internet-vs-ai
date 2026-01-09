@@ -1,41 +1,321 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>✨ The Bubbling Cauldron - Mystical Potions</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:ital@0;1&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(180deg, #1a0a2e 0%, #16082a 50%, #0d0618 100%);
+            font-family: 'Spectral', serif;
+            color: #e8d5b7;
+            overflow-x: hidden;
+        }
+        
+        .shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Floating magical particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: radial-gradient(circle, #7fff00 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+        }
+        
+        /* Shop Header */
+        .shop-header {
             text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        
+        .shop-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(90deg, #ffd700, #ff8c00, #ffd700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            animation: shimmer 3s infinite;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        @keyframes shimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .shop-subtitle {
+            font-style: italic;
+            color: #9d8ec7;
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Main Shop Area */
+        .shop-floor {
+            display: grid;
+            grid-template-columns: 1fr 250px 1fr;
+            gap: 30px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Potion Shelves */
+        .shelf {
+            background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
+            border: 2px solid #4a2a6a;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(75, 0, 130, 0.4), inset 0 0 30px rgba(0,0,0,0.5);
+        }
+        
+        .shelf-title {
+            font-family: 'Cinzel', serif;
+            color: #c9a0dc;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #4a2a6a;
+            padding-bottom: 8px;
+        }
+        
+        .potions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .potion {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .potion:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--glow-color, #7fff00);
+        }
+        
+        .potion-bottle {
+            font-size: 2.5rem;
+            display: block;
+            animation: bob 2s infinite ease-in-out;
+        }
+        
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .potion-name {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #b8a9c9;
+        }
+        
+        .potion-price {
+            font-size: 0.75rem;
+            color: #ffd700;
+        }
+        
+        /* Center Cauldron */
+        .cauldron-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cauldron {
+            font-size: 6rem;
+            position: relative;
+            animation: bubble 1s infinite;
+        }
+        
+        @keyframes bubble {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .cauldron::before {
+            content: '✨';
+            position: absolute;
+            top: -20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            animation: sparkle 1.5s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(0.8); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+        }
+        
+        .brew-status {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(127, 255, 0, 0.1);
+            border: 1px solid #7fff00;
+            border-radius: 20px;
+            color: #7fff00;
+            font-size: 0.9rem;
+        }
+        
+        /* Notice Board */
+        .notice-board {
+            background: #3d2817;
+            border: 8px solid #2a1a0f;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        
+        .notice-board h3 {
+            font-family: 'Cinzel', serif;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .notice {
+            background: #f4e4bc;
+            color: #2a1a0f;
+            padding: 8px;
+            margin: 8px 0;
+            font-size: 0.85rem;
+            transform: rotate(-1deg);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* Empty shelf slot for community additions */
+        .empty-slot {
+            border: 2px dashed #4a2a6a;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #6a4a8a;
+            font-style: italic;
+            opacity: 0.6;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="particles" id="particles"></div>
+<div class="shop-container">
+<header class="shop-header">
+<h1 class="shop-title">🔮 The Bubbling Cauldron 🔮</h1>
+<p class="shop-subtitle">"Where Magic Meets Mystery Since 1247"</p>
+</header>
+<main class="shop-floor">
+
+<section class="shelf">
+<h2 class="shelf-title">⚗️ Healing Elixirs</h2>
+<div class="potions-grid">
+<div class="potion" style="--glow-color: #ff6b6b;">
+<span class="potion-bottle">🧪</span>
+<span class="potion-name">Health Potion</span>
+<span class="potion-price">5 gold</span>
+</div>
+<div class="potion" style="--glow-color: #4ecdc4;">
+<span class="potion-bottle">🫧</span>
+<span class="potion-name">Mana Restore</span>
+<span class="potion-price">8 gold</span>
+</div>
+<div class="potion" style="--glow-color: #ffe66d;">
+<span class="potion-bottle">⚱️</span>
+<span class="potion-name">Antidote</span>
+<span class="potion-price">12 gold</span>
+</div>
+<div class="empty-slot">Empty shelf space...</div>
+</div>
+</section>
+
+<section class="cauldron-area">
+<div class="cauldron">🍵</div>
+<div class="brew-status">✨ Ready to brew!</div>
+</section>
+
+<section class="shelf">
+<h2 class="shelf-title">🌙 Enchantments</h2>
+<div class="potions-grid">
+<div class="potion" style="--glow-color: #a855f7;">
+<span class="potion-bottle">🔮</span>
+<span class="potion-name">Invisibility</span>
+<span class="potion-price">50 gold</span>
+</div>
+<div class="potion" style="--glow-color: #3b82f6;">
+<span class="potion-bottle">💧</span>
+<span class="potion-name">Water Breathing</span>
+<span class="potion-price">25 gold</span>
+</div>
+<div class="empty-slot">Reserved for rare finds...</div>
+<div class="empty-slot">Coming soon...</div>
+</div>
+</section>
+</main>
+
+<aside class="notice-board">
+<h3>📜 Adventurer's Board</h3>
+<div class="notice">🌿 WANTED: Fresh moonpetals - Will pay handsomely!</div>
+<div class="notice">⚠️ Warning: Do NOT mix fire salts with toad essence.</div>
+</aside>
+</div>
+<script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+            const colors = ['#7fff00', '#ffd700', '#ff69b4', '#00ffff'];
+            particle.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]} 0%, transparent 70%)`;
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Potion hover sound effect simulation (visual feedback)
+        document.querySelectorAll('.potion').forEach(potion => {
+            potion.addEventListener('click', () => {
+                potion.style.animation = 'none';
+                potion.offsetHeight; // Trigger reflow
+                potion.style.animation = 'bob 0.3s ease';
+            });
+        });
+    </script>
 </body>
 </html>
