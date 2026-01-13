@@ -1,41 +1,220 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>SYNTHWAVE PLAYER</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0d0221 0%, #1a0533 50%, #2d1b4e 100%);
+            font-family: 'Orbitron', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated grid floor */
+        .grid-floor {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 40vh;
+            background: linear-gradient(transparent 0%, #ff00ff15 100%),
+                repeating-linear-gradient(90deg, #ff00ff33 0px, transparent 1px, transparent 60px),
+                repeating-linear-gradient(0deg, #ff00ff33 0px, transparent 1px, transparent 60px);
+            transform: perspective(200px) rotateX(60deg);
+            animation: gridMove 2s linear infinite;
+        }
+        
+        @keyframes gridMove { to { transform: perspective(200px) rotateX(60deg) translateY(60px); } }
+        
+        /* Glowing sun */
+        .sun {
+            position: absolute;
+            top: 5%;
+            width: 180px;
+            height: 90px;
+            background: linear-gradient(180deg, #ff6b35 0%, #ff0080 50%, #7b2cbf 100%);
+            border-radius: 180px 180px 0 0;
+            box-shadow: 0 0 60px #ff008080, 0 0 120px #ff006640;
+            overflow: hidden;
+        }
+        
+        .sun::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, #0d0221 8px, #0d0221 12px);
+        }
+        
+        /* Main player container */
+        .player {
+            background: linear-gradient(135deg, #1a0533cc, #0d0221ee);
+            border: 2px solid #00fff7;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px #00fff750, inset 0 0 30px #ff00ff20;
+            z-index: 10;
+            min-width: 400px;
+        }
+        
+        .player-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00fff7, #ff00ff, #00fff7);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00fff7;
+        }
+        
+        @keyframes shimmer { to { background-position: 200% center; } }
+        
+        /* Visualizer bars */
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            height: 80px;
+            align-items: flex-end;
+            margin-bottom: 25px;
+        }
+        
+        .bar {
+            width: 12px;
+            background: linear-gradient(180deg, #00fff7, #ff00ff);
+            border-radius: 4px;
+            animation: bounce 0.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 10px #00fff7;
+        }
+        
+        .bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 80%; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 100%; animation-delay: 0.3s; }
+        .bar:nth-child(5) { height: 70%; animation-delay: 0.4s; }
+        .bar:nth-child(6) { height: 90%; animation-delay: 0.2s; }
+        .bar:nth-child(7) { height: 50%; animation-delay: 0.1s; }
+        .bar:nth-child(8) { height: 75%; animation-delay: 0.3s; }
+        
+        @keyframes bounce {
+            to { transform: scaleY(0.4); }
+        }
+        
+        /* Track info */
+        .track-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .track-name {
+            color: #00fff7;
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px #00fff7;
+        }
+        
+        .artist-name {
+            color: #ff00ff;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #00fff7;
+            background: transparent;
+            color: #00fff7;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+        }
+        
+        .btn:hover {
+            background: #00fff730;
+            box-shadow: 0 0 20px #00fff7;
+            transform: scale(1.1);
+        }
+        
+        .btn.play {
+            width: 60px;
+            height: 60px;
+            border-color: #ff00ff;
+            color: #ff00ff;
+        }
+        
+        .btn.play:hover {
+            background: #ff00ff30;
+            box-shadow: 0 0 25px #ff00ff;
+        }
+        
+        /* Community zone */
+        .community-zone {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #ffffff40;
+            border-radius: 10px;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .community-zone span {
+            color: #ffffff60;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="sun"></div>
+<div class="grid-floor"></div>
+<div class="player">
+<h1 class="player-title">⚡ SYNTHWAVE FM ⚡</h1>
+<div class="visualizer">
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+</div>
+<div class="track-info">
+<div class="track-name">NEON DREAMS</div>
+<div class="artist-name">MIDNIGHT RIDER</div>
+</div>
+<div class="controls">
+<button class="btn">⏮</button>
+<button class="btn play">▶</button>
+<button class="btn">⏭</button>
+</div>
+<div class="community-zone">
+<span>[ COMMUNITY ADDITIONS GO HERE ]</span>
+</div>
+</div>
 </body>
 </html>
