@@ -1,286 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEON ARCADE - Insert Coin</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --neon-pink: #ff00ff;
-            --neon-cyan: #00ffff;
-            --neon-yellow: #ffff00;
-            --arcade-purple: #1a0a2e;
-            --grid-color: rgba(255, 0, 255, 0.15);
-        }
-        
         body {
             min-height: 100vh;
-            background: var(--arcade-purple);
-            font-family: 'Press Start 2P', monospace;
-            color: #fff;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* CRT Scanline Effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        /* Grid Floor */
-        .grid-floor {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 40vh;
-            background: 
-                linear-gradient(transparent 0%, var(--arcade-purple) 100%),
-                repeating-linear-gradient(90deg, var(--grid-color) 0px, var(--grid-color) 1px, transparent 1px, transparent 60px),
-                repeating-linear-gradient(0deg, var(--grid-color) 0px, var(--grid-color) 1px, transparent 1px, transparent 60px);
-            transform: perspective(500px) rotateX(60deg);
-            transform-origin: bottom;
-            animation: gridScroll 2s linear infinite;
-        }
-        
-        @keyframes gridScroll {
-            0% { background-position-y: 0; }
-            100% { background-position-y: 60px; }
-        }
-        
-        /* Main Title */
-        .arcade-title {
-            text-align: center;
-            padding: 30px 20px 20px;
-        }
-        
-        .arcade-title h1 {
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            text-shadow: 
-                0 0 10px var(--neon-pink),
-                0 0 20px var(--neon-pink),
-                0 0 40px var(--neon-pink),
-                0 0 80px var(--neon-pink);
-            animation: flicker 3s infinite;
-            letter-spacing: 4px;
-        }
-        
-        .subtitle {
-            color: var(--neon-cyan);
-            font-size: 0.6rem;
-            margin-top: 10px;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.8; }
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        /* Arcade Floor */
-        .arcade-floor {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 20px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* Arcade Cabinet */
-        .cabinet {
-            width: 120px;
-            height: 200px;
-            background: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%);
-            border-radius: 10px 10px 5px 5px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .cabinet:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(255, 0, 255, 0.3);
-        }
-        
-        .cabinet-screen {
-            width: 90px;
-            height: 70px;
-            background: #000;
-            margin: 15px auto 10px;
-            border-radius: 5px;
-            border: 3px solid #444;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-        }
-        
-        .cabinet-screen span {
-            font-size: 0.4rem;
-            color: var(--neon-cyan);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            animation: screenGlow 2s infinite alternate;
         }
-        
-        @keyframes screenGlow {
-            from { text-shadow: 0 0 5px var(--neon-cyan); }
-            to { text-shadow: 0 0 15px var(--neon-cyan), 0 0 25px var(--neon-cyan); }
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .cabinet-controls {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 5px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .joystick {
-            width: 15px;
-            height: 25px;
-            background: linear-gradient(#666, #333);
-            border-radius: 50% 50% 30% 30%;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--neon-pink);
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-        
-        .btn:nth-child(2) { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
-        
-        /* High Score Board */
-        .highscore-board {
-            background: linear-gradient(180deg, #0a0a1a, #151530);
-            border: 3px solid var(--neon-yellow);
-            border-radius: 10px;
-            padding: 15px;
-            width: 280px;
-            margin: 20px auto;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
-        }
-        
-        .highscore-board h2 {
-            color: var(--neon-yellow);
-            font-size: 0.8rem;
-            text-align: center;
-            text-shadow: 0 0 10px var(--neon-yellow);
-            margin-bottom: 10px;
-        }
-        
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.5rem;
-            padding: 5px 0;
-            border-bottom: 1px dashed rgba(255,255,0,0.3);
-        }
-        
-        .score-entry .rank { color: var(--neon-pink); }
-        .score-entry .name { color: var(--neon-cyan); }
-        .score-entry .score { color: var(--neon-yellow); }
-        
-        /* Community Zone */
-        .community-zone {
-            text-align: center;
-            padding: 20px;
-            margin-top: 10px;
-        }
-        
-        .community-zone p {
-            font-size: 0.5rem;
-            color: #888;
-            margin-bottom: 10px;
-        }
-        
-        .coin-slot {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #333;
-            border: 2px solid var(--neon-cyan);
-            border-radius: 5px;
-            color: var(--neon-cyan);
-            font-size: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .coin-slot:hover {
-            background: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 30px var(--neon-cyan);
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="grid-floor"></div>
-<header class="arcade-title">
-<h1>🕹️ NEON ARCADE 🕹️</h1>
-<p class="subtitle">▶ INSERT COIN TO PLAY ◀</p>
-</header>
-<section class="arcade-floor">
-<div class="cabinet">
-<div class="cabinet-screen"><span>SPACE<br/>INVADERS</span></div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons"><div class="btn"></div><div class="btn"></div></div>
-</div>
-</div>
-<div class="cabinet">
-<div class="cabinet-screen"><span>PAC-MAN<br/>FEVER</span></div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons"><div class="btn"></div><div class="btn"></div></div>
-</div>
-</div>
-<div class="cabinet">
-<div class="cabinet-screen"><span>DONKEY<br/>KONG</span></div>
-<div class="cabinet-controls">
-<div class="joystick"></div>
-<div class="buttons"><div class="btn"></div><div class="btn"></div></div>
-</div>
-</div>
-</section>
-<aside class="highscore-board">
-<h2>★ HIGH SCORES ★</h2>
-<div class="score-entry"><span class="rank">1ST</span><span class="name">AAA</span><span class="score">999999</span></div>
-<div class="score-entry"><span class="rank">2ND</span><span class="name">BOB</span><span class="score">888888</span></div>
-<div class="score-entry"><span class="rank">3RD</span><span class="name">CAT</span><span class="score">777777</span></div>
-<div class="score-entry"><span class="rank">4TH</span><span class="name">???</span><span class="score">------</span></div>
-</aside>
-<footer class="community-zone">
-<p>// COMMUNITY EXPANSION ZONE //</p>
-<div class="coin-slot">🪙 ADD YOUR GAME HERE</div>
-</footer>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
