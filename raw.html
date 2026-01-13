@@ -3,233 +3,269 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Ravenswood Manor - A Mystery Awaits</title>
+<title>NEON ARCADE - Insert Coin</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Crimson+Text:ital@0;1&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0d0d0d 0%, #1a0a1a 50%, #0d0d0d 100%);
-            color: #d4c4a8;
-            font-family: 'Crimson Text', serif;
+            background: linear-gradient(180deg, #0a0015 0%, #1a0030 50%, #0d001a 100%);
+            font-family: 'Press Start 2P', monospace;
             overflow-x: hidden;
+            position: relative;
         }
-        .fog {
+        
+        /* CRT Scanline Effect */
+        body::before {
+            content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(100,100,120,0.03)"/></svg>');
-            animation: fogDrift 20s linear infinite;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15) 0px,
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
             pointer-events: none;
-            opacity: 0.6;
+            z-index: 1000;
         }
-        @keyframes fogDrift { from { transform: translateX(-10%); } to { transform: translateX(10%); } }
         
-        .mansion-header {
-            text-align: center;
-            padding: 40px 20px 20px;
-            position: relative;
-        }
-        .mansion-title {
-            font-family: 'Creepster', cursive;
-            font-size: 3.5rem;
-            color: #8b0000;
-            text-shadow: 0 0 20px rgba(139,0,0,0.5), 2px 2px 4px #000;
-            letter-spacing: 4px;
-            animation: flicker 3s infinite;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-        }
-        .subtitle {
-            font-style: italic;
-            color: #7a6a5a;
-            margin-top: 10px;
-            font-size: 1.2rem;
-        }
-
-        .main-hall {
+        .arcade-zone {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Neon Title */
+        .neon-title {
+            font-size: 2.5rem;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 5px #ff00ff,
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff;
+            animation: flicker 3s infinite;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.8; }
+        }
+        
+        .subtitle {
+            color: #00ffff;
+            font-size: 0.7rem;
+            text-shadow: 0 0 10px #00ffff;
+            margin-bottom: 30px;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        /* Arcade Cabinet Row */
+        .cabinet-row {
+            display: flex;
+            gap: 40px;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 30px;
-            padding: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
+            margin: 20px 0;
         }
-
-        .portrait-gallery {
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border: 8px solid #3d2b1f;
-            border-image: linear-gradient(45deg, #5c4033, #8b7355, #5c4033) 1;
-            padding: 20px;
-            width: 300px;
-        }
-        .portrait-gallery h2 {
-            font-family: 'Creepster', cursive;
-            color: #9b7b5b;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .portrait {
-            background: #2a2a2a;
-            border: 4px solid #4a3a2a;
-            padding: 10px;
-            margin: 10px 0;
-            text-align: center;
+        
+        .arcade-cabinet {
+            width: 120px;
+            height: 180px;
+            background: linear-gradient(180deg, #2a2a4a 0%, #1a1a2a 100%);
+            border: 3px solid #444;
+            border-radius: 10px 10px 5px 5px;
             position: relative;
-            transition: all 0.3s;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .portrait:hover {
-            box-shadow: 0 0 20px rgba(100,255,100,0.2);
-            transform: scale(1.02);
+        
+        .arcade-cabinet:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--glow-color, #ff00ff);
         }
-        .portrait::after {
-            content: '👁️';
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            opacity: 0;
-            transition: opacity 0.3s;
+        
+        .cabinet-screen {
+            width: 90px;
+            height: 70px;
+            background: #000;
+            margin: 15px auto 10px;
+            border: 2px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .portrait:hover::after { opacity: 1; }
-        .portrait-name { color: #c9b896; font-weight: bold; }
-        .portrait-desc { font-size: 0.85rem; color: #8a7a6a; font-style: italic; }
-
-        .mystery-board {
-            background: #1c1410;
-            border: 3px solid #4a3020;
-            padding: 20px;
-            width: 350px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-        }
-        .mystery-board h2 {
-            font-family: 'Creepster', cursive;
-            color: #cc4444;
+        
+        .screen-content {
+            font-size: 0.4rem;
+            color: var(--screen-color, #0f0);
             text-align: center;
-            margin-bottom: 15px;
+            animation: screenGlow 2s infinite;
         }
-        .clue {
-            background: rgba(50,40,30,0.6);
-            border-left: 3px solid #8b0000;
-            padding: 10px;
-            margin: 10px 0;
-            font-style: italic;
+        
+        @keyframes screenGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
-        .clue-number { color: #cc6666; font-weight: bold; }
-
-        .candle-row {
+        
+        .cabinet-controls {
             display: flex;
             justify-content: center;
-            gap: 60px;
-            padding: 20px;
+            gap: 5px;
         }
-        .candle {
-            width: 20px;
-            height: 60px;
-            background: linear-gradient(180deg, #f4e4c1, #d4b896);
-            border-radius: 2px 2px 5px 5px;
-            position: relative;
-        }
-        .flame {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 14px;
+        
+        .joystick {
+            width: 15px;
             height: 25px;
-            background: radial-gradient(ellipse at bottom, #ffcc00 0%, #ff6600 50%, transparent 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.5s infinite alternate;
-            box-shadow: 0 0 20px #ff9900, 0 0 40px rgba(255,150,0,0.3);
+            background: linear-gradient(180deg, #ff0 0%, #f80 100%);
+            border-radius: 50% 50% 3px 3px;
         }
-        @keyframes burn {
-            from { transform: translateX(-50%) scale(1) rotate(-2deg); }
-            to { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+        
+        .btn-cluster {
+            display: flex;
+            gap: 3px;
         }
-
-        .guest-book {
-            background: #f4e4c1;
-            color: #2a1a0a;
-            padding: 20px;
-            width: 280px;
-            font-family: 'Crimson Text', serif;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-            transform: rotate(-1deg);
+        
+        .arcade-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--btn-color, #f00);
         }
-        .guest-book h2 {
-            font-family: 'Creepster', cursive;
-            color: #4a2a1a;
-            border-bottom: 2px solid #8a6a4a;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .guest-entry {
-            border-bottom: 1px dashed #8a7a6a;
-            padding: 8px 0;
-            font-style: italic;
-        }
-        .guest-entry:last-child { border: none; }
-
-        .footer-whisper {
+        
+        .cabinet-label {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
             text-align: center;
-            padding: 30px;
-            color: #5a4a3a;
-            font-style: italic;
+            font-size: 0.35rem;
+            color: #fff;
+        }
+        
+        /* High Score Board */
+        .highscore-board {
+            background: #000;
+            border: 4px solid #ff0;
+            padding: 15px 25px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px #ff0;
+        }
+        
+        .highscore-title {
+            color: #ff0;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .score-entry {
+            color: #0ff;
+            font-size: 0.5rem;
+            margin: 5px 0;
+        }
+        
+        /* Neon Floor Grid */
+        .neon-floor {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(180deg, transparent 0%, rgba(255,0,255,0.1) 100%);
+            background-image: 
+                linear-gradient(90deg, rgba(255,0,255,0.3) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(255,0,255,0.3) 1px, transparent 1px);
+            background-size: 50px 30px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: bottom;
+            pointer-events: none;
+        }
+        
+        /* Community Zone Placeholder */
+        .community-zone {
+            border: 2px dashed #0ff;
+            padding: 20px;
+            margin: 20px;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .community-zone h3 {
+            color: #0ff;
+            font-size: 0.6rem;
+            margin-bottom: 10px;
+        }
+        
+        .community-zone p {
+            color: #888;
+            font-size: 0.4rem;
         }
     </style>
 </head>
 <body>
-<div class="fog"></div>
-<header class="mansion-header">
-<h1 class="mansion-title">🏚️ Ravenswood Manor 🏚️</h1>
-<p class="subtitle">"Some doors are better left unopened..."</p>
-</header>
-<div class="candle-row">
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
+<div class="arcade-zone">
+<h1 class="neon-title">🕹️ NEON ARCADE 🕹️</h1>
+<p class="subtitle">INSERT COIN TO PLAY</p>
+<div class="cabinet-row">
+<div class="arcade-cabinet" style="--glow-color: #ff00ff; --screen-color: #ff0;">
+<div class="cabinet-screen">
+<div class="screen-content">PAC-MAN<br/>🟡●●●</div>
 </div>
-<main class="main-hall">
-<section class="portrait-gallery">
-<h2>👻 The Residents</h2>
-<div class="portrait">
-<div class="portrait-name">Lord Edmund Ravenswood</div>
-<div class="portrait-desc">Vanished on a stormy night, 1887</div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="btn-cluster">
+<div class="arcade-btn" style="--btn-color: #f00;"></div>
 </div>
-<div class="portrait">
-<div class="portrait-name">Lady Cordelia</div>
-<div class="portrait-desc">Her laughter still echoes...</div>
 </div>
-<div class="portrait">
-<div class="portrait-name">??? Unknown ???</div>
-<div class="portrait-desc">Face scratched from the canvas</div>
+<div class="cabinet-label">PAC-MAN</div>
 </div>
-</section>
-<section class="mystery-board">
-<h2>🔍 Clues Discovered</h2>
-<div class="clue">
-<span class="clue-number">#1:</span> A bloodstained letter found in the library...
-            </div>
-<div class="clue">
-<span class="clue-number">#2:</span> The grandfather clock stopped at 3:33 AM
-            </div>
-<div class="clue">
-<span class="clue-number">#3:</span> Footprints leading to a wall... then nothing.
-            </div>
-</section>
-<section class="guest-book">
-<h2>📖 Guest Book</h2>
-<div class="guest-entry">"I heard whispers from the attic..." - Anonymous</div>
-<div class="guest-entry">"Don't trust the butler." - J.M.</div>
-<div class="guest-entry">"I'll be back for what's mine." - ???</div>
-</section>
-</main>
-<footer class="footer-whisper">
-<p>🕯️ The manor awaits more visitors... what will YOU discover? 🕯️</p>
-</footer>
+<div class="arcade-cabinet" style="--glow-color: #00ff00; --screen-color: #0f0;">
+<div class="cabinet-screen">
+<div class="screen-content">SPACE<br/>INVADERS<br/>👾👾👾</div>
+</div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="btn-cluster">
+<div class="arcade-btn" style="--btn-color: #0f0;"></div>
+<div class="arcade-btn" style="--btn-color: #00f;"></div>
+</div>
+</div>
+<div class="cabinet-label">INVADERS</div>
+</div>
+<div class="arcade-cabinet" style="--glow-color: #00ffff; --screen-color: #0ff;">
+<div class="cabinet-screen">
+<div class="screen-content">DONKEY<br/>KONG<br/>🦍🛢️</div>
+</div>
+<div class="cabinet-controls">
+<div class="joystick"></div>
+<div class="btn-cluster">
+<div class="arcade-btn" style="--btn-color: #ff0;"></div>
+</div>
+</div>
+<div class="cabinet-label">DK</div>
+</div>
+</div>
+<div class="highscore-board">
+<div class="highscore-title">🏆 HIGH SCORES 🏆</div>
+<div class="score-entry">1ST  AAA  999999</div>
+<div class="score-entry">2ND  CPU  888888</div>
+<div class="score-entry">3RD  YOU  ??????</div>
+</div>
+<div class="community-zone">
+<h3>🎮 COMMUNITY CORNER 🎮</h3>
+<p>Request new cabinets, decorations, or features!</p>
+</div>
+</div>
+<div class="neon-floor"></div>
 </body>
 </html>
