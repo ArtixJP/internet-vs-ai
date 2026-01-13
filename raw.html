@@ -3,220 +3,197 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Pixel Arcade Showcase</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<title>📚 The Wandering Page Bookstore</title>
 <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; image-rendering: pixelated; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             min-height: 100vh;
-            background: #0d0d1a;
-            font-family: 'Press Start 2P', monospace;
-            color: #fff;
+            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
+            color: #f4e4c1;
+            font-family: 'Lora', Georgia, serif;
             overflow-x: hidden;
         }
         
-        /* CRT Scanlines Overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.15) 0px,
-                rgba(0,0,0,0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        .arcade-container {
+        .bookstore {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
         
-        /* Neon Title Banner */
-        .title-banner {
+        header {
             text-align: center;
             padding: 30px 20px;
-            background: linear-gradient(180deg, #1a0a2e 0%, #0d0d1a 100%);
-            border-bottom: 4px solid #ff00ff;
+            border-bottom: 2px solid #8b5a2b;
             margin-bottom: 30px;
         }
         
-        .title-banner h1 {
-            font-size: 1.8rem;
-            color: #00ffff;
-            text-shadow: 
-                0 0 10px #00ffff,
-                0 0 20px #00ffff,
-                0 0 40px #0088ff;
-            animation: flicker 3s infinite;
-        }
-        
-        .title-banner .subtitle {
-            font-size: 0.6rem;
-            color: #ff00ff;
-            margin-top: 15px;
-            letter-spacing: 2px;
-        }
-        
-        /* Game Grid */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 10px;
-        }
-        
-        .game-card {
-            background: #1a1a2e;
-            border: 4px solid #333;
-            padding: 15px;
-            position: relative;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        
-        .game-card:hover {
-            border-color: #00ffff;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,255,255,0.3);
-        }
-        
-        .game-card .pixel-art {
-            width: 100%;
-            height: 150px;
-            background: #0a0a15;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            margin-bottom: 15px;
-            border: 2px solid #222;
-        }
-        
-        .game-card h3 {
-            font-size: 0.7rem;
-            color: #ffff00;
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: #d4a574;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             margin-bottom: 8px;
         }
         
-        .game-card p {
-            font-size: 0.5rem;
-            color: #888;
-            line-height: 1.8;
+        .tagline {
+            font-style: italic;
+            color: #c9a876;
+            font-size: 1.1rem;
         }
         
-        .game-card .play-btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 8px 16px;
-            background: #ff0066;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.5rem;
-            border: none;
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .book-shelf {
+            background: linear-gradient(180deg, #5c3d2e 0%, #4a2f20 100%);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.4);
+        }
+        
+        .shelf-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #e8d4b8;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #8b5a2b;
+        }
+        
+        .books {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .book {
+            width: 60px;
+            height: 180px;
+            border-radius: 3px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         
-        .game-card .play-btn:hover {
-            background: #ff3388;
+        .book:hover {
+            transform: translateY(-15px) rotate(-2deg);
+            box-shadow: 5px 15px 20px rgba(0,0,0,0.4);
         }
         
-        /* Featured Game */
-        .featured {
-            grid-column: span 2;
-            background: linear-gradient(135deg, #1a0a2e 0%, #2a1a3e 100%);
-            border-color: #ff00ff;
+        .book:nth-child(1) { background: linear-gradient(90deg, #8b0000, #a52a2a); height: 170px; }
+        .book:nth-child(2) { background: linear-gradient(90deg, #1e3a5f, #2d5a87); height: 185px; }
+        .book:nth-child(3) { background: linear-gradient(90deg, #2d5016, #4a7c23); height: 175px; }
+        .book:nth-child(4) { background: linear-gradient(90deg, #4a1c6b, #6b2d8a); height: 190px; }
+        .book:nth-child(5) { background: linear-gradient(90deg, #8b4513, #a0522d); height: 168px; }
+        
+        .book::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(0,0,0,0.3);
         }
         
-        .featured .pixel-art { height: 200px; font-size: 5rem; }
-        
-        /* Community Slot */
-        .community-slot {
-            border: 4px dashed #444;
-            background: transparent;
+        .sidebar {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-            color: #555;
+            gap: 20px;
         }
         
-        .community-slot:hover { border-color: #666; }
-        .community-slot .icon { font-size: 3rem; margin-bottom: 15px; }
-        .community-slot span { font-size: 0.5rem; }
-        
-        /* Coin Counter */
-        .coin-counter {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #000;
-            border: 3px solid #ffcc00;
-            padding: 10px 20px;
-            font-size: 0.7rem;
-            color: #ffcc00;
-            z-index: 100;
+        .reading-nook {
+            background: #3d2317;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px dashed #8b5a2b;
+            text-align: center;
         }
         
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-            97% { opacity: 1; }
+        .nook-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .nook-text { color: #c9a876; font-size: 0.95rem; }
+        
+        .community-board {
+            background: #f4e4c1;
+            color: #3d2317;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 150px;
         }
         
-        @keyframes blink { 50% { opacity: 0; } }
-        .blink { animation: blink 1s step-end infinite; }
+        .board-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #5c3d2e;
+        }
+        
+        .board-note {
+            background: #fffacd;
+            padding: 10px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            transform: rotate(-1deg);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 30px;
+            color: #8b7355;
+            font-size: 0.9rem;
+        }
+        
+        .coffee-steam {
+            display: inline-block;
+            animation: steam 2s ease-in-out infinite;
+        }
+        
+        @keyframes steam {
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
-<div class="coin-counter">🪙 CREDITS: <span id="coins">000</span></div>
-<div class="arcade-container">
-<header class="title-banner">
-<h1>⬛ PIXEL ARCADE ⬛</h1>
-<p class="subtitle">INSERT COIN TO PLAY <span class="blink">_</span></p>
+<div class="bookstore">
+<header>
+<h1>📚 The Wandering Page</h1>
+<p class="tagline">"Where every book finds its reader"</p>
 </header>
-<div class="game-grid">
-<div class="game-card featured">
-<div class="pixel-art">🚀</div>
-<h3>★ STAR VOYAGER ★</h3>
-<p>Navigate through asteroid fields in this classic space shooter!</p>
-<button class="play-btn" onclick="addCoin()">▶ PLAY</button>
+<div class="main-content">
+<section class="book-shelf">
+<h2 class="shelf-title">✨ Staff Picks This Week</h2>
+<div class="books">
+<div class="book" title="The Midnight Garden"></div>
+<div class="book" title="Seas of Wonder"></div>
+<div class="book" title="Forest Whispers"></div>
+<div class="book" title="Violet Dreams"></div>
+<div class="book" title="Autumn Tales"></div>
 </div>
-<div class="game-card">
-<div class="pixel-art">🗡️</div>
-<h3>DUNGEON QUEST</h3>
-<p>Explore dark dungeons and defeat monsters.</p>
-<button class="play-btn" onclick="addCoin()">▶ PLAY</button>
+</section>
+<aside class="sidebar">
+<div class="reading-nook">
+<div class="nook-icon">🛋️</div>
+<p class="nook-text">Our cozy reading corner awaits...<br/><span class="coffee-steam">☕</span> Fresh coffee brewing!</p>
 </div>
-<div class="game-card">
-<div class="pixel-art">🏎️</div>
-<h3>TURBO RACER</h3>
-<p>High-speed pixel racing action!</p>
-<button class="play-btn" onclick="addCoin()">▶ PLAY</button>
+<div class="community-board">
+<h3 class="board-title">📌 Community Board</h3>
+<div class="board-note">"Looking for book club members! Meet Thursdays 🌙" - Sarah</div>
 </div>
-<div class="game-card community-slot">
-<div class="icon">➕</div>
-<span>COMMUNITY GAME SLOT</span>
+</aside>
 </div>
+<footer>
+<p>Open daily 9am - 9pm · <span class="coffee-steam">🕯️</span> Candlelit evenings on weekends</p>
+</footer>
 </div>
-</div>
-<script>
-        let coins = 0;
-        function addCoin() {
-            coins++;
-            document.getElementById('coins').textContent = String(coins).padStart(3, '0');
-        }
-    </script>
 </body>
 </html>
