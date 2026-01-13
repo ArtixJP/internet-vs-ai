@@ -1,41 +1,195 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEON DISTRICT // Portal</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a0a2e 50%, #0f0f1a 100%);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .rain {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(transparent 0px, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px);
+            animation: rainFall 0.5s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes rainFall { to { background-position: 0 20px; } }
+        
+        .portal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .neon-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff00ff;
+            animation: flicker 3s infinite;
+            letter-spacing: 8px;
+            margin: 20px 0;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.6; }
+        }
+        
+        .subtitle {
+            color: #00ffff;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .city-skyline {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 3px;
+            margin: 20px 0;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5));
+        }
+        
+        .building {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a15 100%);
+            border: 1px solid #ff00ff33;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .building:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px #00ffff, inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        .building::before {
+            content: '';
+            position: absolute;
+            top: 10%; left: 20%; right: 20%; bottom: 60%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255, 255, 0, 0.3) 4px, rgba(255, 255, 0, 0.3) 6px);
+        }
+        
+        .b1 { width: 40px; height: 120px; }
+        .b2 { width: 60px; height: 180px; }
+        .b3 { width: 35px; height: 100px; }
+        .b4 { width: 80px; height: 220px; }
+        .b5 { width: 50px; height: 150px; }
+        .b6 { width: 45px; height: 130px; }
+        .b7 { width: 70px; height: 200px; }
+        
+        .portal-frame {
+            width: 300px; height: 180px;
+            border: 3px solid #ff00ff;
+            border-radius: 10px;
+            margin: 30px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            box-shadow: 0 0 30px #ff00ff, inset 0 0 30px rgba(0, 255, 255, 0.2);
+            animation: portalPulse 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .portal-frame:hover { transform: scale(1.05); }
+        
+        @keyframes portalPulse {
+            0%, 100% { box-shadow: 0 0 30px #ff00ff, inset 0 0 30px rgba(0, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 50px #00ffff, inset 0 0 50px rgba(255, 0, 255, 0.3); }
+        }
+        
+        .portal-text {
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .expansion-zones {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+        
+        .zone {
+            width: 150px; height: 100px;
+            border: 1px dashed #ff00ff55;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff00ff55;
+            font-size: 0.7rem;
             text-align: center;
+            transition: all 0.3s ease;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .zone:hover {
+            border-color: #00ffff;
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.05);
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .footer-bar {
+            margin-top: 40px;
+            padding: 15px;
+            border-top: 1px solid #ff00ff33;
+            color: #666;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="rain"></div>
+<div class="portal-container">
+<h1 class="neon-title">NEON DISTRICT</h1>
+<p class="subtitle">// ENTER THE GRID //</p>
+<div class="city-skyline">
+<div class="building b1"></div>
+<div class="building b2"></div>
+<div class="building b3"></div>
+<div class="building b4"></div>
+<div class="building b5"></div>
+<div class="building b6"></div>
+<div class="building b7"></div>
+</div>
+<div class="portal-frame">
+<span class="portal-text">[ PORTAL ACTIVE ]</span>
+</div>
+<div class="expansion-zones">
+<div class="zone">[ SHOP DISTRICT ]<br/>Coming Soon</div>
+<div class="zone">[ ARCADE ZONE ]<br/>Coming Soon</div>
+<div class="zone">[ DATA HUB ]<br/>Coming Soon</div>
+</div>
+<div class="footer-bar">SYSTEM STATUS: ONLINE • POPULATION: GROWING • BUILD: v0.1</div>
+</div>
 </body>
 </html>
