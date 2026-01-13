@@ -1,182 +1,227 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>📚 The Cozy Chapter - Bookstore</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARIA-7 | AI Companion Interface</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-pink: #ff00ff;
+            --neon-purple: #b347ff;
+            --dark-bg: #0a0a1a;
+            --panel-bg: rgba(20, 25, 45, 0.85);
+        }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #1a0f0a 100%);
-            color: #f4e4c1;
-            font-family: 'Lora', Georgia, serif;
-        }
-        .bookstore {
-            max-width: 1400px;
-            margin: 0 auto;
+            background: var(--dark-bg);
+            background-image: 
+                radial-gradient(ellipse at 20% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 0, 255, 0.08) 0%, transparent 50%);
+            font-family: 'Rajdhani', sans-serif;
+            color: #e0e8ff;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+        
         header {
             text-align: center;
-            padding: 30px 20px;
-            border-bottom: 2px solid #8b5a2b;
-            margin-bottom: 30px;
-        }
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: #daa520;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            animation: glow 3s ease-in-out infinite;
-        }
-        .tagline {
-            font-style: italic;
-            color: #c4a574;
-            margin-top: 8px;
-            font-size: 1.1rem;
-        }
-        @keyframes glow {
-            0%, 100% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(218,165,32,0.3); }
-            50% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(218,165,32,0.6); }
-        }
-        .main-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-        .featured-books {
-            background: linear-gradient(135deg, #4a3728 0%, #3d2a1f 100%);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.4);
-        }
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: #daa520;
             margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        .subtitle { font-size: 0.9rem; opacity: 0.6; letter-spacing: 4px; margin-top: 5px; }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 250px 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        .book-shelf {
+        
+        .panel-title::before { content: '◆'; animation: blink 2s infinite; }
+        
+        /* AI Avatar Section */
+        .avatar-container {
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .book {
-            width: 90px;
-            height: 130px;
-            border-radius: 3px 8px 8px 3px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 3px 3px 8px rgba(0,0,0,0.5);
+        
+        .ai-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink), var(--neon-cyan));
+            padding: 4px;
+            animation: rotate 8s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        .ai-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--dark-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 8px;
-            font-weight: 500;
+            font-size: 4rem;
+            animation: pulse 2s ease-in-out infinite;
         }
-        .book:hover {
-            transform: translateY(-10px) rotate(-3deg);
-            box-shadow: 5px 8px 15px rgba(0,0,0,0.6);
+        
+        .ai-name { font-family: 'Orbitron', monospace; font-size: 1.4rem; color: var(--neon-cyan); }
+        .ai-status { font-size: 0.85rem; color: #7fff7f; margin-top: 5px; }
+        .ai-status::before { content: '● '; animation: blink 1s infinite; }
+        
+        /* Status Bars */
+        .status-item { margin-bottom: 12px; }
+        .status-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px; }
+        .status-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
         }
-        .book:nth-child(1) { background: linear-gradient(135deg, #8b0000, #5c0000); }
-        .book:nth-child(2) { background: linear-gradient(135deg, #1e3a5f, #0d1f33); color: #a8d8ff; }
-        .book:nth-child(3) { background: linear-gradient(135deg, #2d5016, #1a3009); }
-        .book:nth-child(4) { background: linear-gradient(135deg, #4a2c6a, #2d1a40); color: #d4b8e8; }
-        .book:nth-child(5) { background: linear-gradient(135deg, #8b4513, #5c2d0e); }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .status-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
         }
-        .reading-nook {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" x="35" font-size="50">🪑</text></svg>') no-repeat center;
-            background-size: 60px;
-            background-color: #3d2a1f;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
+        .status-fill.cyan { background: linear-gradient(90deg, var(--neon-cyan), #00a0aa); width: 87%; }
+        .status-fill.pink { background: linear-gradient(90deg, var(--neon-pink), #aa00aa); width: 64%; }
+        .status-fill.purple { background: linear-gradient(90deg, var(--neon-purple), #7722aa); width: 92%; }
+        
+        /* Community Zone */
+        .community-zone {
             min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            box-shadow: inset 0 0 30px rgba(255,200,100,0.1);
-        }
-        .nook-text { font-size: 0.9rem; color: #c4a574; }
-        .bulletin-board {
-            background: #a08060;
+            border: 2px dashed rgba(0, 245, 255, 0.3);
             border-radius: 8px;
-            padding: 20px;
-            border: 8px solid #5c4030;
-            min-height: 180px;
-        }
-        .bulletin-board h3 {
-            color: #2c1810;
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 15px;
-        }
-        .note {
-            background: #fffacd;
-            color: #333;
-            padding: 10px;
-            margin: 8px 0;
-            transform: rotate(-2deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            font-size: 0.85rem;
-        }
-        .note:nth-child(odd) { transform: rotate(1deg); }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #8b7355;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(0, 245, 255, 0.5);
             font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
         }
-        .coffee-steam {
-            display: inline-block;
-            animation: steam 2s ease-in-out infinite;
+        
+        /* Animations */
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px var(--neon-cyan)); }
+            to { filter: drop-shadow(0 0 20px var(--neon-pink)); }
         }
-        @keyframes steam { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            opacity: 0.4;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
-<div class="bookstore">
+<div class="scanlines"></div>
 <header>
-<div class="logo">📚 The Cozy Chapter</div>
-<p class="tagline">"Where every story finds a home"</p>
+<h1>ARIA-7</h1>
+<p class="subtitle">AUTONOMOUS RESPONSIVE INTELLIGENCE ASSISTANT</p>
 </header>
-<div class="main-content">
-<section class="featured-books">
-<h2 class="section-title">✨ Staff Picks This Week</h2>
-<div class="book-shelf">
-<div class="book">Midnight Tales</div>
-<div class="book">Ocean Dreams</div>
-<div class="book">Forest Whispers</div>
-<div class="book">Cosmic Poetry</div>
-<div class="book">Ancient Secrets</div>
+<main class="dashboard">
+<section class="panel">
+<div class="panel-title">SYSTEM STATUS</div>
+<div class="status-item">
+<div class="status-label">Neural Processing</div>
+<div class="status-bar"><div class="status-fill cyan"></div></div>
 </div>
+<div class="status-item">
+<div class="status-label">Empathy Matrix</div>
+<div class="status-bar"><div class="status-fill pink"></div></div>
+</div>
+<div class="status-item">
+<div class="status-label">Memory Banks</div>
+<div class="status-bar"><div class="status-fill purple"></div></div>
+</div>
+<div class="community-zone">[ Community Module Slot A ]<br/>Your ideas here...</div>
 </section>
-<aside class="sidebar">
-<div class="reading-nook">
-<p class="nook-text">☕ Reading nook open<br/>Pull up a chair!</p>
+<section class="panel avatar-container">
+<div class="ai-avatar">
+<div class="ai-avatar-inner">🤖</div>
 </div>
-<div class="bulletin-board">
-<h3>📌 Community Board</h3>
-<div class="note">Book club meets Fridays! 📖</div>
-<div class="note">Looking for sci-fi recs! - Alex</div>
+<div class="ai-name">ARIA-7</div>
+<div class="ai-status">Online &amp; Learning</div>
+</section>
+<section class="panel">
+<div class="panel-title">COMPANION LOG</div>
+<div style="font-size: 0.85rem; line-height: 1.8; opacity: 0.8;">
+<p>◈ Initialized companion protocols</p>
+<p>◈ Awaiting community input...</p>
+<p>◈ Ready to evolve together</p>
 </div>
-</aside>
-</div>
-<footer>
-<span class="coffee-steam">☕</span> Fresh coffee brewing... Open 9am-9pm <span class="coffee-steam">☕</span>
-</footer>
-</div>
+<div class="community-zone" style="margin-top: 15px;">[ Community Module Slot B ]<br/>Add features here...</div>
+</section>
+</main>
+<footer>TWITCH PLAYS CODE // ERA 001 // GENESIS COMPLETE</footer>
 </body>
 </html>
