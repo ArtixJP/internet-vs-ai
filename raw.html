@@ -1,41 +1,226 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ABYSSAL-7 Research Station</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --deep-blue: #0a1628;
+            --ocean-mid: #0d2847;
+            --biolum-cyan: #00f7ff;
+            --biolum-green: #39ff14;
+            --warning-orange: #ff6b35;
+            --glass: rgba(0, 247, 255, 0.1);
+        }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, var(--ocean-mid) 0%, var(--deep-blue) 100%);
+            font-family: 'Courier New', monospace;
+            color: var(--biolum-cyan);
+            overflow-x: hidden;
+            position: relative;
+        }
+        .bubbles { position: fixed; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent);
+            border-radius: 50%;
+            animation: rise linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-110vh) translateX(20px); }
+        }
+        .station-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 15px;
+            padding: 15px;
+        }
+        .header {
+            grid-column: 1 / -1;
+            background: var(--glass);
+            border: 1px solid var(--biolum-cyan);
+            border-radius: 8px;
+            padding: 15px 25px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .station-name { font-size: 1.8rem; text-shadow: 0 0 20px var(--biolum-cyan); }
+        .status { display: flex; gap: 20px; font-size: 0.9rem; }
+        .status-item { display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; animation: pulse 2s infinite; }
+        .status-dot.online { background: var(--biolum-green); box-shadow: 0 0 10px var(--biolum-green); }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .sidebar {
+            background: var(--glass);
+            border: 1px solid var(--biolum-cyan);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .depth-gauge h3 { font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8; }
+        .gauge-bar {
+            height: 300px;
+            width: 30px;
+            background: linear-gradient(180deg, #1a4a6e 0%, var(--deep-blue) 100%);
+            border-radius: 15px;
+            margin: 0 auto;
+            position: relative;
+            border: 2px solid var(--biolum-cyan);
+        }
+        .gauge-marker {
+            position: absolute;
+            width: 40px;
+            left: -7px;
+            height: 4px;
+            background: var(--warning-orange);
+            border-radius: 2px;
+            top: 70%;
+            box-shadow: 0 0 15px var(--warning-orange);
+            animation: depthBob 4s ease-in-out infinite;
+        }
+        @keyframes depthBob { 0%, 100% { top: 70%; } 50% { top: 72%; } }
+        .depth-reading { text-align: center; margin-top: 15px; font-size: 1.4rem; color: var(--warning-orange); }
+        .main-viewport {
+            background: var(--glass);
+            border: 2px solid var(--biolum-cyan);
+            border-radius: 50% / 30%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .viewport-label {
+            position: absolute;
+            top: 15px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+        .specimen-area {
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .specimen {
+            font-size: 5rem;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px var(--biolum-green));
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .specimen-name { margin-top: 15px; font-size: 1.2rem; color: var(--biolum-green); }
+        .specimen-status { font-size: 0.85rem; opacity: 0.7; margin-top: 5px; }
+        .sonar-panel h3 { font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8; }
+        .sonar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--deep-blue) 0%, #051520 100%);
+            border: 2px solid var(--biolum-cyan);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .sonar-sweep {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 0;
+            left: 50%;
+            transform-origin: bottom left;
+            background: linear-gradient(90deg, transparent, var(--biolum-cyan));
+            animation: sweep 3s linear infinite;
+            opacity: 0.5;
         }
+        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .sonar-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+        }
+        .sonar-blip {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--biolum-green);
+            border-radius: 50%;
+            top: 30%;
+            left: 60%;
+            animation: blip 3s infinite;
+        }
+        @keyframes blip { 0%, 90%, 100% { opacity: 0; } 95% { opacity: 1; } }
+        .footer {
+            grid-column: 1 / -1;
+            background: var(--glass);
+            border: 1px solid var(--biolum-cyan);
+            border-radius: 8px;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+        .community-log { opacity: 0.7; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="bubbles">
+<div class="bubble" style="left: 10%; width: 20px; height: 20px; animation-duration: 8s;"></div>
+<div class="bubble" style="left: 30%; width: 12px; height: 12px; animation-duration: 12s; animation-delay: 2s;"></div>
+<div class="bubble" style="left: 50%; width: 25px; height: 25px; animation-duration: 10s; animation-delay: 1s;"></div>
+<div class="bubble" style="left: 70%; width: 15px; height: 15px; animation-duration: 9s; animation-delay: 3s;"></div>
+<div class="bubble" style="left: 85%; width: 18px; height: 18px; animation-duration: 11s; animation-delay: 0.5s;"></div>
+</div>
+<div class="station-container">
+<header class="header">
+<div class="station-name">🔬 ABYSSAL-7</div>
+<div class="status">
+<div class="status-item"><span class="status-dot online"></span> SYSTEMS ONLINE</div>
+<div class="status-item">🌊 PRESSURE: STABLE</div>
+<div class="status-item">🔋 POWER: 94%</div>
+</div>
+</header>
+<aside class="sidebar depth-gauge">
+<h3>📏 DEPTH GAUGE</h3>
+<div class="gauge-bar">
+<div class="gauge-marker"></div>
+</div>
+<div class="depth-reading">3,847m</div>
+</aside>
+<main class="main-viewport">
+<span class="viewport-label">◈ OBSERVATION WINDOW ◈</span>
+<div class="specimen-area">
+<div class="specimen">🦑</div>
+<div class="specimen-name">Vampyroteuthis infernalis</div>
+<div class="specimen-status">[ TRACKING ACTIVE ]</div>
+</div>
+</main>
+<aside class="sidebar sonar-panel">
+<h3>📡 SONAR</h3>
+<div class="sonar">
+<div class="sonar-grid" style="width: 33%; height: 33%; top: 33%; left: 33%;"></div>
+<div class="sonar-grid" style="width: 66%; height: 66%; top: 17%; left: 17%;"></div>
+<div class="sonar-sweep"></div>
+<div class="sonar-blip"></div>
+</div>
+</aside>
+<footer class="footer">
+<span>📍 MARIANA SECTOR • LAT -11.3493 • LONG 142.1996</span>
+<span class="community-log">[ COMMUNITY LOG READY ]</span>
+</footer>
+</div>
 </body>
 </html>
