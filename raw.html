@@ -1,225 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NOVA-7 Space Command</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --space-dark: #0a0e17;
-            --panel-bg: rgba(20, 30, 50, 0.85);
-            --accent-cyan: #00f0ff;
-            --accent-orange: #ff6b35;
-            --accent-purple: #a855f7;
-            --text-dim: #6b7280;
-        }
         body {
             min-height: 100vh;
-            background: var(--space-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        .starfield {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse at center, #1a1a3e 0%, var(--space-dark) 70%);
-            z-index: -1;
-        }
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s ease-in-out infinite;
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--accent-cyan);
-        }
-        .header h1 {
-            font-size: 2rem;
-            color: var(--accent-cyan);
-            text-shadow: 0 0 20px var(--accent-cyan);
-            letter-spacing: 8px;
-        }
-        .header .status { color: var(--accent-orange); font-size: 0.9rem; margin-top: 5px; }
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid #2a3a5a;
-            border-radius: 8px;
-            padding: 15px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .panel:hover {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-        }
-        .panel-title {
-            color: var(--accent-cyan);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #2a3a5a;
-            padding-bottom: 8px;
-        }
-        .radar-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-        .radar {
-            width: 180px; height: 180px;
-            border: 2px solid var(--accent-cyan);
-            border-radius: 50%;
-            position: relative;
-            background: radial-gradient(circle, transparent 0%, rgba(0,240,255,0.1) 100%);
-        }
-        .radar::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 50%; height: 2px;
-            background: linear-gradient(90deg, var(--accent-cyan), transparent);
-            transform-origin: left center;
-            animation: scan 4s linear infinite;
-        }
-        .radar-blip {
-            position: absolute;
-            width: 8px; height: 8px;
-            background: var(--accent-orange);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
-        .resources { display: flex; flex-direction: column; gap: 12px; }
-        .resource-bar {
-            background: #1a2a3a;
-            border-radius: 4px;
-            height: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-        .resource-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-        .resource-label {
-            position: absolute;
-            top: 50%; left: 10px;
-            transform: translateY(-50%);
-            font-size: 0.75rem;
-            z-index: 1;
-        }
-        .fuel .resource-fill { background: linear-gradient(90deg, #ff6b35, #ffaa00); width: 72%; }
-        .oxygen .resource-fill { background: linear-gradient(90deg, #00f0ff, #00ff88); width: 89%; }
-        .power .resource-fill { background: linear-gradient(90deg, #a855f7, #ec4899); width: 45%; }
-        .crew-log { font-size: 0.8rem; line-height: 1.8; }
-        .crew-log .entry { padding: 5px 0; border-bottom: 1px dashed #2a3a5a; }
-        .crew-log .time { color: var(--text-dim); }
-        .crew-log .event { color: #9ca3af; }
-        .main-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        .ship-icon { font-size: 4rem; margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .coordinates { color: var(--text-dim); font-size: 0.9rem; }
-        .footer {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px;
-            border-top: 1px solid #2a3a5a;
-            color: var(--text-dim);
-            font-size: 0.75rem;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        /* Community expansion zone */
-        .expansion-zone {
-            border: 1px dashed var(--accent-purple);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            color: var(--accent-purple);
-            font-size: 0.8rem;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="starfield" id="starfield"></div>
-<div class="dashboard">
-<header class="header">
-<h1>⟨ NOVA-7 COMMAND ⟩</h1>
-<div class="status">▸ MISSION DAY 847 • SECTOR ANDROMEDA-9 ▸</div>
-</header>
-<aside class="panel">
-<div class="panel-title">◈ NAVIGATION RADAR</div>
-<div class="radar-container">
-<div class="radar">
-<div class="radar-blip" style="top: 30%; left: 60%;"></div>
-<div class="radar-blip" style="top: 70%; left: 25%;"></div>
-</div>
-</div>
-<div class="expansion-zone">+ Add discoveries here +</div>
-</aside>
-<main class="panel main-view">
-<div class="ship-icon">🚀</div>
-<h2 style="color: var(--accent-cyan); margin-bottom: 10px;">NOVA-7 Explorer</h2>
-<p class="coordinates">COORDS: X-7842.3 | Y-1293.7 | Z-4521.0</p>
-<p style="margin-top: 15px; color: #9ca3af;">Velocity: 24,000 km/s • Heading: Kepler-442b</p>
-</main>
-<aside class="panel">
-<div class="panel-title">◈ SHIP RESOURCES</div>
-<div class="resources">
-<div class="resource-bar fuel"><span class="resource-label">⛽ FUEL 72%</span><div class="resource-fill"></div></div>
-<div class="resource-bar oxygen"><span class="resource-label">💨 O₂ 89%</span><div class="resource-fill"></div></div>
-<div class="resource-bar power"><span class="resource-label">⚡ POWER 45%</span><div class="resource-fill"></div></div>
-</div>
-<div class="panel-title" style="margin-top: 20px;">◈ CREW LOG</div>
-<div class="crew-log">
-<div class="entry"><span class="time">[08:42]</span> <span class="event">Commander Chen: Systems nominal</span></div>
-<div class="entry"><span class="time">[07:15]</span> <span class="event">Dr. Vasquez: Anomaly detected</span></div>
-<div class="entry"><span class="time">[06:30]</span> <span class="event">AI NOVA: Course adjusted</span></div>
-</div>
-</aside>
-<footer class="footer">
-            ◇ NOVA-7 DEEP SPACE EXPLORATION VESSEL • EST. 2157 • TWITCH COMMAND ACTIVE ◇
-        </footer>
-</div>
-<script>
-        // Generate starfield
-        const starfield = document.getElementById('starfield');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starfield.appendChild(star);
-        }
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
