@@ -1,235 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ROBOFORGE Industries - Factory Dashboard</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 50%, #0d1117 100%);
-            color: #00ff88;
-            font-family: 'Share Tech Mono', monospace;
-            overflow-x: hidden;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: rgba(0, 255, 136, 0.05);
-            border: 1px solid #00ff8855;
-            border-radius: 8px;
-        }
-        
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff8866;
-        }
-        
-        .logo span { color: #ff6b35; }
-        
-        .status-bar {
-            display: flex;
-            gap: 30px;
-            font-size: 0.9rem;
-        }
-        
-        .status-item { display: flex; align-items: center; gap: 8px; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; animation: pulse 2s infinite; }
-        .status-dot.green { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        .status-dot.orange { background: #ff6b35; box-shadow: 0 0 10px #ff6b35; }
-        
-        .panel {
-            background: rgba(20, 20, 35, 0.9);
-            border: 1px solid #00ff8844;
-            border-radius: 10px;
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, #00ff88, transparent);
-        }
-        
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            color: #00ff88;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .production-stats { grid-row: span 2; }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #00ff8822;
-        }
-        
-        .stat-value {
-            font-size: 1.4rem;
-            color: #fff;
-            font-weight: bold;
-        }
-        
-        .assembly-line {
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .conveyor {
-            height: 60px;
-            background: repeating-linear-gradient(90deg, #333 0px, #333 20px, #222 20px, #222 40px);
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            animation: conveyorMove 2s linear infinite;
-        }
-        
-        .robot-unit {
-            position: absolute;
-            width: 50px; height: 50px;
-            top: 5px;
-            background: linear-gradient(135deg, #4a4a5a, #2a2a3a);
-            border: 2px solid #00ff88;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            animation: moveRobot 4s linear infinite;
-        }
-        
-        .robot-unit:nth-child(2) { animation-delay: -2s; }
-        
-        .robot-queue {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .queue-slot {
-            width: 60px; height: 60px;
-            border: 2px dashed #00ff8855;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            transition: all 0.3s;
-        }
-        
-        .queue-slot:hover {
-            border-color: #00ff88;
-            transform: scale(1.1);
-            box-shadow: 0 0 20px #00ff8844;
-        }
-        
-        .alerts-panel { grid-row: span 2; }
-        
-        .alert-item {
-            padding: 10px;
-            margin-bottom: 8px;
-            background: rgba(255, 107, 53, 0.1);
-            border-left: 3px solid #ff6b35;
-            border-radius: 0 5px 5px 0;
-            font-size: 0.85rem;
-        }
-        
-        .alert-item.info { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; }
-        
-        .footer {
-            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 15px;
-            color: #666;
-            font-size: 0.8rem;
         }
-        
-        .footer span { color: #00ff88; }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes conveyorMove { from { background-position: 0 0; } to { background-position: 40px 0; } }
-        @keyframes moveRobot { from { left: -60px; } to { left: 110%; } }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="dashboard">
-<header class="header">
-<div class="logo">🤖 ROBO<span>FORGE</span> Industries</div>
-<div class="status-bar">
-<div class="status-item"><span class="status-dot green"></span> Systems Online</div>
-<div class="status-item"><span class="status-dot orange"></span> 3 Alerts</div>
-<div class="status-item">⏱️ Uptime: 847:23:01</div>
-</div>
-</header>
-<div class="panel production-stats">
-<div class="panel-title">📊 Production Stats</div>
-<div class="stat-row"><span>Units Today</span><span class="stat-value">1,247</span></div>
-<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
-<div class="stat-row"><span>Queue</span><span class="stat-value">38</span></div>
-<div class="stat-row"><span>Defects</span><span class="stat-value">0.3%</span></div>
-</div>
-<div class="panel assembly-line">
-<div class="panel-title">�icing Assembly Line A</div>
-<div class="conveyor">
-<div class="robot-unit">🦾</div>
-<div class="robot-unit">🤖</div>
-</div>
-<div class="robot-queue">
-<div class="queue-slot">⚙️</div>
-<div class="queue-slot">🔧</div>
-<div class="queue-slot">💡</div>
-<div class="queue-slot">🔋</div>
-</div>
-</div>
-<div class="panel alerts-panel">
-<div class="panel-title">⚠️ Factory Alerts</div>
-<div class="alert-item">Arm calibration due in 2h</div>
-<div class="alert-item">Low coolant in Sector 7</div>
-<div class="alert-item info">Batch #4821 complete ✓</div>
-<div class="alert-item info">New model approved</div>
-</div>
-<div class="panel" style="grid-column: 2;">
-<div class="panel-title">🌐 Community Expansion Zone</div>
-<p style="color: #666; text-align: center; padding: 20px;">This space awaits your creations...<br/>What should the factory produce next?</p>
-</div>
-<footer class="footer">
-            ROBOFORGE Dashboard v2.4 | <span>Twitch Plays Code</span> | Building the future, one robot at a time 🔩
-        </footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
