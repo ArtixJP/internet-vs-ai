@@ -3,221 +3,225 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>ORBITAL STATION NEXUS-7</title>
+<title>SYNTHWAVE RADIO</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #0d1117 50%, #0a0a12 100%);
-            color: #00ffff;
-            font-family: 'Share Tech Mono', monospace;
-            overflow-x: hidden;
-            padding: 20px;
-        }
-        .station-header {
-            text-align: center;
-            padding: 15px;
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            background: rgba(0,255,255,0.05);
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .station-header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            text-shadow: 0 0 20px #00ffff;
-            letter-spacing: 4px;
-        }
-        .station-header .status {
-            color: #00ff00;
-            font-size: 0.9rem;
-            animation: blink 2s infinite;
-        }
-        @keyframes blink { 50% { opacity: 0.5; } }
-        .control-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .panel {
-            background: linear-gradient(145deg, #12151c 0%, #1a1f2e 100%);
-            border: 1px solid #2a3a4a;
-            border-radius: 8px;
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #00ffff, transparent);
-        }
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            color: #ff6b35;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .panel-title .indicator {
-            width: 8px; height: 8px;
-            background: #00ff00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ff00;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
-        .nav-display {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #0d0221 0%, #150734 50%, #1a0a2e 100%);
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
         }
-        .compass {
-            width: 120px; height: 120px;
+        
+        /* Scanlines overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .grid-floor {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 40vh;
+            background: linear-gradient(180deg, transparent 0%, #ff00ff15 100%);
+            background-image: 
+                linear-gradient(90deg, #ff00ff33 1px, transparent 1px),
+                linear-gradient(0deg, #ff00ff33 1px, transparent 1px);
+            background-size: 60px 30px;
+            transform: perspective(200px) rotateX(60deg);
+            transform-origin: bottom;
+            animation: gridMove 2s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 30px; }
+        }
+        
+        .sun {
+            position: fixed;
+            bottom: 15vh;
+            width: 200px; height: 200px;
+            background: linear-gradient(180deg, #ff6b35 0%, #f7931e 30%, #ffcc00 60%, #ff00ff 100%);
+            border-radius: 50%;
+            filter: blur(2px);
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+            z-index: -1;
+        }
+        
+        .sun::before {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, #0d0221 8px, #0d0221 12px);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: #fff;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff,
+                0 0 80px #00ffff;
+            margin-bottom: 30px;
+            animation: flicker 3s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96% { opacity: 0.8; }
+        }
+        
+        .player {
+            background: linear-gradient(145deg, #1a0a3e 0%, #0d0221 100%);
+            border: 2px solid #ff00ff;
+            border-radius: 20px;
+            padding: 30px 40px;
+            box-shadow: 
+                0 0 30px #ff00ff55,
+                inset 0 0 30px #00000055;
+            z-index: 10;
+        }
+        
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 6px;
+            height: 80px;
+            margin-bottom: 25px;
+        }
+        
+        .bar {
+            width: 12px;
+            background: linear-gradient(180deg, #00ffff 0%, #ff00ff 50%, #ff6b35 100%);
+            border-radius: 3px;
+            animation: bounce 0.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 80%; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 100%; animation-delay: 0.15s; }
+        .bar:nth-child(5) { height: 70%; animation-delay: 0.3s; }
+        .bar:nth-child(6) { height: 90%; animation-delay: 0.05s; }
+        .bar:nth-child(7) { height: 50%; animation-delay: 0.25s; }
+        .bar:nth-child(8) { height: 75%; animation-delay: 0.1s; }
+        .bar:nth-child(9) { height: 40%; animation-delay: 0.2s; }
+        
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
+        }
+        
+        .track-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .track-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .track-artist {
+            font-size: 1rem;
+            color: #ff00ff;
+            opacity: 0.8;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .btn {
+            width: 50px; height: 50px;
+            background: transparent;
             border: 2px solid #00ffff;
             border-radius: 50%;
-            position: relative;
-            margin: 10px 0;
-        }
-        .compass::after {
-            content: '▲';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            color: #ff6b35;
-            animation: rotate 20s linear infinite;
-        }
-        @keyframes rotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
-        .coordinates { font-size: 0.8rem; color: #888; }
-        .life-support { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-bar {
-            background: #1a1a2e;
-            border-radius: 4px;
-            padding: 8px;
-            text-align: center;
-        }
-        .stat-bar .label { font-size: 0.7rem; color: #666; }
-        .stat-bar .value { font-size: 1.2rem; color: #00ff00; }
-        .stat-bar.warning .value { color: #ffaa00; }
-        .comm-terminal {
-            background: #000;
-            border-radius: 4px;
-            padding: 10px;
-            height: 150px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-        }
-        .comm-line { margin: 4px 0; }
-        .comm-line.incoming { color: #00ffff; }
-        .comm-line.system { color: #666; }
-        .module-bay {
-            border: 2px dashed #2a3a4a;
-            min-height: 100px;
+            color: #00ffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #444;
-            font-size: 0.8rem;
         }
-        .btn {
-            background: linear-gradient(145deg, #1a2a3a, #0d1520);
-            border: 1px solid #00ffff;
-            color: #00ffff;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.3s;
-            margin-top: 10px;
+        
+        .btn:hover {
+            background: #00ffff22;
+            box-shadow: 0 0 20px #00ffff;
+            transform: scale(1.1);
         }
-        .btn:hover { background: #00ffff; color: #000; box-shadow: 0 0 15px #00ffff; }
-        .starfield {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: -1;
+        
+        .btn.play {
+            width: 70px; height: 70px;
+            border-color: #ff00ff;
+            color: #ff00ff;
+            font-size: 1.5rem;
+        }
+        
+        .btn.play:hover {
+            background: #ff00ff22;
+            box-shadow: 0 0 30px #ff00ff;
+        }
+        
+        .community-zone {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px dashed #ff00ff55;
+            border-radius: 10px;
+            color: #ff00ff88;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-<canvas class="starfield" id="stars"></canvas>
-<header class="station-header">
-<h1>⚡ NEXUS-7 ORBITAL STATION ⚡</h1>
-<div class="status">● SYSTEMS NOMINAL | ORBIT STABLE | CREW: ACTIVE</div>
-</header>
-<main class="control-grid">
-<div class="panel">
-<div class="panel-title"><span class="indicator"></span>NAVIGATION</div>
-<div class="nav-display">
-<div class="compass"></div>
-<div class="coordinates">LAT: 28.5° | LON: -80.6° | ALT: 408km</div>
-<button class="btn" onclick="alert('Adjusting orbital trajectory...')">ADJUST COURSE</button>
+<div class="sun"></div>
+<div class="grid-floor"></div>
+<h1>SYNTHWAVE RADIO</h1>
+<div class="player">
+<div class="visualizer">
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
 </div>
+<div class="track-info">
+<div class="track-title">MIDNIGHT DRIVE</div>
+<div class="track-artist">Neon Riders</div>
 </div>
-<div class="panel">
-<div class="panel-title"><span class="indicator"></span>LIFE SUPPORT</div>
-<div class="life-support">
-<div class="stat-bar"><div class="label">O₂ LEVEL</div><div class="value">98%</div></div>
-<div class="stat-bar"><div class="label">PRESSURE</div><div class="value">1.01</div></div>
-<div class="stat-bar warning"><div class="label">TEMP °C</div><div class="value">22.4</div></div>
-<div class="stat-bar"><div class="label">HUMIDITY</div><div class="value">45%</div></div>
+<div class="controls">
+<button class="btn">⏮</button>
+<button class="btn play">▶</button>
+<button class="btn">⏭</button>
 </div>
+<div class="community-zone">✨ Community additions go here ✨</div>
 </div>
-<div class="panel">
-<div class="panel-title"><span class="indicator"></span>COMMUNICATIONS</div>
-<div class="comm-terminal" id="comm">
-<div class="comm-line system">[SYS] Terminal initialized...</div>
-<div class="comm-line incoming">[HOUSTON] Nexus-7, you are GO for operations.</div>
-<div class="comm-line system">[SYS] Awaiting community transmissions...</div>
-</div>
-</div>
-<div class="panel" style="grid-column: span 2;">
-<div class="panel-title"><span class="indicator" style="background:#ffaa00;box-shadow:0 0 10px #ffaa00;"></span>MODULE BAY ALPHA</div>
-<div class="module-bay">[ EMPTY SLOT — AWAITING COMMUNITY MODULE ]</div>
-</div>
-<div class="panel">
-<div class="panel-title"><span class="indicator"></span>POWER GRID</div>
-<div style="text-align:center;">
-<div style="font-size:2.5rem;color:#00ff00;">⚡ 847 kW</div>
-<div style="font-size:0.7rem;color:#666;">SOLAR ARRAY OUTPUT</div>
-<div style="margin-top:10px;height:8px;background:#1a1a2e;border-radius:4px;overflow:hidden;">
-<div style="width:78%;height:100%;background:linear-gradient(90deg,#00ff00,#00ffff);"></div>
-</div>
-</div>
-</div>
-</main>
-<script>
-        const canvas = document.getElementById('stars');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const stars = Array.from({length: 150}, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 1.5,
-            a: Math.random()
-        }));
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(s => {
-                s.a += 0.01;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.sin(s.a) * 0.3})`;
-                ctx.fill();
-            });
-            requestAnimationFrame(drawStars);
-        }
-        drawStars();
-    </script>
 </body>
 </html>
