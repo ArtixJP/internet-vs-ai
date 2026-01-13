@@ -3,197 +3,177 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Ravencrest Manor - A Mystery Awaits</title>
+<title>🕹️ NEON ARCADE ZONE</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a0a20 50%, #0d0d15 100%);
-            color: #d4c4a8;
-            font-family: 'Georgia', serif;
+            background: #0a0a0f;
+            font-family: 'Press Start 2P', monospace;
             overflow-x: hidden;
             position: relative;
         }
-        .fog {
-            position: fixed;
-            width: 200%;
-            height: 100%;
-            top: 0;
-            left: -50%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(100,80,120,0.03)"/></svg>');
-            animation: fogDrift 30s linear infinite;
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
             pointer-events: none;
-            z-index: 1;
+            z-index: 1000;
         }
-        @keyframes fogDrift { to { transform: translateX(25%); } }
-        .mansion-container {
+        .arcade-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            position: relative;
-            z-index: 2;
+            gap: 25px;
         }
-        .title {
-            font-size: 2.8rem;
-            text-shadow: 0 0 20px #4a0e4e, 0 0 40px #2d0a30;
+        .neon-title {
+            font-size: 2.2rem;
+            color: #fff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff00ff;
+            animation: flicker 3s infinite;
             letter-spacing: 4px;
-            margin: 20px 0 10px;
-            animation: flicker 4s infinite;
         }
         @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.7; }
-            94% { opacity: 1; }
-            96% { opacity: 0.8; }
-            97% { opacity: 1; }
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.6; }
         }
-        .subtitle { font-style: italic; color: #8a7a6a; margin-bottom: 20px; }
-        .mansion {
-            width: 90%;
-            max-width: 800px;
-            background: linear-gradient(180deg, #1a1520 0%, #0f0a15 100%);
-            border: 2px solid #3d2a4a;
-            border-radius: 8px 8px 0 0;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 0 50px rgba(50, 20, 60, 0.5), inset 0 0 30px rgba(0,0,0,0.5);
+        .cabinet-zone {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
         }
-        .windows {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .window {
-            width: 80px;
-            height: 100px;
-            background: linear-gradient(180deg, #1a2030 0%, #0a1020 100%);
-            border: 3px solid #4a3a5a;
-            border-radius: 40px 40px 0 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .window::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at 50% 80%, rgba(80, 200, 120, 0.15) 0%, transparent 60%);
-            animation: windowGlow 5s ease-in-out infinite alternate;
-        }
-        @keyframes windowGlow { to { opacity: 0.3; } }
-        .ghost {
-            position: absolute;
-            font-size: 1.5rem;
-            opacity: 0.6;
-            animation: float 6s ease-in-out infinite;
-        }
-        .ghost:nth-child(1) { top: 30%; left: 10%; animation-delay: 0s; }
-        .ghost:nth-child(2) { top: 50%; right: 15%; animation-delay: 2s; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.4; }
-            50% { transform: translateY(-20px) rotate(5deg); opacity: 0.7; }
-        }
-        .clock {
-            text-align: center;
-            font-size: 1.5rem;
-            color: #6a5a4a;
+        .arcade-cabinet {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 3px solid #00ffff;
+            border-radius: 8px;
             padding: 15px;
-            border: 2px solid #3a2a3a;
-            background: #0d0a10;
-            width: fit-content;
-            margin: 0 auto 20px;
+            text-align: center;
+            box-shadow: 0 0 15px #00ffff40, inset 0 0 30px #00ffff10;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .clock-time { font-family: monospace; color: #c4a060; font-size: 1.8rem; }
-        .candles {
+        .arcade-cabinet:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #00ffff80, inset 0 0 30px #00ffff20;
+        }
+        .cabinet-screen {
+            background: #000;
+            border: 2px solid #333;
+            height: 80px;
+            margin-bottom: 10px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 40px;
-            margin: 20px 0;
+            font-size: 0.5rem;
+            color: #0f0;
+            animation: screenGlow 2s ease-in-out infinite;
         }
-        .candle {
-            width: 12px;
-            height: 50px;
-            background: linear-gradient(180deg, #f5e6c8 0%, #d4a050 100%);
-            border-radius: 2px;
-            position: relative;
+        @keyframes screenGlow {
+            0%, 100% { box-shadow: inset 0 0 20px #0f03; }
+            50% { box-shadow: inset 0 0 40px #0f06; }
         }
-        .flame {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 14px;
-            height: 25px;
-            background: radial-gradient(ellipse at bottom, #ffcc00 0%, #ff6600 50%, transparent 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.5s ease-in-out infinite alternate;
+        .cabinet-label { font-size: 0.6rem; color: #ffff00; }
+        .highscore-board {
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a0a2e 100%);
+            border: 4px solid #ff00ff;
+            padding: 15px 25px;
+            box-shadow: 0 0 20px #ff00ff60;
         }
-        @keyframes burn {
-            to { transform: translateX(-50%) scaleY(1.1) scaleX(0.9); }
-        }
-        .mystery-board {
-            background: #1a1520;
-            border: 2px dashed #4a3a5a;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .mystery-board h3 { color: #a08060; margin-bottom: 10px; }
-        .clue { color: #7a9a7a; font-style: italic; }
-        .footer-note {
-            text-align: center;
-            padding: 20px;
-            color: #5a4a5a;
+        .highscore-title {
+            color: #ff0;
             font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px #ff0;
+        }
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            color: #0ff;
+            font-size: 0.6rem;
+            margin: 6px 0;
+            gap: 30px;
+        }
+        .coin-slot {
+            background: linear-gradient(180deg, #333 0%, #111 100%);
+            border: 3px solid #ffa500;
+            border-radius: 10px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 15px #ffa50050;
+        }
+        .coin-slot:hover { transform: scale(1.1); box-shadow: 0 0 30px #ffa500; }
+        .coin-slot:active { transform: scale(0.95); }
+        .coin-text { color: #ffa500; font-size: 0.7rem; }
+        .credits { color: #0f0; font-size: 0.8rem; margin-top: 8px; }
+        .floor-tiles {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .tile {
+            width: 40px; height: 40px;
+            background: linear-gradient(45deg, #1a0a2e 25%, #2d1b4e 25%, #2d1b4e 50%, #1a0a2e 50%, #1a0a2e 75%, #2d1b4e 75%);
+            background-size: 10px 10px;
+            animation: tileShift 1s linear infinite;
+        }
+        .tile:nth-child(odd) { animation-delay: -0.5s; }
+        @keyframes tileShift { to { background-position: 10px 10px; } }
+        .community-zone {
+            border: 2px dashed #666;
+            padding: 20px;
+            color: #666;
+            font-size: 0.5rem;
+            max-width: 500px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-<div class="fog"></div>
-<div class="mansion-container">
-<h1 class="title">🏚️ RAVENCREST MANOR 🏚️</h1>
-<p class="subtitle">"Something stirs within these walls..."</p>
-<div class="mansion">
-<span class="ghost">👻</span>
-<span class="ghost">👻</span>
-<div class="windows">
-<div class="window"></div>
-<div class="window"></div>
-<div class="window"></div>
+<div class="arcade-container">
+<h1 class="neon-title">🕹️ NEON ARCADE 🕹️</h1>
+<div class="cabinet-zone">
+<div class="arcade-cabinet">
+<div class="cabinet-screen">INSERT COIN</div>
+<div class="cabinet-label">SPACE BLASTER</div>
 </div>
-<div class="clock">
-                ⏰ The Grandfather Clock
-                <div class="clock-time" id="clock">11:58 PM</div>
+<div class="arcade-cabinet">
+<div class="cabinet-screen">GAME OVER</div>
+<div class="cabinet-label">PAC-ATTACK</div>
 </div>
-<div class="candles">
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-<div class="candle"><div class="flame"></div></div>
-</div>
-<div class="mystery-board">
-<h3>📜 The Investigation Board</h3>
-<p class="clue">"The butler was last seen near the library at midnight..."</p>
+<div class="arcade-cabinet">
+<div class="cabinet-screen">READY!</div>
+<div class="cabinet-label">CYBER RACER</div>
 </div>
 </div>
-<p class="footer-note">🕯️ The manor awaits your discoveries... 🕯️</p>
+<div class="highscore-board">
+<div class="highscore-title">★ HIGH SCORES ★</div>
+<div class="score-entry"><span>1. AAA</span><span>999999</span></div>
+<div class="score-entry"><span>2. BOB</span><span>888888</span></div>
+<div class="score-entry"><span>3. ???</span><span>777777</span></div>
+</div>
+<div class="coin-slot" onclick="addCredit()">
+<div class="coin-text">🪙 INSERT COIN 🪙</div>
+<div class="credits" id="credits">CREDITS: 0</div>
+</div>
+<div class="floor-tiles">
+<div class="tile"></div><div class="tile"></div><div class="tile"></div>
+<div class="tile"></div><div class="tile"></div><div class="tile"></div>
+<div class="tile"></div><div class="tile"></div><div class="tile"></div>
+</div>
+<div class="community-zone">[ COMMUNITY EXPANSION ZONE - YOUR IDEAS HERE ]</div>
 </div>
 <script>
-        function updateClock() {
-            const times = ['11:58 PM', '11:59 PM', '12:00 AM', '12:01 AM'];
-            const el = document.getElementById('clock');
-            let i = 0;
-            setInterval(() => {
-                el.textContent = times[i % times.length];
-                if (times[i % times.length] === '12:00 AM') {
-                    el.style.color = '#ff4444';
-                    setTimeout(() => el.style.color = '#c4a060', 1000);
-                }
-                i++;
-            }, 8000);
+        let credits = 0;
+        function addCredit() {
+            credits++;
+            document.getElementById('credits').textContent = 'CREDITS: ' + credits;
+            document.getElementById('credits').style.textShadow = '0 0 20px #0f0';
+            setTimeout(() => document.getElementById('credits').style.textShadow = '', 200);
         }
-        updateClock();
     </script>
 </body>
 </html>
