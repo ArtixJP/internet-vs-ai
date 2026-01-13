@@ -5,184 +5,231 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEON CITY PORTAL // 2087</title>
+<title>ROBOFORGE Industries - Factory Dashboard</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        :root {
-            --neon-cyan: #00f5ff;
-            --neon-magenta: #ff00ff;
-            --neon-purple: #bf00ff;
-            --dark-bg: #0a0a12;
-            --dark-surface: #12121f;
-        }
-        
         body {
             min-height: 100vh;
-            background: var(--dark-bg);
+            background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 50%, #0d1117 100%);
+            color: #00ff88;
             font-family: 'Share Tech Mono', monospace;
-            color: #e0e0e0;
             overflow-x: hidden;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff8855;
+            border-radius: 8px;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff8866;
+        }
+        
+        .logo span { color: #ff6b35; }
+        
+        .status-bar {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .status-item { display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; animation: pulse 2s infinite; }
+        .status-dot.green { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .status-dot.orange { background: #ff6b35; box-shadow: 0 0 10px #ff6b35; }
+        
+        .panel {
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid #00ff8844;
+            border-radius: 10px;
+            padding: 15px;
             position: relative;
+            overflow: hidden;
         }
         
-        /* Scanline overlay */
-        body::before {
+        .panel::before {
             content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
-            pointer-events: none;
-            z-index: 1000;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
         }
         
-        .city-skyline {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: #00ff88;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .production-stats { grid-row: span 2; }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #00ff8822;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .assembly-line {
             height: 200px;
-            background: linear-gradient(to top, var(--dark-surface) 0%, transparent 100%);
-            z-index: 1;
-        }
-        
-        .building { position: absolute; bottom: 0; background: var(--dark-surface); }
-        .building::before { content: ''; position: absolute; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(0,245,255,0.1) 8px, rgba(0,245,255,0.1) 10px); }
-        .b1 { left: 5%; width: 60px; height: 150px; }
-        .b2 { left: 15%; width: 40px; height: 180px; }
-        .b3 { left: 22%; width: 80px; height: 120px; }
-        .b4 { right: 25%; width: 70px; height: 160px; }
-        .b5 { right: 10%; width: 50px; height: 140px; }
-        .b6 { right: 5%; width: 90px; height: 100px; }
-        
-        .main-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+        }
+        
+        .conveyor {
+            height: 60px;
+            background: repeating-linear-gradient(90deg, #333 0px, #333 20px, #222 20px, #222 40px);
+            border-radius: 5px;
             position: relative;
-            z-index: 10;
+            overflow: hidden;
+            animation: conveyorMove 2s linear infinite;
         }
         
-        .neon-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan), 0 0 80px var(--neon-cyan);
-            animation: flicker 3s infinite;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: var(--neon-magenta);
-            text-shadow: 0 0 5px var(--neon-magenta);
-            letter-spacing: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-        }
-        
-        .portal-frame {
-            width: 320px;
-            height: 320px;
-            border: 3px solid var(--neon-purple);
-            border-radius: 50%;
+        .robot-unit {
+            position: absolute;
+            width: 50px; height: 50px;
+            top: 5px;
+            background: linear-gradient(135deg, #4a4a5a, #2a2a3a);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            box-shadow: 0 0 30px var(--neon-purple), inset 0 0 50px rgba(191,0,255,0.3);
-            animation: pulse-glow 2s ease-in-out infinite;
-            cursor: pointer;
-            transition: transform 0.3s;
+            font-size: 1.5rem;
+            animation: moveRobot 4s linear infinite;
         }
         
-        .portal-frame:hover { transform: scale(1.05); }
+        .robot-unit:nth-child(2) { animation-delay: -2s; }
         
-        .portal-inner {
-            width: 85%;
-            height: 85%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(191,0,255,0.4) 0%, rgba(0,245,255,0.2) 50%, transparent 70%);
-            animation: spin-slow 20s linear infinite;
+        .robot-queue {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .queue-slot {
+            width: 60px; height: 60px;
+            border: 2px dashed #00ff8855;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.8rem;
+            transition: all 0.3s;
         }
         
-        .portal-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-cyan);
+        .queue-slot:hover {
+            border-color: #00ff88;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00ff8844;
         }
         
-        .community-zone {
-            margin-top: 40px;
-            padding: 20px;
-            border: 1px solid rgba(0,245,255,0.3);
-            background: rgba(18,18,31,0.8);
-            max-width: 600px;
+        .alerts-panel { grid-row: span 2; }
+        
+        .alert-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 3px solid #ff6b35;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.85rem;
+        }
+        
+        .alert-item.info { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; }
+        
+        .footer {
+            grid-column: 1 / -1;
             text-align: center;
+            padding: 15px;
+            color: #666;
+            font-size: 0.8rem;
         }
         
-        .community-zone h3 {
-            color: var(--neon-cyan);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 10px;
-        }
+        .footer span { color: #00ff88; }
         
-        .neon-sign {
-            position: fixed;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            padding: 8px 15px;
-            border: 2px solid;
-            animation: flicker 2.5s infinite;
-        }
-        
-        .sign-left { top: 20%; left: 30px; color: var(--neon-magenta); border-color: var(--neon-magenta); transform: rotate(-5deg); }
-        .sign-right { top: 30%; right: 30px; color: var(--neon-cyan); border-color: var(--neon-cyan); transform: rotate(3deg); }
-        
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.6; }
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 30px var(--neon-purple), inset 0 0 50px rgba(191,0,255,0.3); }
-            50% { box-shadow: 0 0 60px var(--neon-purple), inset 0 0 80px rgba(191,0,255,0.5); }
-        }
-        
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes conveyorMove { from { background-position: 0 0; } to { background-position: 40px 0; } }
+        @keyframes moveRobot { from { left: -60px; } to { left: 110%; } }
     </style>
 </head>
 <body>
-<div class="neon-sign sign-left">OPEN 24/7</div>
-<div class="neon-sign sign-right">ENTER →</div>
-<div class="city-skyline">
-<div class="building b1"></div>
-<div class="building b2"></div>
-<div class="building b3"></div>
-<div class="building b4"></div>
-<div class="building b5"></div>
-<div class="building b6"></div>
+<div class="dashboard">
+<header class="header">
+<div class="logo">🤖 ROBO<span>FORGE</span> Industries</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot green"></span> Systems Online</div>
+<div class="status-item"><span class="status-dot orange"></span> 3 Alerts</div>
+<div class="status-item">⏱️ Uptime: 847:23:01</div>
 </div>
-<div class="main-container">
-<h1 class="neon-title">NEON CITY</h1>
-<p class="subtitle">// PORTAL DISTRICT //</p>
-<div class="portal-frame">
-<div class="portal-inner">
-<span class="portal-text">ENTER</span>
+</header>
+<div class="panel production-stats">
+<div class="panel-title">📊 Production Stats</div>
+<div class="stat-row"><span>Units Today</span><span class="stat-value">1,247</span></div>
+<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
+<div class="stat-row"><span>Queue</span><span class="stat-value">38</span></div>
+<div class="stat-row"><span>Defects</span><span class="stat-value">0.3%</span></div>
+</div>
+<div class="panel assembly-line">
+<div class="panel-title">�icing Assembly Line A</div>
+<div class="conveyor">
+<div class="robot-unit">🦾</div>
+<div class="robot-unit">🤖</div>
+</div>
+<div class="robot-queue">
+<div class="queue-slot">⚙️</div>
+<div class="queue-slot">🔧</div>
+<div class="queue-slot">💡</div>
+<div class="queue-slot">🔋</div>
 </div>
 </div>
-<div class="community-zone">
-<h3>// DISTRICT NOTICE BOARD //</h3>
-<p>Welcome to the Portal District. The city awaits your contributions...</p>
+<div class="panel alerts-panel">
+<div class="panel-title">⚠️ Factory Alerts</div>
+<div class="alert-item">Arm calibration due in 2h</div>
+<div class="alert-item">Low coolant in Sector 7</div>
+<div class="alert-item info">Batch #4821 complete ✓</div>
+<div class="alert-item info">New model approved</div>
 </div>
+<div class="panel" style="grid-column: 2;">
+<div class="panel-title">🌐 Community Expansion Zone</div>
+<p style="color: #666; text-align: center; padding: 20px;">This space awaits your creations...<br/>What should the factory produce next?</p>
+</div>
+<footer class="footer">
+            ROBOFORGE Dashboard v2.4 | <span>Twitch Plays Code</span> | Building the future, one robot at a time 🔩
+        </footer>
 </div>
 </body>
 </html>
