@@ -1,41 +1,261 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🚀 NOVA Station Command</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --space-dark: #0a0a1a;
+            --panel-bg: rgba(20, 30, 60, 0.85);
+            --accent-cyan: #00f5ff;
+            --accent-purple: #a855f7;
+            --accent-orange: #ff6b35;
+            --text-primary: #e0f0ff;
+            --border-glow: rgba(0, 245, 255, 0.3);
+        }
         body {
             min-height: 100vh;
+            background: var(--space-dark);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+        #starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 12px;
+            padding: 15px;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+        }
+        .station-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+        }
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+        }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .status-dot.green { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .status-dot.orange { background: var(--accent-orange); box-shadow: 0 0 10px var(--accent-orange); }
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 8px;
+        }
+        .nav-panel { grid-row: span 2; }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .nav-btn {
+            aspect-ratio: 1;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 6px;
+            color: var(--accent-cyan);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--space-dark);
+            box-shadow: 0 0 20px var(--accent-cyan);
+        }
+        .main-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .planet-display {
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4a6fa5, #1a2a4a, #0a1525);
+            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.6), 0 0 60px rgba(74, 111, 165, 0.4);
+            animation: rotate 20s linear infinite;
+            margin-bottom: 20px;
+        }
+        .destination-name { font-size: 1.8rem; font-weight: 300; margin-bottom: 5px; }
+        .destination-info { font-size: 0.9rem; opacity: 0.7; }
+        .crew-panel { grid-row: span 2; }
+        .crew-member {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+        .crew-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 1.2rem;
+        }
+        .crew-info { flex: 1; }
+        .crew-name { font-size: 0.9rem; font-weight: 500; }
+        .crew-role { font-size: 0.7rem; opacity: 0.6; }
+        .mission-log {
+            grid-column: 2;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            font-size: 0.8rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 10px;
+        }
+        .log-time { color: var(--accent-purple); min-width: 50px; }
+        .expansion-zone {
+            grid-column: 1 / -1;
+            border: 2px dashed rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
+            color: var(--accent-purple);
+            font-size: 0.85rem;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<canvas id="starfield"></canvas>
+<div class="dashboard">
+<header>
+<div class="station-name">🚀 NOVA Station Command</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot green"></span> Systems Online</div>
+<div class="status-item"><span class="status-dot orange"></span> Fuel: 73%</div>
+<div class="status-item">📡 Signal: Strong</div>
+</div>
+</header>
+<div class="panel nav-panel">
+<div class="panel-title">Navigation</div>
+<div class="nav-grid">
+<button class="nav-btn">↖</button>
+<button class="nav-btn">⬆</button>
+<button class="nav-btn">↗</button>
+<button class="nav-btn">⬅</button>
+<button class="nav-btn">⏺</button>
+<button class="nav-btn">➡</button>
+<button class="nav-btn">↙</button>
+<button class="nav-btn">⬇</button>
+<button class="nav-btn">↘</button>
+</div>
+</div>
+<div class="panel main-display">
+<div class="panel-title">Current Destination</div>
+<div class="planet-display"></div>
+<div class="destination-name">Kepler-442b</div>
+<div class="destination-info">Distance: 112.4 light-years • ETA: 847 days</div>
+</div>
+<div class="panel crew-panel">
+<div class="panel-title">Crew Status</div>
+<div class="crew-member"><div class="crew-avatar">👨‍🚀</div><div class="crew-info"><div class="crew-name">Cmdr. Chen</div><div class="crew-role">Captain</div></div></div>
+<div class="crew-member"><div class="crew-avatar">👩‍🔬</div><div class="crew-info"><div class="crew-name">Dr. Okonkwo</div><div class="crew-role">Science Officer</div></div></div>
+<div class="crew-member"><div class="crew-avatar">🤖</div><div class="crew-info"><div class="crew-name">ARIA-7</div><div class="crew-role">AI Assistant</div></div></div>
+<div class="crew-member"><div class="crew-avatar">👨‍🔧</div><div class="crew-info"><div class="crew-name">Torres</div><div class="crew-role">Engineer</div></div></div>
+</div>
+<div class="panel mission-log">
+<div class="panel-title">Mission Log</div>
+<div class="log-entry"><span class="log-time">09:42</span> Entered Sector 7G, all systems nominal</div>
+<div class="log-entry"><span class="log-time">08:15</span> Asteroid field successfully navigated</div>
+<div class="log-entry"><span class="log-time">06:30</span> Morning diagnostics complete</div>
+</div>
+<div class="expansion-zone">✨ Community Expansion Zone — Your ideas go here! ✨</div>
+</div>
+<script>
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = Array.from({length: 200}, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2,
+                speed: Math.random() * 0.5 + 0.1
+            }));
+        }
+        function animate() {
+            ctx.fillStyle = '#0a0a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.x -= star.speed;
+                if (star.x < 0) star.x = canvas.width;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + star.size * 0.3})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => btn.style.transform = '', 150);
+            });
+        });
+    </script>
 </body>
 </html>
