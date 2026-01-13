@@ -1,133 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>🌴 Paradise Cove - Tropical Island Guide</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --ocean: #0891b2;
-            --ocean-deep: #164e63;
-            --sand: #fef3c7;
-            --sunset: #f97316;
-            --palm: #15803d;
-            --coral: #fb7185;
-        }
         body {
             min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(180deg, var(--ocean) 0%, var(--ocean-deep) 100%);
-            color: #1e293b;
-            overflow-x: hidden;
-        }
-        .hero {
-            background: linear-gradient(135deg, var(--sunset) 0%, #fbbf24 50%, var(--sand) 100%);
-            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
-        .hero h1 {
-            font-size: 2.8rem;
-            color: var(--ocean-deep);
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
-            animation: sway 3s ease-in-out infinite;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .hero p { font-size: 1.1rem; color: #78350f; margin-top: 8px; }
-        @keyframes sway { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
-        .wave {
-            position: absolute; bottom: -5px; left: 0; width: 200%; height: 30px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%230891b2' d='M0,60 C300,100 600,20 900,60 C1200,100 1200,60 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
-            animation: waves 4s linear infinite;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        @keyframes waves { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .main { padding: 25px 20px; max-width: 1400px; margin: 0 auto; }
-        .section-title {
-            color: var(--sand); font-size: 1.5rem; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 10px;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .destinations {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px; margin-bottom: 30px;
-        }
-        .card {
-            background: rgba(255,255,255,0.95); border-radius: 12px; padding: 20px;
-            transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
-        }
-        .card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .card h3 { color: var(--ocean-deep); margin-bottom: 8px; }
-        .card p { font-size: 0.9rem; color: #64748b; }
-        .card .emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
-        .activities {
-            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;
-        }
-        .activity-tag {
-            background: var(--sand); color: var(--ocean-deep); padding: 8px 16px;
-            border-radius: 20px; font-weight: 600; font-size: 0.9rem;
-            transition: all 0.2s; cursor: pointer;
-        }
-        .activity-tag:hover { background: var(--coral); color: white; transform: scale(1.1); }
-        .community-board {
-            background: rgba(254,243,199,0.9); border-radius: 12px; padding: 20px;
-            border: 3px dashed var(--palm);
-        }
-        .community-board h3 { color: var(--palm); margin-bottom: 10px; }
-        .community-board p { color: #78350f; font-style: italic; }
-        .footer {
-            text-align: center; padding: 15px; background: var(--ocean-deep);
-            color: var(--sand); font-size: 0.85rem;
-        }
-        .palm-tree { position: absolute; font-size: 3rem; top: 10px; right: 20px; animation: sway 2s ease-in-out infinite; }
     </style>
 </head>
 <body>
-<header class="hero">
-<span class="palm-tree">🌴</span>
-<h1>🏝️ Paradise Cove</h1>
-<p>Your Ultimate Tropical Island Travel Guide</p>
-<div class="wave"></div>
-</header>
-<main class="main">
-<h2 class="section-title">🗺️ Featured Destinations</h2>
-<div class="destinations">
-<div class="card">
-<span class="emoji">🏖️</span>
-<h3>Sunset Beach</h3>
-<p>Golden sands meet crystal waters. Perfect for evening strolls.</p>
-</div>
-<div class="card">
-<span class="emoji">🌋</span>
-<h3>Volcano Peak</h3>
-<p>Hike the dormant volcano for breathtaking views.</p>
-</div>
-<div class="card">
-<span class="emoji">🐠</span>
-<h3>Coral Gardens</h3>
-<p>Snorkel among vibrant coral reefs and tropical fish.</p>
-</div>
-<div class="card">
-<span class="emoji">🌺</span>
-<h3>Orchid Jungle</h3>
-<p>Explore lush rainforest trails and hidden waterfalls.</p>
-</div>
-</div>
-<h2 class="section-title">🎯 Island Activities</h2>
-<div class="activities">
-<span class="activity-tag">🏄 Surfing</span>
-<span class="activity-tag">🤿 Snorkeling</span>
-<span class="activity-tag">🚣 Kayaking</span>
-<span class="activity-tag">🍹 Tiki Bar</span>
-<span class="activity-tag">🐢 Turtle Watching</span>
-<span class="activity-tag">💆 Spa Retreat</span>
-</div>
-<div class="community-board">
-<h3>📋 Community Bulletin Board</h3>
-<p>Travelers! Share your discoveries, tips, and island secrets here...</p>
-</div>
-</main>
-<footer class="footer">🌺 Paradise Cove Tourism Board • Est. 2025 • "Where Every Wave Tells a Story" 🌊</footer>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
