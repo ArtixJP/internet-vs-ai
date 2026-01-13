@@ -1,173 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEXUS-7 Robot Factory</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --steel: #2a2d36;
-            --dark-steel: #1a1c22;
-            --neon-cyan: #00f0ff;
-            --neon-orange: #ff6b35;
-            --warning-yellow: #ffd93d;
-            --success-green: #6bcb77;
-        }
         body {
             min-height: 100vh;
-            background: var(--dark-steel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(0,240,255,0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,107,53,0.05) 0%, transparent 50%);
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .factory-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: var(--steel);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(0,240,255,0.2);
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .logo { display: flex; align-items: center; gap: 15px; }
-        .logo h1 { font-size: 1.8rem; color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
-        .status-indicator { display: flex; align-items: center; gap: 8px; }
-        .pulse { width: 12px; height: 12px; background: var(--success-green); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--success-green); } 50% { opacity: 0.5; } }
-        
-        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .panel {
-            background: var(--steel);
-            border: 1px solid #3a3d46;
-            border-radius: 8px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-orange));
-        }
-        .panel h2 { font-size: 0.9rem; color: #888; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .stat-big { font-size: 2.5rem; color: var(--neon-cyan); font-weight: bold; }
-        .stat-label { font-size: 0.8rem; color: #666; }
-        
-        .conveyor {
-            grid-column: span 2;
-            height: 120px;
-            position: relative;
-            background: linear-gradient(180deg, #1f2127 0%, #2a2d36 100%);
-            border-top: 4px solid #444;
-            border-bottom: 4px solid #444;
-            overflow: hidden;
-        }
-        .conveyor-belt {
-            position: absolute;
-            bottom: 10px;
-            display: flex;
-            gap: 60px;
-            animation: conveyorMove 8s linear infinite;
-        }
-        .robot-part {
-            width: 40px; height: 40px;
-            background: var(--neon-orange);
-            border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 0 15px rgba(255,107,53,0.5);
-        }
-        @keyframes conveyorMove { from { transform: translateX(100%); } to { transform: translateX(-200%); } }
-        
-        .robot-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .robot-ascii {
-            font-size: 0.7rem;
-            line-height: 1.1;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 5px var(--neon-cyan);
-            white-space: pre;
-        }
-        
-        .community-zone {
-            grid-column: span 3;
-            min-height: 100px;
-            border: 2px dashed #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-style: italic;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<header class="factory-header">
-<div class="logo">
-<span style="font-size:2rem">🏭</span>
-<h1>NEXUS-7</h1>
-</div>
-<div class="status-indicator">
-<div class="pulse"></div>
-<span>PRODUCTION ACTIVE</span>
-</div>
-</header>
-<main class="dashboard">
-<div class="panel">
-<h2>Units Produced Today</h2>
-<div class="stat-big">1,247</div>
-<div class="stat-label">▲ 12% from yesterday</div>
-</div>
-<div class="panel">
-<h2>Assembly Efficiency</h2>
-<div class="stat-big" style="color: var(--success-green)">94.7%</div>
-<div class="stat-label">Target: 90%</div>
-</div>
-<div class="panel robot-preview">
-<h2>Current Model</h2>
-<pre class="robot-ascii">  ╔═══╗
-  ║ ◉ ◉ ║
-  ║  ▽  ║
-╔═╩═══╩═╗
-║ ║███║ ║
-╚═╧═══╧═╝</pre>
-</div>
-<div class="panel conveyor">
-<h2>Assembly Line A</h2>
-<div class="conveyor-belt">
-<div class="robot-part">🦾</div>
-<div class="robot-part">🔩</div>
-<div class="robot-part">⚙️</div>
-<div class="robot-part">🤖</div>
-<div class="robot-part">🔋</div>
-<div class="robot-part">🦿</div>
-</div>
-</div>
-<div class="panel">
-<h2>Queue Status</h2>
-<div style="margin-top:10px">
-<div style="color:var(--warning-yellow)">⏳ 23 pending</div>
-<div style="color:var(--success-green);margin-top:5px">✓ 89 completed</div>
-</div>
-</div>
-<div class="panel community-zone">
-<span>🔧 EXPANSION BAY — Community additions go here 🔧</span>
-</div>
-</main>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
