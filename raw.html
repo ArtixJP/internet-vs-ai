@@ -1,199 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>📚 The Wandering Page Bookstore</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
-            color: #f4e4c1;
-            font-family: 'Lora', Georgia, serif;
-            overflow-x: hidden;
-        }
-        
-        .bookstore {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            border-bottom: 2px solid #8b5a2b;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            color: #d4a574;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 8px;
-        }
-        
-        .tagline {
-            font-style: italic;
-            color: #c9a876;
-            font-size: 1.1rem;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-        
-        .book-shelf {
-            background: linear-gradient(180deg, #5c3d2e 0%, #4a2f20 100%);
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.4);
-        }
-        
-        .shelf-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: #e8d4b8;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #8b5a2b;
-        }
-        
-        .books {
             display: flex;
-            gap: 15px;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .book {
-            width: 60px;
-            height: 180px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-        
-        .book:hover {
-            transform: translateY(-15px) rotate(-2deg);
-            box-shadow: 5px 15px 20px rgba(0,0,0,0.4);
-        }
-        
-        .book:nth-child(1) { background: linear-gradient(90deg, #8b0000, #a52a2a); height: 170px; }
-        .book:nth-child(2) { background: linear-gradient(90deg, #1e3a5f, #2d5a87); height: 185px; }
-        .book:nth-child(3) { background: linear-gradient(90deg, #2d5016, #4a7c23); height: 175px; }
-        .book:nth-child(4) { background: linear-gradient(90deg, #4a1c6b, #6b2d8a); height: 190px; }
-        .book:nth-child(5) { background: linear-gradient(90deg, #8b4513, #a0522d); height: 168px; }
-        
-        .book::after {
-            content: '';
-            position: absolute;
-            left: 3px;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: rgba(0,0,0,0.3);
-        }
-        
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .reading-nook {
-            background: #3d2317;
-            border-radius: 8px;
-            padding: 20px;
-            border: 2px dashed #8b5a2b;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        
-        .nook-icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .nook-text { color: #c9a876; font-size: 0.95rem; }
-        
-        .community-board {
-            background: #f4e4c1;
-            color: #3d2317;
-            border-radius: 8px;
-            padding: 20px;
-            min-height: 150px;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .board-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
-            color: #5c3d2e;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .board-note {
-            background: #fffacd;
-            padding: 10px;
-            border-radius: 3px;
-            font-size: 0.9rem;
-            transform: rotate(-1deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 25px;
-            margin-top: 30px;
-            color: #8b7355;
-            font-size: 0.9rem;
-        }
-        
-        .coffee-steam {
-            display: inline-block;
-            animation: steam 2s ease-in-out infinite;
-        }
-        
-        @keyframes steam {
-            0%, 100% { opacity: 0.5; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-5px); }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="bookstore">
-<header>
-<h1>📚 The Wandering Page</h1>
-<p class="tagline">"Where every book finds its reader"</p>
-</header>
-<div class="main-content">
-<section class="book-shelf">
-<h2 class="shelf-title">✨ Staff Picks This Week</h2>
-<div class="books">
-<div class="book" title="The Midnight Garden"></div>
-<div class="book" title="Seas of Wonder"></div>
-<div class="book" title="Forest Whispers"></div>
-<div class="book" title="Violet Dreams"></div>
-<div class="book" title="Autumn Tales"></div>
-</div>
-</section>
-<aside class="sidebar">
-<div class="reading-nook">
-<div class="nook-icon">🛋️</div>
-<p class="nook-text">Our cozy reading corner awaits...<br/><span class="coffee-steam">☕</span> Fresh coffee brewing!</p>
-</div>
-<div class="community-board">
-<h3 class="board-title">📌 Community Board</h3>
-<div class="board-note">"Looking for book club members! Meet Thursdays 🌙" - Sarah</div>
-</div>
-</aside>
-</div>
-<footer>
-<p>Open daily 9am - 9pm · <span class="coffee-steam">🕯️</span> Candlelit evenings on weekends</p>
-</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
