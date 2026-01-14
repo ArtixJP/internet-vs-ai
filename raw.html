@@ -1,219 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NEON CITY // PORTAL</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a0a2e 50%, #0d1a2d 100%);
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Animated rain effect */
-        .rain {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(transparent 0px, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px);
-            animation: rainFall 0.5s linear infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-        @keyframes rainFall { to { background-position: 0 20px; } }
-        
-        /* Main container */
-        .portal-container {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        /* Neon title */
-        .neon-title {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            color: #fff;
-            text-shadow: 
-                0 0 5px #ff00ff,
-                0 0 10px #ff00ff,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff;
-            animation: neonPulse 2s ease-in-out infinite alternate;
-            margin: 30px 0 10px;
-        }
-        @keyframes neonPulse {
-            from { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; }
-            to { text-shadow: 0 0 2px #ff00ff, 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 60px #00ffff; }
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            color: #00ffff;
-            letter-spacing: 12px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        
-        /* Skyline */
-        .skyline {
-            width: 100%;
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 4px;
-            margin: 30px 0;
-        }
-        
-        .building {
-            background: linear-gradient(180deg, #1a1a3a 0%, #0a0a1a 100%);
-            border-top: 2px solid #ff00ff;
-            position: relative;
-            animation: buildingGlow 3s ease-in-out infinite;
-        }
-        .building::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px, transparent 8px,
-                rgba(0,255,255,0.1) 8px, rgba(0,255,255,0.1) 10px
-            );
-        }
-        .building:nth-child(odd) { border-top-color: #00ffff; }
-        @keyframes buildingGlow {
-            0%, 100% { box-shadow: 0 -5px 15px rgba(255,0,255,0.3); }
-            50% { box-shadow: 0 -5px 25px rgba(0,255,255,0.5); }
-        }
-        
-        /* Central portal */
-        .portal {
-            width: 300px;
-            height: 180px;
-            border: 3px solid #00ffff;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 
-                0 0 20px rgba(0,255,255,0.5),
-                inset 0 0 30px rgba(255,0,255,0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .portal:hover {
-            transform: scale(1.05);
-            box-shadow: 
-                0 0 40px rgba(0,255,255,0.8),
-                inset 0 0 50px rgba(255,0,255,0.4);
-        }
-        .portal-text {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-        }
-        .portal-sub {
-            font-size: 0.8rem;
-            color: #ff00ff;
-            margin-top: 10px;
-            opacity: 0.8;
-        }
-        
-        /* Community zone */
-        .community-zone {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .zone-slot {
-            width: 140px;
-            height: 100px;
-            border: 2px dashed rgba(255,0,255,0.4);
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255,0,255,0.5);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .zone-slot:hover {
-            border-color: #00ffff;
-            color: #00ffff;
-            box-shadow: 0 0 15px rgba(0,255,255,0.3);
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        /* Footer bar */
-        .status-bar {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #ff00ff;
-            padding: 8px 25px;
-            border-radius: 20px;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.7rem;
-            color: #00ffff;
-            letter-spacing: 3px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .status-bar span { color: #ff00ff; }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="rain"></div>
-<div class="portal-container">
-<h1 class="neon-title">NEON CITY</h1>
-<p class="subtitle">// Enter The Grid //</p>
-<div class="skyline">
-<div class="building" style="width:25px;height:80px;"></div>
-<div class="building" style="width:40px;height:140px;"></div>
-<div class="building" style="width:30px;height:100px;"></div>
-<div class="building" style="width:55px;height:180px;"></div>
-<div class="building" style="width:35px;height:120px;"></div>
-<div class="building" style="width:60px;height:160px;"></div>
-<div class="building" style="width:25px;height:90px;"></div>
-<div class="building" style="width:45px;height:150px;"></div>
-<div class="building" style="width:30px;height:110px;"></div>
-</div>
-<div class="portal">
-<div class="portal-text">⟨ JACK IN ⟩</div>
-<div class="portal-sub">Neural Link Ready</div>
-</div>
-<div class="community-zone">
-<div class="zone-slot">[ District 1 ]</div>
-<div class="zone-slot">[ District 2 ]</div>
-<div class="zone-slot">[ District 3 ]</div>
-</div>
-</div>
-<div class="status-bar">SYS:<span>ONLINE</span> // USERS:<span>∞</span> // ERA:<span>001</span></div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
