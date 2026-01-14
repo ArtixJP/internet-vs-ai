@@ -1,185 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DEEP HORIZON Research Station</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a1628 0%, #0d2137 30%, #0f3460 70%, #1a1a40 100%);
-            font-family: 'Courier New', monospace;
-            color: #7fdbda;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .bubbles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-        
-        .bubble {
-            position: absolute;
-            bottom: -50px;
-            background: radial-gradient(circle at 30% 30%, rgba(127, 219, 218, 0.4), rgba(127, 219, 218, 0.1));
-            border-radius: 50%;
-            animation: rise linear infinite;
-        }
-        
-        @keyframes rise {
-            0% { transform: translateY(0) translateX(0); opacity: 0.6; }
-            50% { transform: translateY(-50vh) translateX(20px); }
-            100% { transform: translateY(-100vh) translateX(-10px); opacity: 0; }
-        }
-        
-        .station-container {
-            position: relative;
-            z-index: 1;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 30px 20px;
-            border-bottom: 2px solid rgba(127, 219, 218, 0.3);
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5), 0 0 40px rgba(0, 150, 200, 0.3);
-            letter-spacing: 4px;
-            animation: sonarPulse 3s ease-in-out infinite;
-        }
-        
-        @keyframes sonarPulse {
-            0%, 100% { text-shadow: 0 0 20px rgba(0, 210, 255, 0.5); }
-            50% { text-shadow: 0 0 40px rgba(0, 210, 255, 0.8), 0 0 60px rgba(0, 150, 200, 0.5); }
-        }
-        
-        .depth-indicator {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(10, 22, 40, 0.8);
-            border: 1px solid #7fdbda;
-            border-radius: 10px;
-            padding: 15px 10px;
-            text-align: center;
-            z-index: 10;
-        }
-        
-        .depth-indicator span { display: block; font-size: 0.8rem; opacity: 0.7; }
-        .depth-indicator strong { font-size: 1.4rem; color: #00d4ff; }
-        
-        .modules {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 20px 0;
-        }
-        
-        .module {
-            background: linear-gradient(145deg, rgba(15, 52, 96, 0.6), rgba(10, 22, 40, 0.8));
-            border: 1px solid rgba(127, 219, 218, 0.4);
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .module:hover {
-            transform: translateY(-5px);
-            border-color: #00d4ff;
-            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2), inset 0 0 20px rgba(0, 212, 255, 0.05);
-        }
-        
-        .module h2 { font-size: 1.3rem; margin-bottom: 15px; color: #00d4ff; display: flex; align-items: center; gap: 10px; }
-        .module p { font-size: 0.9rem; opacity: 0.8; line-height: 1.6; }
-        .module-icon { font-size: 1.8rem; }
-        
-        .status-bar {
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            background: rgba(10, 22, 40, 0.5);
-            border-radius: 10px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .status-item { text-align: center; }
-        .status-item .label { font-size: 0.75rem; opacity: 0.6; text-transform: uppercase; }
-        .status-item .value { font-size: 1.1rem; color: #4ade80; }
-        .status-item .value.warning { color: #fbbf24; }
-        
-        .community-zone {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px dashed rgba(127, 219, 218, 0.3);
-            border-radius: 15px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            opacity: 0.7;
         }
-        
-        .community-zone p { font-size: 0.9rem; }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="bubbles">
-<div class="bubble" style="left: 10%; width: 20px; height: 20px; animation-duration: 8s; animation-delay: 0s;"></div>
-<div class="bubble" style="left: 30%; width: 12px; height: 12px; animation-duration: 12s; animation-delay: 2s;"></div>
-<div class="bubble" style="left: 50%; width: 18px; height: 18px; animation-duration: 10s; animation-delay: 1s;"></div>
-<div class="bubble" style="left: 70%; width: 8px; height: 8px; animation-duration: 15s; animation-delay: 3s;"></div>
-<div class="bubble" style="left: 85%; width: 14px; height: 14px; animation-duration: 9s; animation-delay: 4s;"></div>
-</div>
-<div class="depth-indicator">
-<span>DEPTH</span>
-<strong>2,847m</strong>
-<span>below sea level</span>
-</div>
-<div class="station-container">
-<header class="header">
-<h1>🔱 DEEP HORIZON 🔱</h1>
-<p style="margin-top: 10px; opacity: 0.6;">Abyssal Research Station • Est. 2024</p>
-</header>
-<section class="modules">
-<div class="module">
-<h2><span class="module-icon">🖥️</span> Command Center</h2>
-<p>Central operations hub. Monitors all station systems, communications with surface, and coordinates research missions.</p>
-</div>
-<div class="module">
-<h2><span class="module-icon">🧬</span> Specimen Laboratory</h2>
-<p>Analyzing deep-sea organisms. Currently studying bioluminescent species from the hadal zone.</p>
-</div>
-<div class="module">
-<h2><span class="module-icon">🔭</span> Observation Deck</h2>
-<p>Reinforced viewports overlooking the abyss. Equipped with high-intensity lights for attracting marine life.</p>
-</div>
-</section>
-<div class="status-bar">
-<div class="status-item"><div class="label">Oxygen</div><div class="value">98%</div></div>
-<div class="status-item"><div class="label">Pressure</div><div class="value">284 ATM</div></div>
-<div class="status-item"><div class="label">Hull</div><div class="value">NOMINAL</div></div>
-<div class="status-item"><div class="label">Power</div><div class="value warning">78%</div></div>
-<div class="status-item"><div class="label">Crew</div><div class="value">12</div></div>
-</div>
-<div class="community-zone">
-<p>📡 EXPANSION ZONE — Community modules can be added here...</p>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
