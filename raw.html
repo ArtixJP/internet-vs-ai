@@ -3,220 +3,176 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Pixel Arcade Gallery</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<title>STELLAR COMMAND // Space Dashboard</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --neon-pink: #ff2d95;
-            --neon-cyan: #00fff2;
-            --neon-yellow: #ffe600;
-            --dark-bg: #0a0a12;
-            --card-bg: #1a1a2e;
-        }
-        
         body {
             min-height: 100vh;
-            background: var(--dark-bg);
-            font-family: 'Press Start 2P', monospace;
-            color: #fff;
+            background: radial-gradient(ellipse at bottom, #1B2838 0%, #090A0F 100%);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
             overflow-x: hidden;
         }
-        
-        /* CRT Scanlines */
-        body::before {
-            content: '';
+        .stars {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.1) 0px,
-                rgba(0,0,0,0.1) 1px,
-                transparent 1px,
-                transparent 3px
-            );
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 1000;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(200,220,255,0.8), transparent);
+            background-size: 350px 200px;
+            animation: twinkle 4s ease-in-out infinite;
         }
-        
-        header {
-            background: linear-gradient(180deg, #1a0a2e 0%, var(--dark-bg) 100%);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--neon-pink);
-            box-shadow: 0 0 30px rgba(255,45,149,0.3);
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            animation: flicker 3s infinite;
-        }
-        
-        .subtitle {
-            font-size: 0.6rem;
-            color: var(--neon-yellow);
-            margin-top: 10px;
-            letter-spacing: 2px;
-        }
-        
-        /* Animated pixel character */
-        .pixel-mascot {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            animation: bounce 0.5s infinite alternate;
-        }
-        
-        .game-gallery {
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .game-card {
-            background: var(--card-bg);
-            border: 3px solid #333;
-            border-radius: 0;
-            padding: 15px;
-            transition: all 0.2s;
-            position: relative;
-            image-rendering: pixelated;
-        }
-        
-        .game-card:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0,255,242,0.4), inset 0 0 20px rgba(0,255,242,0.1);
-            transform: scale(1.02);
-        }
-        
-        .game-preview {
-            height: 120px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            border: 2px solid #222;
-        }
-        
-        .game-title {
-            font-size: 0.7rem;
-            color: var(--neon-yellow);
-            margin-bottom: 8px;
-        }
-        
-        .game-desc {
-            font-size: 0.5rem;
-            color: #888;
-            line-height: 1.8;
-        }
-        
-        .play-btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 8px 16px;
-            background: var(--neon-pink);
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.5rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .play-btn:hover {
-            background: #fff;
-            color: var(--dark-bg);
-            box-shadow: 0 0 15px #fff;
-        }
-        
-        .empty-slot {
-            border: 3px dashed #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
-            color: #444;
-            font-size: 0.6rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .empty-slot:hover {
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
-        }
-        
-        footer {
-            text-align: center;
+            grid-template-columns: 200px 1fr 280px;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
             padding: 20px;
-            font-size: 0.5rem;
-            color: #555;
-            border-top: 2px solid #222;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
         }
-        
-        .coin-counter {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #000;
-            border: 2px solid var(--neon-yellow);
-            padding: 8px 12px;
-            font-size: 0.6rem;
-            color: var(--neon-yellow);
-            z-index: 100;
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0,50,100,0.3);
+            border: 1px solid #0ff;
+            border-radius: 8px;
         }
-        
-        @keyframes flicker {
-            0%, 95%, 100% { opacity: 1; }
-            96% { opacity: 0.8; }
+        .logo { font-size: 1.5rem; color: #0ff; text-shadow: 0 0 10px #0ff; }
+        .status { color: #0f0; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .nav-panel {
+            background: rgba(0,30,60,0.5);
+            border: 1px solid #234;
+            border-radius: 8px;
+            padding: 15px;
         }
-        
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
+        .nav-panel h3 { color: #0af; margin-bottom: 15px; font-size: 0.9rem; }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: linear-gradient(90deg, rgba(0,100,150,0.3), transparent);
+            border: 1px solid #0af;
+            border-radius: 4px;
+            color: #0cf;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .nav-btn:hover { background: rgba(0,150,200,0.4); box-shadow: 0 0 15px rgba(0,200,255,0.3); }
+        .main-display {
+            background: rgba(0,20,40,0.6);
+            border: 1px solid #345;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .star-map {
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(circle at 30% 40%, rgba(100,150,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(255,100,150,0.1) 0%, transparent 40%);
+            border: 1px dashed #456;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5);
+        }
+        .planet-1 { width: 40px; height: 40px; background: linear-gradient(135deg, #f4a460, #8b4513); top: 30%; left: 25%; }
+        .planet-2 { width: 60px; height: 60px; background: linear-gradient(135deg, #6495ed, #191970); top: 50%; left: 60%; }
+        .planet-3 { width: 25px; height: 25px; background: linear-gradient(135deg, #98fb98, #228b22); top: 70%; left: 40%; }
+        .map-label { position: absolute; bottom: 10px; right: 15px; color: #567; font-size: 0.8rem; }
+        .info-panel {
+            background: rgba(0,30,60,0.5);
+            border: 1px solid #234;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .info-panel h3 { color: #f80; margin-bottom: 10px; font-size: 0.9rem; }
+        .mission-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255,150,0,0.1);
+            border-left: 3px solid #f80;
+            font-size: 0.85rem;
+        }
+        .crew-section { margin-top: 20px; }
+        .crew-section h3 { color: #0f0; margin-bottom: 10px; }
+        .crew-member { padding: 5px 0; font-size: 0.8rem; color: #8f8; }
+        .footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 10px;
+            color: #456;
+            font-size: 0.8rem;
+        }
+        .expansion-zone {
+            margin-top: 15px;
+            padding: 20px;
+            border: 2px dashed #345;
+            border-radius: 8px;
+            color: #567;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-<div class="coin-counter">🪙 COINS: 000</div>
-<header>
-<span class="pixel-mascot">👾</span>
-<h1>⬢ PIXEL ARCADE ⬢</h1>
-<p class="subtitle">COMMUNITY GAME SHOWCASE</p>
+<div class="stars"></div>
+<div class="dashboard">
+<header class="header">
+<div class="logo">⭐ STELLAR COMMAND</div>
+<div class="status">● SYSTEMS ONLINE</div>
 </header>
-<main class="game-gallery">
-<div class="game-card">
-<div class="game-preview">🐉</div>
-<h3 class="game-title">DRAGON QUEST 8-BIT</h3>
-<p class="game-desc">Slay pixelated dragons in this retro adventure!</p>
-<button class="play-btn">► INSERT COIN</button>
+<nav class="nav-panel">
+<h3>// NAVIGATION</h3>
+<button class="nav-btn">🚀 Launch Bay</button>
+<button class="nav-btn">🛰️ Satellites</button>
+<button class="nav-btn">📡 Comms Array</button>
+<button class="nav-btn">🔬 Research Lab</button>
+<button class="nav-btn">⚙️ Engineering</button>
+</nav>
+<main class="main-display">
+<div class="star-map">
+<div class="planet planet-1"></div>
+<div class="planet planet-2"></div>
+<div class="planet planet-3"></div>
+<span class="map-label">SECTOR 7G // STAR MAP</span>
 </div>
-<div class="game-card">
-<div class="game-preview">🚀</div>
-<h3 class="game-title">SPACE BLASTER</h3>
-<p class="game-desc">Defend Earth from alien invaders!</p>
-<button class="play-btn">► INSERT COIN</button>
-</div>
-<div class="game-card">
-<div class="game-preview">🏰</div>
-<h3 class="game-title">CASTLE CRAWLER</h3>
-<p class="game-desc">Explore dungeons, find treasure!</p>
-<button class="play-btn">► INSERT COIN</button>
-</div>
-<div class="game-card empty-slot">
-<span>[ EMPTY SLOT ]<br/><br/>Chat to add a game!</span>
-</div>
+<div class="expansion-zone">[ COMMUNITY EXPANSION ZONE - Your ideas here! ]</div>
 </main>
-<footer>
-<p>🕹️ POWERED BY TWITCH CHAT • HIGH SCORE: ??? 🕹️</p>
-</footer>
+<aside class="info-panel">
+<h3>// ACTIVE MISSIONS</h3>
+<div class="mission-item">🎯 Survey Kepler-442b</div>
+<div class="mission-item">📦 Supply Run to Station Omega</div>
+<div class="mission-item">🔍 Anomaly Investigation</div>
+<div class="crew-section">
+<h3>// CREW STATUS</h3>
+<div class="crew-member">CDR. Nova Chen - Bridge</div>
+<div class="crew-member">DR. Yuki Tanaka - Med Bay</div>
+<div class="crew-member">ENG. Marcus Webb - Reactor</div>
+</div>
+</aside>
+<footer class="footer">STELLAR COMMAND v1.0 // STARDATE 2847.156 // BUILT BY THE VOID</footer>
+</div>
 </body>
 </html>
