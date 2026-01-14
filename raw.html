@@ -1,41 +1,169 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>The Ethereal Flask - Mystical Potions</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(180deg, #1a0a2e 0%, #16082e 50%, #0d0618 100%);
+            color: #e8d5f0;
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .particles {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-100px) scale(1.5); opacity: 0.8; }
+        }
+        .shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        header {
             text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(168, 85, 247, 0.3);
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            background: linear-gradient(90deg, #c084fc, #22d3ee, #c084fc);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            text-shadow: 0 0 40px rgba(192, 132, 252, 0.5);
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes shimmer { to { background-position: 200% center; } }
+        .tagline { font-style: italic; opacity: 0.7; margin-top: 8px; font-size: 1.1rem; }
+        .shelves {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 40px 20px;
         }
+        .potion {
+            background: rgba(30, 10, 50, 0.6);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        .potion:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
+            border-color: #22d3ee;
+        }
+        .potion-bottle {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px currentColor);
+            animation: bob 2s ease-in-out infinite;
+        }
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .potion:nth-child(2) .potion-bottle { animation-delay: 0.3s; color: #22d3ee; }
+        .potion:nth-child(3) .potion-bottle { animation-delay: 0.6s; color: #f472b6; }
+        .potion:nth-child(4) .potion-bottle { animation-delay: 0.9s; color: #4ade80; }
+        .potion-name { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #c084fc; }
+        .potion-desc { font-size: 0.9rem; opacity: 0.7; margin-top: 5px; }
+        .cauldron-section {
+            text-align: center;
+            padding: 40px;
+            background: radial-gradient(ellipse at center bottom, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+        }
+        .cauldron {
+            font-size: 6rem;
+            display: inline-block;
+            animation: bubble 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px #22d3ee);
+        }
+        @keyframes bubble {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .cauldron-text { font-family: 'Cinzel', serif; margin-top: 15px; color: #22d3ee; }
+        .community-board {
+            background: rgba(20, 5, 40, 0.8);
+            border: 2px dashed rgba(168, 85, 247, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 20px;
+            text-align: center;
+        }
+        .board-title { font-family: 'Cinzel', serif; color: #a855f7; margin-bottom: 10px; }
+        .board-hint { opacity: 0.6; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="particles">
+<div class="particle" style="left:10%;top:20%;animation-delay:0s"></div>
+<div class="particle" style="left:30%;top:60%;animation-delay:1s"></div>
+<div class="particle" style="left:50%;top:30%;animation-delay:2s"></div>
+<div class="particle" style="left:70%;top:70%;animation-delay:3s"></div>
+<div class="particle" style="left:85%;top:40%;animation-delay:4s"></div>
+<div class="particle" style="left:20%;top:80%;animation-delay:5s"></div>
+</div>
+<div class="shop-container">
+<header>
+<h1>🔮 The Ethereal Flask 🔮</h1>
+<p class="tagline">"Brews for the bold, elixirs for the enlightened"</p>
+</header>
+<section class="shelves">
+<div class="potion">
+<span class="potion-bottle" style="color:#a855f7">🧪</span>
+<div class="potion-name">Liquid Starlight</div>
+<div class="potion-desc">See through the veil of night</div>
+</div>
+<div class="potion">
+<span class="potion-bottle">⚗️</span>
+<div class="potion-name">Dragon's Breath</div>
+<div class="potion-desc">Warmth that never fades</div>
+</div>
+<div class="potion">
+<span class="potion-bottle">🍶</span>
+<div class="potion-name">Moonpetal Dew</div>
+<div class="potion-desc">Dreams made manifest</div>
+</div>
+<div class="potion">
+<span class="potion-bottle">🫧</span>
+<div class="potion-name">Essence of Whispers</div>
+<div class="potion-desc">Hear what others cannot</div>
+</div>
+</section>
+<section class="cauldron-section">
+<div class="cauldron">🫕</div>
+<p class="cauldron-text">✨ The Brewing Cauldron awaits your ingredients... ✨</p>
+</section>
+<div class="community-board">
+<h3 class="board-title">📜 Adventurer's Request Board 📜</h3>
+<p class="board-hint">The community shapes this realm... what shall we brew next?</p>
+</div>
+</div>
 </body>
 </html>
