@@ -1,161 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>STATION AURORA-7 | Control Deck</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #0d1117 50%, #0a0a12 100%);
-            color: #00ffcc;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-        }
-        .station-header {
-            background: linear-gradient(90deg, rgba(0,255,204,0.1) 0%, rgba(0,150,255,0.2) 50%, rgba(0,255,204,0.1) 100%);
-            border-bottom: 2px solid #00ffcc;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .station-name { font-size: 1.5rem; text-shadow: 0 0 10px #00ffcc; letter-spacing: 3px; }
-        .station-time { color: #0096ff; font-size: 1.1rem; animation: pulse 2s infinite; }
-        .control-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 15px;
-            padding: 20px;
-            height: calc(100vh - 80px);
-        }
-        .panel {
-            background: rgba(0, 255, 204, 0.05);
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffcc, transparent);
-            animation: scanline 3s infinite;
-        }
-        .panel-title {
-            font-size: 0.9rem;
-            color: #0096ff;
-            border-bottom: 1px solid rgba(0,150,255,0.3);
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-        }
-        .main-display {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .hologram {
-            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(ellipse at center, rgba(0,150,255,0.1) 0%, transparent 70%);
-        }
-        .station-model {
-            width: 200px; height: 200px;
-            border: 2px solid #0096ff;
-            border-radius: 50%;
-            animation: rotate 20s linear infinite;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0,150,255,0.3), inset 0 0 30px rgba(0,150,255,0.1);
-        }
-        .station-model::after {
-            content: '🛰️';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4rem;
-        }
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(0,255,204,0.2);
-            font-size: 0.85rem;
-        }
-        .status-value { color: #00ff88; }
-        .status-value.warning { color: #ffcc00; }
-        .status-value.critical { color: #ff4444; animation: blink 1s infinite; }
-        .crew-list { display: flex; flex-direction: column; gap: 8px; }
-        .crew-member {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px;
-            background: rgba(0,255,204,0.05);
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        .crew-status { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; }
-        .crew-status.away { background: #ffcc00; }
-        .alert-box {
-            background: rgba(255,68,68,0.1);
-            border: 1px solid #ff4444;
-            padding: 10px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            font-size: 0.8rem;
-            color: #ff4444;
         }
-        .community-zone {
-            border: 2px dashed rgba(0,255,204,0.3);
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(0,255,204,0.4);
-            font-size: 0.8rem;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes scanline { 0% { left: -100%; } 100% { left: 100%; } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<header class="station-header">
-<div class="station-name">⬡ STATION AURORA-7</div>
-<div class="station-time">CYCLE 2847 | 14:32:07 UTC</div>
-</header>
-<div class="control-grid">
-<div class="panel">
-<div class="panel-title">◈ SYSTEM STATUS</div>
-<div class="status-item"><span>Oxygen</span><span class="status-value">98.2%</span></div>
-<div class="status-item"><span>Power Grid</span><span class="status-value">NOMINAL</span></div>
-<div class="status-item"><span>Hull Integrity</span><span class="status-value warning">87%</span></div>
-<div class="status-item"><span>Comms Array</span><span class="status-value">ONLINE</span></div>
-<div class="status-item"><span>Fuel Reserves</span><span class="status-value critical">12%</span></div>
-<div class="community-zone">[ EXPANSION SLOT ]</div>
-</div>
-<div class="panel main-display">
-<div class="panel-title">◈ MAIN VIEWPORT</div>
-<div class="hologram">
-<div class="station-model"></div>
-</div>
-<div class="alert-box">⚠ ALERT: Fuel reserves critical. Resupply mission required.</div>
-</div>
-<div class="panel">
-<div class="panel-title">◈ CREW MANIFEST</div>
-<div class="crew-list">
-<div class="crew-member"><span class="crew-status"></span>CDR. Chen - Bridge</div>
-<div class="crew-member"><span class="crew-status away"></span>DR. Okafor - Med Bay</div>
-<div class="crew-member"><span class="crew-status"></span>ENG. Petrov - Reactor</div>
-<div class="crew-member"><span class="crew-status"></span>SCI. Tanaka - Lab</div>
-</div>
-<div class="community-zone" style="margin-top:15px;">[ ADD CREW ]</div>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
