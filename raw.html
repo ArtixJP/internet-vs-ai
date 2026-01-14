@@ -1,41 +1,244 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STELLAR COMMAND // Deep Space Operations</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --space-dark: #0a0a1a;
+            --nebula-purple: #1a0a2e;
+            --glow-cyan: #00f5ff;
+            --glow-orange: #ff6b35;
+            --panel-bg: rgba(20, 30, 50, 0.85);
+            --border-glow: rgba(0, 245, 255, 0.3);
+        }
         body {
             min-height: 100vh;
+            background: linear-gradient(135deg, var(--space-dark) 0%, var(--nebula-purple) 50%, #0d1b2a 100%);
+            color: #e0e8ff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                              radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                              radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                              radial-gradient(2px 2px at 160px 120px, rgba(0,245,255,0.5), transparent),
+                              radial-gradient(1px 1px at 230px 80px, #fff, transparent);
+            background-size: 250px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        header {
+            grid-column: 1 / -1;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--glow-cyan), var(--glow-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0,245,255,0.3);
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+        }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; }
+        .status-dot.green { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .status-dot.orange { background: var(--glow-orange); box-shadow: 0 0 10px var(--glow-orange); }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .panel h2 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--glow-cyan);
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .star-map {
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .map-display {
+            flex: 1;
+            background: radial-gradient(ellipse at center, #1a2a4a 0%, #0a0a1a 100%);
+            border-radius: 8px;
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+        }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        .planet-1 { width: 60px; height: 60px; background: linear-gradient(135deg, #ff6b35, #ff8c5a); top: 20%; left: 15%; animation-delay: 0s; }
+        .planet-2 { width: 40px; height: 40px; background: linear-gradient(135deg, #00f5ff, #0088aa); top: 60%; left: 70%; animation-delay: 2s; }
+        .planet-3 { width: 25px; height: 25px; background: linear-gradient(135deg, #9b59b6, #8e44ad); top: 35%; left: 55%; animation-delay: 4s; }
+        .ship-marker {
+            position: absolute;
+            width: 12px; height: 12px;
+            background: var(--glow-cyan);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            top: 45%; left: 40%;
+            box-shadow: 0 0 20px var(--glow-cyan);
+            animation: shipPulse 1.5s infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shipPulse { 0%, 100% { box-shadow: 0 0 20px var(--glow-cyan); } 50% { box-shadow: 0 0 40px var(--glow-cyan), 0 0 60px var(--glow-cyan); } }
+        .ship-status .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        .progress-bar {
+            height: 6px;
+            background: #1a2a4a;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s;
+        }
+        .progress-fill.fuel { width: 73%; background: linear-gradient(90deg, #00ff88, #00cc6a); }
+        .progress-fill.shields { width: 91%; background: linear-gradient(90deg, var(--glow-cyan), #0088aa); }
+        .progress-fill.oxygen { width: 85%; background: linear-gradient(90deg, #00aaff, #0066cc); }
+        .crew-section .crew-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .crew-member {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0,245,255,0.05);
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        .crew-member:hover {
+            border-color: var(--glow-cyan);
+            box-shadow: 0 0 15px rgba(0,245,255,0.2);
+        }
+        .crew-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #3a4a6a, #2a3a5a);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .crew-name { font-size: 0.75rem; color: #aab; }
+        .community-zone {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed rgba(0,245,255,0.3);
+            background: rgba(0,245,255,0.02);
+        }
+        .community-zone h3 {
+            color: var(--glow-cyan);
+            margin-bottom: 8px;
+        }
+        .community-zone p {
+            font-size: 0.85rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars"></div>
+<div class="dashboard">
+<header>
+<div class="logo">⚛ STELLAR COMMAND</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot green"></span> Systems Online</div>
+<div class="status-item"><span class="status-dot orange"></span> 3 Missions Active</div>
+<div class="status-item">📍 Sector 7G-Alpha</div>
+</div>
+</header>
+<div class="panel ship-status">
+<h2>🚀 Ship Status</h2>
+<div class="stat-row"><span>Fuel Reserves</span><span>73%</span></div>
+<div class="progress-bar"><div class="progress-fill fuel"></div></div>
+<div class="stat-row"><span>Shield Integrity</span><span>91%</span></div>
+<div class="progress-bar"><div class="progress-fill shields"></div></div>
+<div class="stat-row"><span>Oxygen Levels</span><span>85%</span></div>
+<div class="progress-bar"><div class="progress-fill oxygen"></div></div>
+</div>
+<div class="panel star-map">
+<h2>🗺️ Navigation Chart</h2>
+<div class="map-display">
+<div class="planet planet-1"></div>
+<div class="planet planet-2"></div>
+<div class="planet planet-3"></div>
+<div class="ship-marker"></div>
+</div>
+</div>
+<div class="panel crew-section">
+<h2>👥 Crew Manifest</h2>
+<div class="crew-grid">
+<div class="crew-member">
+<div class="crew-avatar">👨‍✈️</div>
+<div class="crew-name">Cpt. Nova</div>
+</div>
+<div class="crew-member">
+<div class="crew-avatar">👩‍🔬</div>
+<div class="crew-name">Dr. Stellar</div>
+</div>
+<div class="crew-member">
+<div class="crew-avatar">🤖</div>
+<div class="crew-name">ARIA-7</div>
+</div>
+</div>
+</div>
+<div class="panel community-zone">
+<h3>🌌 COMMUNITY EXPANSION ZONE</h3>
+<p>Chat commands will add new features here! Add aliens, weapons, planets, or anything you can imagine...</p>
+</div>
+</div>
 </body>
 </html>
