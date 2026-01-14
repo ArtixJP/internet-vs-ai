@@ -1,164 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>🌴 Paradise Islands Travel Guide</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500;700&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(180deg, #ff9a56 0%, #ff6b6b 30%, #4ecdc4 60%, #1a535c 100%);
-            color: #fff;
-            overflow-x: hidden;
-        }
-        
-        .ocean-wave {
-            position: fixed;
-            bottom: 0;
-            width: 200%;
-            height: 80px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%2300b4d8' d='M0,60 C300,120 400,0 600,60 C800,120 900,0 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
-            animation: wave 8s linear infinite;
-            opacity: 0.6;
-        }
-        
-        @keyframes wave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            position: relative;
-        }
-        
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 3rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .palm-left, .palm-right {
-            position: fixed;
-            font-size: 4rem;
-            top: 10px;
-            animation: sway 4s ease-in-out infinite;
-        }
-        .palm-left { left: 20px; }
-        .palm-right { right: 20px; animation-delay: -2s; }
-        
-        @keyframes sway {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-        
-        .tagline {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-top: 10px;
-        }
-        
-        .destinations {
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
             justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .island-card {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            width: 280px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        
-        .island-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(255,255,255,0.25);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        
-        .island-card .icon { font-size: 3rem; margin-bottom: 10px; }
-        .island-card h3 { font-size: 1.4rem; margin-bottom: 8px; }
-        .island-card p { font-size: 0.9rem; opacity: 0.85; }
-        
-        .community-zone {
-            background: rgba(26, 83, 92, 0.7);
-            margin: 30px auto;
-            padding: 25px;
-            border-radius: 15px;
-            max-width: 600px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        
-        .community-zone h2 { font-family: 'Pacifico', cursive; margin-bottom: 10px; }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-bottom: 80px;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="palm-left">🌴</div>
-<div class="palm-right">🌴</div>
-<header>
-<h1>🏝️ Paradise Islands</h1>
-<p class="tagline">Your gateway to tropical adventures ✨</p>
-</header>
-<section class="destinations">
-<div class="island-card">
-<div class="icon">🏖️</div>
-<h3>Crystal Beach</h3>
-<p>White sand paradise with turquoise waters perfect for snorkeling</p>
-</div>
-<div class="island-card">
-<div class="icon">🌋</div>
-<h3>Volcano Bay</h3>
-<p>Adventure awaits at this stunning volcanic island retreat</p>
-</div>
-<div class="island-card">
-<div class="icon">🐠</div>
-<h3>Coral Cove</h3>
-<p>Dive into vibrant underwater worlds teeming with life</p>
-</div>
-<div class="island-card">
-<div class="icon">🍹</div>
-<h3>Sunset Resort</h3>
-<p>Luxury relaxation with breathtaking golden hour views</p>
-</div>
-</section>
-<div class="community-zone">
-<h2>🗺️ Traveler's Board</h2>
-<p>Community discoveries and tips will appear here...</p>
-</div>
-<footer>
-<p>🌺 Built by the Twitch community, one coconut at a time 🥥</p>
-</footer>
-<div class="ocean-wave"></div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
