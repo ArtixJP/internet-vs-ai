@@ -1,220 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>NEON DISTRICT // Portal Hub</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a0a2e 50%, #0d1a2d 100%);
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            color: #e0e0ff;
-        }
-        
-        .rain {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(transparent 0%, rgba(0,255,255,0.03) 50%, transparent 100%);
-            background-size: 3px 100px;
-            animation: rainFall 0.5s linear infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        @keyframes rainFall { to { background-position: 0 100px; } }
-        
-        .city-container {
-            position: relative;
-            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 20px;
-        }
-        
-        .header {
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            margin-bottom: 20px;
-            z-index: 10;
         }
-        
-        .header h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 900;
-            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
-            background-size: 200% auto;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: neonShift 3s linear infinite;
-            text-shadow: 0 0 30px rgba(255,0,255,0.5);
-            letter-spacing: 4px;
         }
-        
-        @keyframes neonShift { to { background-position: 200% center; } }
-        
-        .subtitle {
-            font-size: 1rem;
-            color: #00ffff;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            opacity: 0.7;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .portal-zone {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-        }
-        
-        .portal {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, #0a0a20 0%, transparent 70%);
-            border: 3px solid #ff00ff;
-            box-shadow: 0 0 40px #ff00ff, 0 0 80px #00ffff, inset 0 0 60px rgba(0,255,255,0.3);
-            animation: portalPulse 2s ease-in-out infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .portal:hover { transform: scale(1.05); }
-        
-        .portal-text {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
-            color: #00ffff;
-            text-align: center;
-            text-shadow: 0 0 10px #00ffff;
-        }
-        
-        @keyframes portalPulse {
-            0%, 100% { box-shadow: 0 0 40px #ff00ff, 0 0 80px #00ffff, inset 0 0 60px rgba(0,255,255,0.3); }
-            50% { box-shadow: 0 0 60px #ff00ff, 0 0 120px #00ffff, inset 0 0 80px rgba(255,0,255,0.4); }
-        }
-        
-        .districts {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            max-width: 900px;
-            margin-top: 20px;
-            z-index: 10;
-        }
-        
-        .district {
-            background: rgba(10,10,30,0.8);
-            border: 1px solid;
-            padding: 15px 25px;
-            min-width: 150px;
-            text-align: center;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .district:nth-child(1) { border-color: #ff0066; color: #ff0066; }
-        .district:nth-child(2) { border-color: #00ffff; color: #00ffff; }
-        .district:nth-child(3) { border-color: #ffff00; color: #ffff00; }
-        .district:nth-child(4) { border-color: #ff00ff; color: #ff00ff; }
-        
-        .district:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px currentColor;
-            background: rgba(20,20,50,0.9);
-        }
-        
-        .district h3 { font-family: 'Orbitron', monospace; font-size: 0.9rem; margin-bottom: 5px; }
-        .district p { font-size: 0.75rem; opacity: 0.7; color: #e0e0ff; }
-        
-        .skyline {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 5px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .building {
-            background: linear-gradient(180deg, #1a1a3a 0%, #0a0a15 100%);
-            border-top: 2px solid rgba(0,255,255,0.3);
-            position: relative;
-        }
-        
-        .building::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 70%;
-            background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(255,0,255,0.1) 8px, rgba(255,0,255,0.1) 10px);
-        }
-        
-        .building:nth-child(odd)::before { background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(0,255,255,0.15) 8px, rgba(0,255,255,0.15) 10px); }
     </style>
 </head>
 <body>
-<div class="rain"></div>
-<div class="city-container">
-<header class="header">
-<h1>NEON DISTRICT</h1>
-<p class="subtitle">// Portal Hub Online //</p>
-</header>
-<div class="portal-zone">
-<div class="portal">
-<span class="portal-text">ENTER THE<br/>NETWORK</span>
-</div>
-</div>
-<div class="districts">
-<div class="district">
-<h3>⚡ CHROME ALLEY</h3>
-<p>Tech &amp; Augments</p>
-</div>
-<div class="district">
-<h3>🌊 SYNTH HARBOR</h3>
-<p>Data Streams</p>
-</div>
-<div class="district">
-<h3>💀 GHOST MARKET</h3>
-<p>Shadow Trades</p>
-</div>
-<div class="district">
-<h3>🔮 VOID NEXUS</h3>
-<p>Unknown Zone</p>
-</div>
-</div>
-</div>
-<div class="skyline">
-<div class="building" style="width:40px;height:120px;"></div>
-<div class="building" style="width:60px;height:180px;"></div>
-<div class="building" style="width:35px;height:100px;"></div>
-<div class="building" style="width:80px;height:160px;"></div>
-<div class="building" style="width:45px;height:140px;"></div>
-<div class="building" style="width:70px;height:200px;"></div>
-<div class="building" style="width:50px;height:130px;"></div>
-<div class="building" style="width:90px;height:170px;"></div>
-<div class="building" style="width:40px;height:110px;"></div>
-<div class="building" style="width:55px;height:150px;"></div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
