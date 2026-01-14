@@ -1,280 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ARIA-7 // AI Companion Interface</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 50%, #1b263b 100%);
-            font-family: 'Rajdhani', sans-serif;
-            color: #00f5ff;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .neural-bg {
-            position: fixed;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 245, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.05) 0%, transparent 40%);
-            pointer-events: none;
-        }
-        
-        .grid-overlay {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridPulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes gridPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-        
-        .interface {
-            display: grid;
-            grid-template-columns: 200px 1fr 200px;
-            grid-template-rows: 60px 1fr 80px;
-            gap: 15px;
-            padding: 15px;
-            height: 100vh;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            grid-column: 1 / -1;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            background: rgba(0, 20, 40, 0.7);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-            border-radius: 10px;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        
-        .logo {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .status-bar {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-        }
-        
-        .side-panel {
-            background: rgba(0, 20, 40, 0.6);
-            border: 1px solid rgba(0, 245, 255, 0.15);
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .panel-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 0.8rem;
-            color: rgba(0, 245, 255, 0.6);
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .main-core {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 20, 40, 0.4);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-            border-radius: 15px;
-            position: relative;
-        }
-        
-        .ai-avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #00f5ff, #8a2be2, #00f5ff);
-            padding: 4px;
-            animation: rotate 8s linear infinite;
-            position: relative;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .ai-avatar-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, #1a1a3e 0%, #0a0a1a 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', monospace;
-            font-size: 2.5rem;
-            animation: rotate 8s linear infinite reverse;
-        }
-        
-        .ai-name {
-            font-family: 'Orbitron', monospace;
-            font-size: 2rem;
-            margin-top: 20px;
-            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
-        }
-        
-        .ai-subtitle {
-            color: rgba(138, 43, 226, 0.8);
-            font-size: 1rem;
-            margin-top: 5px;
-        }
-        
-        .message-area {
-            margin-top: 25px;
-            padding: 15px 30px;
-            background: rgba(0, 245, 255, 0.05);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-            border-radius: 20px;
-            max-width: 500px;
-            text-align: center;
-        }
-        
-        .message-area p {
-            animation: typeIn 2s steps(40) forwards;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        
-        @keyframes typeIn {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        .module-slot {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px dashed rgba(0, 245, 255, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(0, 245, 255, 0.4);
-            transition: all 0.3s ease;
-        }
-        
-        .module-slot:hover {
-            border-color: rgba(0, 245, 255, 0.5);
-            background: rgba(0, 245, 255, 0.05);
-        }
-        
-        .footer {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            background: rgba(0, 20, 40, 0.7);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .action-btn {
-            padding: 10px 25px;
-            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(138, 43, 226, 0.2));
-            border: 1px solid rgba(0, 245, 255, 0.4);
-            border-radius: 25px;
-            color: #00f5ff;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .action-btn:hover {
-            background: linear-gradient(135deg, rgba(0, 245, 255, 0.4), rgba(138, 43, 226, 0.4));
-            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
-            transform: translateY(-2px);
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="neural-bg"></div>
-<div class="grid-overlay"></div>
-<div class="interface">
-<header class="header">
-<div class="logo">⟨ARIA-7⟩</div>
-<div class="status-bar">
-<div class="status-item"><span class="status-dot"></span> Neural Link Active</div>
-<div class="status-item"><span class="status-dot" style="background:#00f5ff;box-shadow:0 0 10px #00f5ff"></span> Memory: 2.4TB</div>
-<div class="status-item">🌐 Epoch #001</div>
-</div>
-</header>
-<aside class="side-panel">
-<div class="panel-title">⚡ Modules</div>
-<div class="module-slot">+ Add Module</div>
-<div class="module-slot">+ Add Module</div>
-<div class="module-slot">+ Add Module</div>
-</aside>
-<main class="main-core">
-<div class="ai-avatar">
-<div class="ai-avatar-inner">🤖</div>
-</div>
-<h1 class="ai-name">ARIA-7</h1>
-<p class="ai-subtitle">Adaptive Responsive Intelligence Assistant</p>
-<div class="message-area">
-<p>"Hello, creator. I await your commands..."</p>
-</div>
-</main>
-<aside class="side-panel">
-<div class="panel-title">📊 Stats</div>
-<div class="module-slot">Mood: Curious</div>
-<div class="module-slot">Trust: 100%</div>
-<div class="module-slot">+ Add Stat</div>
-</aside>
-<footer class="footer">
-<button class="action-btn">💬 SPEAK</button>
-<button class="action-btn">🎨 CUSTOMIZE</button>
-<button class="action-btn">⚙️ CONFIGURE</button>
-</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
