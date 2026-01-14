@@ -1,193 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>The Bubbling Cauldron - Mystical Potions</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
-            color: #e8d5f0;
-            font-family: 'Georgia', serif;
-            overflow-x: hidden;
-        }
-        .shop {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-        }
-        .sign {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 20px;
-            background: linear-gradient(180deg, #3d2a54 0%, #2a1a3d 100%);
-            border: 3px solid #8b5cf6;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
-            margin-bottom: 30px;
         }
-        .sign h1 {
-            font-size: 2.5rem;
-            color: #c4b5fd;
-            text-shadow: 0 0 20px #8b5cf6;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .sign p { opacity: 0.8; font-style: italic; }
-        .shop-floor {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-        .shelf {
-            background: linear-gradient(180deg, #2a1a3d 0%, #1f1030 100%);
-            border: 2px solid #5b3a7d;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .shelf h3 {
-            text-align: center;
-            color: #a78bfa;
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
-            border-bottom: 1px solid #5b3a7d;
-            padding-bottom: 8px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .potion {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            margin: 8px 0;
-            background: rgba(0,0,0,0.3);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .potion:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px currentColor;
-        }
-        .bottle {
-            font-size: 2rem;
-            animation: float 3s ease-in-out infinite;
-        }
-        .potion.healing .bottle { color: #ef4444; animation-delay: 0s; }
-        .potion.mana .bottle { color: #3b82f6; animation-delay: 0.5s; }
-        .potion.luck .bottle { color: #eab308; animation-delay: 1s; }
-        .potion.invisibility .bottle { color: #a855f7; animation-delay: 1.5s; }
-        .potion.strength .bottle { color: #f97316; animation-delay: 2s; }
-        .cauldron-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .cauldron {
-            font-size: 6rem;
-            position: relative;
-            animation: bubble 2s ease-in-out infinite;
-        }
-        .steam {
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2rem;
-            opacity: 0.6;
-            animation: rise 2s ease-out infinite;
-        }
-        .counter {
-            width: 100%;
-            background: #3d2a54;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .sparkles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: -1;
-        }
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #c4b5fd;
-            border-radius: 50%;
-            animation: sparkle 4s linear infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        @keyframes bubble {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        @keyframes rise {
-            0% { opacity: 0.6; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
-        }
-        @keyframes sparkle {
-            0% { opacity: 0; transform: translateY(100vh); }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-10vh); }
-        }
-        .welcome-mat {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px dashed #5b3a7d;
-            border-radius: 8px;
-            opacity: 0.7;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="sparkles">
-<div class="sparkle" style="left: 10%; animation-delay: 0s;"></div>
-<div class="sparkle" style="left: 30%; animation-delay: 1s;"></div>
-<div class="sparkle" style="left: 50%; animation-delay: 2s;"></div>
-<div class="sparkle" style="left: 70%; animation-delay: 3s;"></div>
-<div class="sparkle" style="left: 90%; animation-delay: 0.5s;"></div>
-</div>
-<div class="shop">
-<div class="sign">
-<h1>🔮 The Bubbling Cauldron 🔮</h1>
-<p>"Potions for every predicament since 1247"</p>
-</div>
-<div class="shop-floor">
-<div class="shelf">
-<h3>✨ Common Brews</h3>
-<div class="potion healing"><span class="bottle">🧪</span><span>Healing Elixir</span></div>
-<div class="potion mana"><span class="bottle">🧪</span><span>Mana Tonic</span></div>
-<div class="potion luck"><span class="bottle">🧪</span><span>Liquid Luck</span></div>
-</div>
-<div class="cauldron-area">
-<div class="cauldron">
-<span class="steam">💨</span>
-                    🫕
-                </div>
-<div class="counter">
-<p>🧙 The shopkeeper is brewing something new...</p>
-</div>
-</div>
-<div class="shelf">
-<h3>⚗️ Rare Elixirs</h3>
-<div class="potion invisibility"><span class="bottle">🧪</span><span>Invisibility Draught</span></div>
-<div class="potion strength"><span class="bottle">🧪</span><span>Giant's Strength</span></div>
-</div>
-</div>
-<div class="welcome-mat">
-<p>🚪 The door creaks open... new visitors are welcome!</p>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
