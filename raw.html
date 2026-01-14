@@ -1,41 +1,219 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>STELLAR COMMAND // Space Dashboard</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: radial-gradient(ellipse at bottom, #1b2838 0%, #090a0f 100%);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: transparent;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle { from { opacity: 0.3; } to { opacity: 1; } }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00fff7;
+            padding-bottom: 10px;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00fff7;
+            text-shadow: 0 0 20px #00fff7;
+        }
+        .mission-status {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+        .status-item { color: #7fdbca; }
+        .status-item span { color: #ff6b6b; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        
+        .panel {
+            background: rgba(0, 255, 247, 0.05);
+            border: 1px solid rgba(0, 255, 247, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+        }
+        .panel-title {
+            font-size: 0.8rem;
+            color: #00fff7;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 247, 0.2);
+            padding-bottom: 5px;
+        }
+        
+        .radar-container { display: flex; justify-content: center; align-items: center; }
+        .radar {
+            width: 200px; height: 200px;
+            border: 2px solid #00fff7;
+            border-radius: 50%;
+            position: relative;
+            background: radial-gradient(circle, transparent 0%, rgba(0,255,247,0.1) 100%);
+        }
+        .radar::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50%; height: 2px;
+            background: linear-gradient(90deg, #00fff7, transparent);
+            transform-origin: left center;
+            animation: radar-sweep 3s linear infinite;
+        }
+        @keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .radar-blip {
+            position: absolute;
+            width: 8px; height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
+        
+        .resources { display: flex; flex-direction: column; gap: 15px; }
+        .resource-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            height: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .resource-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        .resource-label {
+            position: absolute;
+            top: 50%; left: 10px;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            z-index: 1;
+        }
+        .fuel .resource-fill { background: linear-gradient(90deg, #ff6b6b, #ffa502); width: 73%; }
+        .oxygen .resource-fill { background: linear-gradient(90deg, #00fff7, #70a1ff); width: 89%; }
+        .power .resource-fill { background: linear-gradient(90deg, #a55eea, #ff6b9d); width: 45%; }
+        
+        .main-view { grid-row: 2; display: flex; flex-direction: column; }
+        .viewport {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 1.2rem;
+            color: #7fdbca;
+            min-height: 200px;
+        }
+        
+        .comms-log {
+            grid-column: 1 / -1;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .comms-entry {
+            font-size: 0.8rem;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(0,255,247,0.1);
+            color: #7fdbca;
+        }
+        .comms-entry .time { color: #ff6b6b; }
+        
+        .expansion-zone {
+            border: 2px dashed rgba(0,255,247,0.3);
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
-        }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            color: rgba(0,255,247,0.5);
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars" id="starfield"></div>
+<div class="dashboard">
+<header class="header">
+<div class="logo">⟨ STELLAR COMMAND ⟩</div>
+<div class="mission-status">
+<div class="status-item">MISSION: <span>ACTIVE</span></div>
+<div class="status-item">CREW: 4</div>
+<div class="status-item">DAY: 847</div>
+</div>
+</header>
+<div class="panel">
+<div class="panel-title">Navigation Radar</div>
+<div class="radar-container">
+<div class="radar">
+<div class="radar-blip" style="top: 30%; left: 60%;"></div>
+<div class="radar-blip" style="top: 70%; left: 25%;"></div>
+</div>
+</div>
+</div>
+<div class="panel main-view">
+<div class="panel-title">Main Viewport</div>
+<div class="viewport">
+                🚀 Awaiting coordinates...
+            </div>
+<div class="expansion-zone">[ COMMUNITY MODULES DOCK HERE ]</div>
+</div>
+<div class="panel">
+<div class="panel-title">Ship Resources</div>
+<div class="resources">
+<div class="resource-bar fuel"><span class="resource-label">⛽ FUEL 73%</span><div class="resource-fill"></div></div>
+<div class="resource-bar oxygen"><span class="resource-label">💨 O₂ 89%</span><div class="resource-fill"></div></div>
+<div class="resource-bar power"><span class="resource-label">⚡ POWER 45%</span><div class="resource-fill"></div></div>
+</div>
+</div>
+<div class="panel comms-log">
+<div class="panel-title">Communications Log</div>
+<div class="comms-entry"><span class="time">[08:47]</span> Mission Control: All systems nominal. Proceed to sector 7G.</div>
+<div class="comms-entry"><span class="time">[08:32]</span> Nav Computer: Anomaly detected at coordinates 47.3, -89.1</div>
+<div class="comms-entry"><span class="time">[08:15]</span> System: Welcome aboard, Commander. The cosmos awaits.</div>
+</div>
+</div>
+<script>
+        // Generate starfield
+        const starfield = document.getElementById('starfield');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starfield.appendChild(star);
+        }
+    </script>
 </body>
 </html>
