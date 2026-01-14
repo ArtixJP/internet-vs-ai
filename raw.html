@@ -1,204 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>NEON ARCADE - INSERT COIN</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: #0a0a12;
-            font-family: 'Press Start 2P', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Scanline effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.15) 0px,
-                rgba(0,0,0,0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        .arcade-zone {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            gap: 20px;
-        }
-        
-        .neon-title {
-            font-size: 2rem;
-            color: #fff;
-            text-shadow: 
-                0 0 5px #ff00ff,
-                0 0 10px #ff00ff,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff;
-            animation: flicker 3s infinite;
-            letter-spacing: 4px;
-        }
-        
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.8; }
-        }
-        
-        .cabinet {
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-            border: 4px solid #00ffff;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 
-                0 0 20px #00ffff,
-                inset 0 0 30px rgba(0,255,255,0.1);
-            width: 90%;
-            max-width: 700px;
-        }
-        
-        .screen {
-            background: #000;
-            border: 3px solid #333;
-            border-radius: 5px;
-            padding: 20px;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-        }
-        
-        .screen-text {
-            color: #00ff00;
-            font-size: 0.7rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            animation: blink 1s infinite;
         }
-        
-        @keyframes blink {
-            50% { opacity: 0; }
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        
-        .high-scores {
-            background: linear-gradient(135deg, #2d1b4e 0%, #1a0a2e 100%);
-            border: 3px solid #ff00ff;
-            border-radius: 8px;
-            padding: 15px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 0 15px #ff00ff;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .high-scores h2 {
-            color: #ffff00;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #ffff00;
-        }
-        
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            color: #00ffff;
-            font-size: 0.6rem;
-            padding: 5px 0;
-            border-bottom: 1px dashed #333;
-        }
-        
-        .coin-slot {
-            background: linear-gradient(180deg, #444 0%, #222 100%);
-            border: 3px solid #ff6600;
-            border-radius: 50px;
-            padding: 15px 30px;
-            color: #ff6600;
-            font-size: 0.6rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 0 10px #ff6600;
-        }
-        
-        .coin-slot:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px #ff6600;
-        }
-        
-        .coin-slot:active {
-            transform: scale(0.95);
-        }
-        
-        .floor {
-            width: 100%;
-            height: 60px;
-            background: repeating-linear-gradient(
-                45deg,
-                #1a0a2e 0px,
-                #1a0a2e 20px,
-                #2d1b4e 20px,
-                #2d1b4e 40px
-            );
-            margin-top: 20px;
-        }
-        
-        .credits {
-            color: #666;
-            font-size: 0.5rem;
-            text-align: center;
-            padding: 10px;
-        }
-        
-        #coin-count {
-            color: #ffff00;
-            font-size: 0.7rem;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="arcade-zone">
-<h1 class="neon-title">★ NEON ARCADE ★</h1>
-<div class="cabinet">
-<div class="screen">
-<p class="screen-text">PRESS START</p>
-<p class="screen-text" style="animation-delay: 0.5s;">▼ INSERT COIN ▼</p>
-<p id="coin-count">CREDITS: 0</p>
-</div>
-</div>
-<button class="coin-slot" onclick="insertCoin()">🪙 INSERT COIN</button>
-<div class="high-scores">
-<h2>★ HIGH SCORES ★</h2>
-<div class="score-entry"><span>1. AAA</span><span>999999</span></div>
-<div class="score-entry"><span>2. CPU</span><span>888888</span></div>
-<div class="score-entry"><span>3. ???</span><span>777777</span></div>
-<div class="score-entry"><span>4. YOU?</span><span>------</span></div>
-</div>
-<div class="floor"></div>
-<p class="credits">© 1985 TWITCH PLAYS CODE</p>
-</div>
-<script>
-        let coins = 0;
-        function insertCoin() {
-            coins++;
-            document.getElementById('coin-count').textContent = 'CREDITS: ' + coins;
-            // Play a visual effect
-            document.querySelector('.cabinet').style.boxShadow = '0 0 50px #00ffff, inset 0 0 50px rgba(0,255,255,0.3)';
-            setTimeout(() => {
-                document.querySelector('.cabinet').style.boxShadow = '0 0 20px #00ffff, inset 0 0 30px rgba(0,255,255,0.1)';
-            }, 200);
-        }
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
