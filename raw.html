@@ -1,41 +1,172 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🌴 Paradise Isles Travel Guide</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --ocean: #0077b6;
+            --sky: #90e0ef;
+            --sand: #f4d35e;
+            --palm: #2d6a4f;
+            --sunset: #ff6b6b;
+            --coconut: #8b5a2b;
+        }
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(180deg, var(--sky) 0%, var(--ocean) 100%);
+            overflow-x: hidden;
+        }
+        .header {
             text-align: center;
+            padding: 30px 20px;
+            position: relative;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .header h1 {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header p {
+            color: #fff;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 10px;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
+        .palm-left, .palm-right {
+            position: absolute;
+            font-size: 4rem;
+            top: 10px;
+            animation: sway 4s ease-in-out infinite;
+        }
+        .palm-left { left: 20px; }
+        .palm-right { right: 20px; animation-delay: -2s; }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .destinations {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .island-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            width: 280px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .island-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .island-card .icon { font-size: 3rem; margin-bottom: 10px; }
+        .island-card h3 { color: var(--ocean); margin-bottom: 8px; }
+        .island-card p { color: #555; font-size: 0.9rem; line-height: 1.5; }
+        .ocean-waves {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--ocean);
+            overflow: hidden;
+        }
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%2300b4d8' d='M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
+            animation: waves 8s linear infinite;
+        }
+        .wave:nth-child(2) {
+            opacity: 0.5;
+            animation-delay: -4s;
+            animation-duration: 10s;
+        }
+        @keyframes waves {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .community-zone {
+            background: rgba(255,255,255,0.2);
+            border: 2px dashed rgba(255,255,255,0.5);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            color: #fff;
+        }
+        .community-zone h2 { margin-bottom: 10px; }
+        .sun {
+            position: absolute;
+            top: 15px;
+            right: 100px;
+            width: 60px;
+            height: 60px;
+            background: var(--sand);
+            border-radius: 50%;
+            box-shadow: 0 0 40px var(--sand), 0 0 80px rgba(244,211,94,0.5);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+        .footer { padding-bottom: 100px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<header class="header">
+<span class="palm-left">🌴</span>
+<div class="sun"></div>
+<h1>🏝️ Paradise Isles</h1>
+<p>Your Gateway to Tropical Dreams</p>
+<span class="palm-right">🌴</span>
+</header>
+<section class="destinations">
+<div class="island-card">
+<div class="icon">🏖️</div>
+<h3>Sunset Beach</h3>
+<p>Golden sands meet crystal waters. Perfect for sunset cocktails and starfish spotting!</p>
+</div>
+<div class="island-card">
+<div class="icon">🌺</div>
+<h3>Hibiscus Cove</h3>
+<p>A hidden lagoon surrounded by exotic flowers. Snorkeling paradise awaits!</p>
+</div>
+<div class="island-card">
+<div class="icon">🥥</div>
+<h3>Coconut Grove</h3>
+<p>Taste fresh coconuts under swaying palms. The island's most relaxing retreat.</p>
+</div>
+</section>
+<div class="community-zone">
+<h2>🗺️ Explorer's Corner</h2>
+<p>Chat requests will add new discoveries here!</p>
+</div>
+<div class="footer"></div>
+<div class="ocean-waves">
+<div class="wave"></div>
+<div class="wave"></div>
+</div>
 </body>
 </html>
