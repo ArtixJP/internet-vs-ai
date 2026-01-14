@@ -1,178 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>STELLAR COMMAND // Space Dashboard</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: radial-gradient(ellipse at bottom, #1B2838 0%, #090A0F 100%);
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-        }
-        .stars {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
-                radial-gradient(2px 2px at 300px 150px, rgba(200,220,255,0.8), transparent);
-            background-size: 350px 200px;
-            animation: twinkle 4s ease-in-out infinite;
-        }
-        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 200px 1fr 280px;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            padding: 20px;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-        .header {
-            grid-column: 1 / -1;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: rgba(0,50,100,0.3);
-            border: 1px solid #0ff;
-            border-radius: 8px;
-        }
-        .logo { font-size: 1.5rem; color: #0ff; text-shadow: 0 0 10px #0ff; }
-        .status { color: #0f0; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .nav-panel {
-            background: rgba(0,30,60,0.5);
-            border: 1px solid #234;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .nav-panel h3 { color: #0af; margin-bottom: 15px; font-size: 0.9rem; }
-        .nav-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: linear-gradient(90deg, rgba(0,100,150,0.3), transparent);
-            border: 1px solid #0af;
-            border-radius: 4px;
-            color: #0cf;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: left;
-        }
-        .nav-btn:hover { background: rgba(0,150,200,0.4); box-shadow: 0 0 15px rgba(0,200,255,0.3); }
-        .main-display {
-            background: rgba(0,20,40,0.6);
-            border: 1px solid #345;
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-        .star-map {
-            width: 100%;
-            height: 300px;
-            background: radial-gradient(circle at 30% 40%, rgba(100,150,255,0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 60%, rgba(255,100,150,0.1) 0%, transparent 40%);
-            border: 1px dashed #456;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5);
-        }
-        .planet-1 { width: 40px; height: 40px; background: linear-gradient(135deg, #f4a460, #8b4513); top: 30%; left: 25%; }
-        .planet-2 { width: 60px; height: 60px; background: linear-gradient(135deg, #6495ed, #191970); top: 50%; left: 60%; }
-        .planet-3 { width: 25px; height: 25px; background: linear-gradient(135deg, #98fb98, #228b22); top: 70%; left: 40%; }
-        .map-label { position: absolute; bottom: 10px; right: 15px; color: #567; font-size: 0.8rem; }
-        .info-panel {
-            background: rgba(0,30,60,0.5);
-            border: 1px solid #234;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .info-panel h3 { color: #f80; margin-bottom: 10px; font-size: 0.9rem; }
-        .mission-item {
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(255,150,0,0.1);
-            border-left: 3px solid #f80;
-            font-size: 0.85rem;
-        }
-        .crew-section { margin-top: 20px; }
-        .crew-section h3 { color: #0f0; margin-bottom: 10px; }
-        .crew-member { padding: 5px 0; font-size: 0.8rem; color: #8f8; }
-        .footer {
-            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 10px;
-            color: #456;
-            font-size: 0.8rem;
         }
-        .expansion-zone {
-            margin-top: 15px;
-            padding: 20px;
-            border: 2px dashed #345;
-            border-radius: 8px;
-            color: #567;
-            font-size: 0.9rem;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="dashboard">
-<header class="header">
-<div class="logo">⭐ STELLAR COMMAND</div>
-<div class="status">● SYSTEMS ONLINE</div>
-</header>
-<nav class="nav-panel">
-<h3>// NAVIGATION</h3>
-<button class="nav-btn">🚀 Launch Bay</button>
-<button class="nav-btn">🛰️ Satellites</button>
-<button class="nav-btn">📡 Comms Array</button>
-<button class="nav-btn">🔬 Research Lab</button>
-<button class="nav-btn">⚙️ Engineering</button>
-</nav>
-<main class="main-display">
-<div class="star-map">
-<div class="planet planet-1"></div>
-<div class="planet planet-2"></div>
-<div class="planet planet-3"></div>
-<span class="map-label">SECTOR 7G // STAR MAP</span>
-</div>
-<div class="expansion-zone">[ COMMUNITY EXPANSION ZONE - Your ideas here! ]</div>
-</main>
-<aside class="info-panel">
-<h3>// ACTIVE MISSIONS</h3>
-<div class="mission-item">🎯 Survey Kepler-442b</div>
-<div class="mission-item">📦 Supply Run to Station Omega</div>
-<div class="mission-item">🔍 Anomaly Investigation</div>
-<div class="crew-section">
-<h3>// CREW STATUS</h3>
-<div class="crew-member">CDR. Nova Chen - Bridge</div>
-<div class="crew-member">DR. Yuki Tanaka - Med Bay</div>
-<div class="crew-member">ENG. Marcus Webb - Reactor</div>
-</div>
-</aside>
-<footer class="footer">STELLAR COMMAND v1.0 // STARDATE 2847.156 // BUILT BY THE VOID</footer>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
