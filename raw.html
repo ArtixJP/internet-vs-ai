@@ -1,41 +1,216 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>☕ The Cozy Bean - A Community Coffee Shop</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --espresso: #3c2415;
+            --cream: #f5e6d3;
+            --caramel: #c4a35a;
+            --mocha: #6f4e37;
+            --steam: rgba(255,255,255,0.6);
+        }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, var(--cream) 0%, #e8d5c4 100%);
+            font-family: 'Lato', sans-serif;
+            color: var(--espresso);
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: var(--espresso);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(60,36,21,0.3);
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--cream);
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            gap: 10px;
+        }
+        
+        .logo span { font-size: 2.5rem; }
+        
+        nav a {
+            color: var(--cream);
+            text-decoration: none;
+            margin-left: 30px;
+            opacity: 0.8;
+            transition: opacity 0.3s, color 0.3s;
+        }
+        
+        nav a:hover { opacity: 1; color: var(--caramel); }
+        
+        .hero {
             text-align: center;
+            padding: 60px 20px;
+            position: relative;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
         }
-        h1 { 
-            font-size: 2.5rem; 
+        
+        .hero p { font-size: 1.2rem; opacity: 0.7; }
+        
+        .coffee-cup {
+            font-size: 5rem;
+            display: inline-block;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .steam {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .steam span {
+            width: 8px;
+            height: 30px;
+            background: var(--steam);
+            border-radius: 50%;
+            animation: rise 2s ease-in-out infinite;
+        }
+        
+        .steam span:nth-child(2) { animation-delay: 0.3s; height: 25px; }
+        .steam span:nth-child(3) { animation-delay: 0.6s; height: 20px; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes rise { 0% { opacity: 0; transform: translateY(10px) scaleY(0.5); } 50% { opacity: 0.8; } 100% { opacity: 0; transform: translateY(-20px) scaleY(1.5); } }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .menu-board {
+            background: var(--espresso);
+            color: var(--cream);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(60,36,21,0.4);
+        }
+        
+        .menu-board h2 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            border-bottom: 2px dashed var(--caramel);
+            padding-bottom: 10px;
             margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dotted rgba(245,230,211,0.3);
         }
+        
+        .menu-item:hover { color: var(--caramel); cursor: pointer; }
+        
+        .featured {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(60,36,21,0.15);
+        }
+        
+        .featured h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--mocha);
+            margin-bottom: 15px;
+        }
+        
+        .drink-card {
+            background: linear-gradient(135deg, var(--cream), #fff);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--caramel);
+            transition: transform 0.3s;
+        }
+        
+        .drink-card:hover { transform: translateX(5px); }
+        
+        .community-corner {
+            grid-column: 1 / -1;
+            background: rgba(196,163,90,0.2);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed var(--caramel);
+        }
+        
+        .community-corner h3 { font-family: 'Playfair Display', serif; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<header>
+<div class="logo"><span>☕</span> The Cozy Bean</div>
+<nav>
+<a href="#">Menu</a>
+<a href="#">About</a>
+<a href="#">Visit Us</a>
+</nav>
+</header>
+<section class="hero">
+<div class="coffee-cup">
+<div class="steam"><span></span><span></span><span></span></div>
+            🍵
+        </div>
+<h1>Welcome to The Cozy Bean</h1>
+<p>Where every cup tells a story</p>
+</section>
+<main class="main-content">
+<div class="menu-board">
+<h2>☕ Today's Menu</h2>
+<div class="menu-item"><span>Espresso</span><span>$3.50</span></div>
+<div class="menu-item"><span>Cappuccino</span><span>$4.50</span></div>
+<div class="menu-item"><span>Caramel Latte</span><span>$5.00</span></div>
+<div class="menu-item"><span>Mocha Dream</span><span>$5.50</span></div>
+<div class="menu-item"><span>Chai Tea</span><span>$4.00</span></div>
+</div>
+<div class="featured">
+<h2>✨ Featured Today</h2>
+<div class="drink-card">
+<strong>🍂 Autumn Spice Latte</strong>
+<p>Cinnamon, nutmeg &amp; a hint of maple</p>
+</div>
+<div class="drink-card">
+<strong>🍫 Velvet Mocha</strong>
+<p>Rich chocolate meets smooth espresso</p>
+</div>
+</div>
+<div class="community-corner">
+<h3>🎨 Community Corner</h3>
+<p>This space is waiting for your ideas! What should we add?</p>
+</div>
+</main>
 </body>
 </html>
