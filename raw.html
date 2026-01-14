@@ -1,41 +1,334 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ravenswood Manor - A Mystery Awaits</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1520 50%, #0d0810 100%);
+            color: #d4c4a8;
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .fog {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ffffff08"/></svg>');
+            opacity: 0.3;
+            animation: fogDrift 20s linear infinite;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        @keyframes fogDrift {
+            0% { transform: translateX(-10%) translateY(0); }
+            50% { transform: translateX(10%) translateY(-5%); }
+            100% { transform: translateX(-10%) translateY(0); }
+        }
+        
+        .mansion {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        .mansion-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: #8b7355;
+            text-shadow: 0 0 20px #4a3728, 0 0 40px #2a1a10;
+            letter-spacing: 8px;
+            animation: flicker 4s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.7; }
+            94% { opacity: 1; }
+            96% { opacity: 0.8; }
+            97% { opacity: 1; }
+        }
+        
+        .subtitle {
+            font-style: italic;
+            color: #6a5a4a;
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .chandelier {
+            font-size: 3rem;
+            animation: swing 3s ease-in-out infinite, candleGlow 2s ease-in-out infinite alternate;
+            display: inline-block;
+            filter: drop-shadow(0 0 15px #ffaa33);
+        }
+        
+        @keyframes swing {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        @keyframes candleGlow {
+            0% { filter: drop-shadow(0 0 10px #ffaa33); }
+            100% { filter: drop-shadow(0 0 25px #ff8800); }
+        }
+        
+        .main-hall {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .portrait-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .portrait {
+            background: linear-gradient(145deg, #2a2035, #1a1520);
+            border: 3px solid #4a3a30;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portrait:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff000033;
+            border-color: #8b0000;
+        }
+        
+        .portrait:hover::after {
+            content: '👁️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .portrait-emoji { font-size: 2.5rem; }
+        .portrait-name { font-family: 'Cinzel', serif; margin-top: 8px; font-size: 0.9rem; }
+        
+        .center-room {
+            background: radial-gradient(ellipse at center, #1a1520 0%, #0a0a0f 100%);
+            border: 2px solid #3a2a25;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .mystery-box {
+            background: #0d0810;
+            border: 2px dashed #5a4a40;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            flex-direction: column;
+        }
+        
+        .mystery-box h3 {
+            font-family: 'Cinzel', serif;
+            color: #8b7355;
+            margin-bottom: 10px;
+        }
+        
+        .clue {
+            font-style: italic;
+            color: #9a8a7a;
+            animation: fadeInOut 5s infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .evidence-shelf {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .evidence {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s, filter 0.3s;
+            filter: grayscale(50%);
+        }
+        
+        .evidence:hover {
+            transform: scale(1.3) rotate(10deg);
+            filter: grayscale(0%) drop-shadow(0 0 10px #ffcc00);
+        }
+        
+        .room-list {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .room-list li {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: linear-gradient(90deg, #1a1520 0%, transparent 100%);
+            border-left: 3px solid #4a3a30;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .room-list li:hover {
+            border-left-color: #8b0000;
+            background: linear-gradient(90deg, #2a1520 0%, transparent 100%);
+            padding-left: 25px;
+        }
+        
+        .room-list li::before {
+            content: '🚪 ';
+        }
+        
+        .footer-area {
             text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #2a2025;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .ghost {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            animation: ghostFloat 15s linear infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        
+        @keyframes ghostFloat {
+            0% { left: -50px; top: 30%; opacity: 0; }
+            10% { opacity: 0.3; }
+            50% { top: 50%; opacity: 0.2; }
+            90% { opacity: 0.3; }
+            100% { left: 105%; top: 40%; opacity: 0; }
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .community-zone {
+            border: 2px dotted #3a3030;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            color: #5a4a4a;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="fog"></div>
+<div class="ghost">👻</div>
+<div class="mansion">
+<header class="header">
+<div class="chandelier">🕯️</div>
+<h1 class="mansion-title">RAVENSWOOD MANOR</h1>
+<p class="subtitle">"Some doors should never be opened..."</p>
+</header>
+<main class="main-hall">
+<aside class="portrait-gallery">
+<div class="portrait">
+<div class="portrait-emoji">👴</div>
+<div class="portrait-name">Lord Ashworth<br/><small>†1923</small></div>
+</div>
+<div class="portrait">
+<div class="portrait-emoji">👩</div>
+<div class="portrait-name">Lady Morgana<br/><small>†1925</small></div>
+</div>
+<div class="portrait">
+<div class="portrait-emoji">🎭</div>
+<div class="portrait-name">The Unknown<br/><small>†????</small></div>
+</div>
+</aside>
+<section class="center-room">
+<div class="mystery-box">
+<h3>📜 Tonight's Mystery</h3>
+<p class="clue">"The grandfather clock struck thirteen... and then the screaming began."</p>
+</div>
+<div class="evidence-shelf">
+<span class="evidence" title="Bloody Candlestick">🕯️</span>
+<span class="evidence" title="Torn Letter">✉️</span>
+<span class="evidence" title="Rusty Key">🗝️</span>
+<span class="evidence" title="Broken Mirror">🪞</span>
+<span class="evidence" title="Old Photograph">📷</span>
+</div>
+<div class="community-zone">
+                    💬 Community clues will appear here...
+                </div>
+</section>
+<nav class="room-list-container">
+<ul class="room-list">
+<li>The Library</li>
+<li>Wine Cellar</li>
+<li>Attic</li>
+<li>Secret Passage</li>
+<li>Ballroom</li>
+</ul>
+</nav>
+</main>
+<footer class="footer-area">
+<p>🦇 Dare to explore... if you dare 🦇</p>
+</footer>
+</div>
+<script>
+        // Spooky random flickers
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                document.body.style.filter = 'brightness(0.3)';
+                setTimeout(() => document.body.style.filter = '', 100);
+            }
+        }, 2000);
+        
+        // Evidence click sounds (visual feedback)
+        document.querySelectorAll('.evidence').forEach(e => {
+            e.addEventListener('click', () => {
+                e.style.animation = 'none';
+                e.offsetHeight;
+                e.style.animation = 'shake 0.5s';
+            });
+        });
+    </script>
 </body>
 </html>
