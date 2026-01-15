@@ -1,41 +1,313 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>ROBOFAC-9000 | Factory Dashboard</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0d1117 100%);
+            color: #00ff88;
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(0,255,136,0.1), transparent, rgba(255,100,0,0.1));
+            border: 1px solid #00ff8855;
+            border-radius: 8px;
+            padding: 15px 25px;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff8866;
+        }
+        
+        .logo span { color: #ff6b35; }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88; }
+            50% { box-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; }
+        }
+        
+        .panel {
+            background: rgba(20, 25, 35, 0.9);
+            border: 1px solid #00ff8833;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #ff6b35;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .production-line {
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .conveyor {
+            width: 100%;
+            height: 60px;
+            background: repeating-linear-gradient(90deg, #2a2a3a 0px, #2a2a3a 30px, #1a1a2a 30px, #1a1a2a 60px);
+            border-radius: 5px;
+            position: relative;
+            animation: conveyorMove 2s linear infinite;
+            margin: 20px 0;
+        }
+        
+        @keyframes conveyorMove {
+            from { background-position: 0 0; }
+            to { background-position: 60px 0; }
+        }
+        
+        .robot-arm {
+            width: 120px;
+            height: 150px;
+            position: relative;
+        }
+        
+        .arm-base {
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(180deg, #555, #333);
+            border-radius: 5px;
+            position: absolute;
+            bottom: 0;
+            left: 30px;
+        }
+        
+        .arm-segment {
+            width: 15px;
+            height: 80px;
+            background: linear-gradient(90deg, #666, #444, #666);
+            position: absolute;
+            bottom: 20px;
+            left: 52px;
+            transform-origin: bottom center;
+            animation: armSwing 3s ease-in-out infinite;
+            border-radius: 3px;
+        }
+        
+        .arm-claw {
+            width: 30px;
+            height: 25px;
+            position: absolute;
+            top: -20px;
+            left: -7px;
+            animation: clawGrab 1.5s ease-in-out infinite;
+        }
+        
+        .claw-part {
+            width: 8px;
+            height: 20px;
+            background: #ff6b35;
+            position: absolute;
+            border-radius: 2px;
+        }
+        
+        .claw-part.left { left: 2px; transform-origin: top center; }
+        .claw-part.right { right: 2px; transform-origin: top center; }
+        
+        @keyframes armSwing {
+            0%, 100% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+        }
+        
+        @keyframes clawGrab {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.8); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background: rgba(0,255,136,0.05);
+            border: 1px solid #00ff8822;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-box:hover {
+            background: rgba(0,255,136,0.15);
+            border-color: #00ff88;
+            transform: scale(1.02);
+        }
+        
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #00ff88;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+        
+        .alert-feed {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .alert-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #ff6b35;
+            background: rgba(255,107,53,0.1);
+            font-size: 0.8rem;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .community-zone {
+            grid-column: 1 / -1;
+            border: 2px dashed #00ff8844;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            color: #00ff8866;
+            font-style: italic;
+        }
+        
+        .footer {
+            grid-column: 1 / -1;
             text-align: center;
-        }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-size: 0.7rem;
+            color: #555;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="dashboard">
+<header class="header">
+<div class="logo">ROBO<span>FAC</span>-9000</div>
+<div class="status-indicator">
+<div class="status-dot"></div>
+<span>SYSTEM ONLINE</span>
+</div>
+</header>
+<div class="panel">
+<div class="panel-title">📊 Production Stats</div>
+<div class="stats-grid">
+<div class="stat-box">
+<div class="stat-value">1,247</div>
+<div class="stat-label">Units Today</div>
+</div>
+<div class="stat-box">
+<div class="stat-value">98.7%</div>
+<div class="stat-label">Efficiency</div>
+</div>
+<div class="stat-box">
+<div class="stat-value">42</div>
+<div class="stat-label">Active Bots</div>
+</div>
+<div class="stat-box">
+<div class="stat-value">3</div>
+<div class="stat-label">In Queue</div>
+</div>
+</div>
+</div>
+<div class="panel production-line">
+<div class="panel-title">🦾 Assembly Line A</div>
+<div class="robot-arm">
+<div class="arm-segment">
+<div class="arm-claw">
+<div class="claw-part left"></div>
+<div class="claw-part right"></div>
+</div>
+</div>
+<div class="arm-base"></div>
+</div>
+<div class="conveyor"></div>
+</div>
+<div class="panel">
+<div class="panel-title">⚠️ Alert Feed</div>
+<div class="alert-feed">
+<div class="alert-item">Unit #1247 assembled successfully</div>
+<div class="alert-item">Coolant levels optimal</div>
+<div class="alert-item">Shift change in 2 hours</div>
+<div class="alert-item">New batch order received</div>
+</div>
+</div>
+<div class="panel community-zone">
+            🔧 Community Expansion Zone — Your ideas go here! 🔧
+        </div>
+<footer class="footer">
+            ROBOFAC-9000 v1.0 | Powered by Twitch Chat | Era: Genesis
+        </footer>
+</div>
 </body>
 </html>
