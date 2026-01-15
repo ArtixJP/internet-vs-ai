@@ -1,165 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>🌲 Enchanted Forest Adventure</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0d1b2a 0%, #1b4332 50%, #2d6a4f 100%);
-            font-family: 'Georgia', serif;
-            overflow-x: hidden;
-            color: #e9f5db;
-        }
-        .forest-container {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.8rem;
-            text-shadow: 0 0 20px #ffd700, 0 0 40px #90a955;
-            color: #fefae0;
-            margin: 20px 0;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        @keyframes glow {
-            from { text-shadow: 0 0 20px #ffd700, 0 0 40px #90a955; }
-            to { text-shadow: 0 0 30px #ffd700, 0 0 60px #b5e48c; }
-        }
-        .mystical-tree {
-            font-size: 8rem;
-            filter: drop-shadow(0 0 30px #52b788);
-            animation: sway 4s ease-in-out infinite;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .mystical-tree:hover { transform: scale(1.1); }
-        @keyframes sway {
-            0%, 100% { transform: rotate(-2deg); }
-            50% { transform: rotate(2deg); }
-        }
-        .hero {
             display: flex;
             align-items: center;
-            gap: 15px;
-            background: rgba(45, 106, 79, 0.6);
-            padding: 15px 25px;
-            border-radius: 20px;
-            border: 2px solid #95d5b2;
-            margin: 20px 0;
-        }
-        .hero-icon { font-size: 3rem; }
-        .hero-stats { text-align: left; }
-        .hero-stats span { color: #b5e48c; font-weight: bold; }
-        .forest-floor {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
             justify-content: center;
-            margin: 20px 0;
-        }
-        .creature {
-            font-size: 3rem;
-            animation: float 3s ease-in-out infinite;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .creature:hover { transform: scale(1.3) rotate(10deg); }
-        .creature:nth-child(2) { animation-delay: 0.5s; }
-        .creature:nth-child(3) { animation-delay: 1s; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        .firefly {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ffd700;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #ffd700, 0 0 30px #ffea00;
-            animation: firefly-float 6s ease-in-out infinite;
-        }
-        @keyframes firefly-float {
-            0%, 100% { opacity: 0.3; transform: translate(0, 0); }
-            25% { opacity: 1; transform: translate(50px, -30px); }
-            50% { opacity: 0.5; transform: translate(-30px, -60px); }
-            75% { opacity: 1; transform: translate(20px, -20px); }
-        }
-        .quest-board {
-            background: linear-gradient(135deg, #3a2d1a 0%, #5c4a2a 100%);
-            border: 4px solid #8b7355;
-            border-radius: 10px;
-            padding: 20px;
-            max-width: 400px;
-            margin: 20px 0;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .quest-board h2 {
-            color: #fefae0;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #95d5b2;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .quest-item {
-            background: rgba(149, 213, 178, 0.2);
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border-left: 4px solid #52b788;
-        }
-        .community-zone {
-            border: 3px dashed #95d5b2;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            min-width: 300px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            opacity: 0.7;
         }
-        .community-zone:hover { opacity: 1; background: rgba(82, 183, 136, 0.1); }
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="forest-container">
-<div class="firefly" style="top: 15%; left: 20%;"></div>
-<div class="firefly" style="top: 30%; left: 75%; animation-delay: 2s;"></div>
-<div class="firefly" style="top: 60%; left: 10%; animation-delay: 4s;"></div>
-<div class="firefly" style="top: 45%; left: 85%; animation-delay: 1s;"></div>
-<h1>✨ Enchanted Forest Adventure ✨</h1>
-<div class="mystical-tree" title="The Ancient Guardian Tree">🌳</div>
-<div class="hero">
-<div class="hero-icon">🧝</div>
-<div class="hero-stats">
-<div>Forest Wanderer</div>
-<div>❤️ HP: <span>100</span> | ⭐ XP: <span>0</span></div>
-<div>🎒 Inventory: Empty</div>
-</div>
-</div>
-<div class="forest-floor">
-<div class="creature" title="Friendly Owl">🦉</div>
-<div class="creature" title="Magic Mushroom">🍄</div>
-<div class="creature" title="Forest Spirit">🦋</div>
-<div class="creature" title="Treasure Chest">📦</div>
-</div>
-<div class="quest-board">
-<h2>📜 Quest Board</h2>
-<div class="quest-item">🔮 Find the Crystal of Whispers</div>
-<div class="quest-item">🐺 Befriend the Shadow Wolf</div>
-<div class="quest-item">🗝️ Unlock the Hidden Grove</div>
-</div>
-<div class="community-zone">
-<p>🌿 Community Expansion Zone 🌿</p>
-<p style="font-size: 0.9rem;">New adventures await...</p>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
