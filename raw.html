@@ -1,41 +1,204 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>STELLAR COMMAND // Deep Space Operations</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --space-dark: #0a0a1a;
+            --nebula-purple: #2d1b4e;
+            --star-blue: #4fc3f7;
+            --alert-orange: #ff9800;
+            --hull-gray: #1e2a3a;
+            --glow-cyan: #00e5ff;
+        }
         body {
             min-height: 100vh;
+            background: radial-gradient(ellipse at center, var(--nebula-purple) 0%, var(--space-dark) 70%);
+            color: #e0e8f0;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        .stars {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, white, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, white, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(79,195,247,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, white, transparent),
+                radial-gradient(2px 2px at 300px 150px, white, transparent);
+            background-size: 350px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr 280px;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            grid-column: 1 / -1;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: linear-gradient(90deg, var(--hull-gray), transparent 50%, var(--hull-gray));
+            border: 1px solid var(--star-blue);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(79,195,247,0.2);
+        }
+        .logo { font-size: 1.4rem; font-weight: bold; color: var(--glow-cyan); text-shadow: 0 0 10px var(--glow-cyan); }
+        .status-bar { display: flex; gap: 20px; font-size: 0.85rem; }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; }
+        .status-dot.green { background: #4caf50; box-shadow: 0 0 8px #4caf50; }
+        .status-dot.orange { background: var(--alert-orange); box-shadow: 0 0 8px var(--alert-orange); }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        
+        .panel {
+            background: rgba(30, 42, 58, 0.85);
+            border: 1px solid rgba(79,195,247,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--star-blue);
+            border-bottom: 1px solid rgba(79,195,247,0.3);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .nav-panel { grid-row: 2; }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(79,195,247,0.1);
+            border: 1px solid rgba(79,195,247,0.3);
+            border-radius: 6px;
+            color: #e0e8f0;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .nav-btn:hover { background: rgba(79,195,247,0.25); border-color: var(--glow-cyan); box-shadow: 0 0 15px rgba(0,229,255,0.3); }
+        
+        .star-map {
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            min-height: 400px;
+            background: radial-gradient(circle at center, rgba(45,27,78,0.5) 0%, transparent 70%);
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .map-placeholder {
+            width: 200px; height: 200px;
+            border: 2px dashed rgba(79,195,247,0.4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            animation: rotate 60s linear infinite;
+            position: relative;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .planet {
+            position: absolute;
+            width: 20px; height: 20px;
+            background: linear-gradient(135deg, var(--star-blue), var(--nebula-purple));
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--star-blue);
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .planet:nth-child(1) { top: -10px; left: 50%; transform: translateX(-50%); }
+        .planet:nth-child(2) { bottom: 20px; right: -5px; background: linear-gradient(135deg, var(--alert-orange), #ff5722); box-shadow: 0 0 15px var(--alert-orange); }
+        .planet:nth-child(3) { bottom: 20px; left: -5px; width: 15px; height: 15px; background: linear-gradient(135deg, #81c784, #2e7d32); box-shadow: 0 0 10px #4caf50; }
+        .map-label { margin-top: 20px; font-size: 0.9rem; opacity: 0.7; }
+        
+        .comms-panel { grid-row: 2; }
+        .message { padding: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 0.85rem; border-left: 3px solid var(--star-blue); }
+        .message.alert { border-left-color: var(--alert-orange); }
+        .message-time { font-size: 0.7rem; opacity: 0.5; margin-bottom: 4px; }
+        
+        .footer {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 12px;
+            background: var(--hull-gray);
+            border-radius: 8px;
+            font-size: 0.8rem;
         }
+        .footer-stat { text-align: center; }
+        .footer-stat span { display: block; font-size: 1.3rem; color: var(--glow-cyan); font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars"></div>
+<div class="dashboard">
+<header class="header">
+<div class="logo">🚀 STELLAR COMMAND</div>
+<div class="status-bar">
+<div class="status-item"><span class="status-dot green"></span> Systems Online</div>
+<div class="status-item"><span class="status-dot orange"></span> Scanning</div>
+<div class="status-item">📍 Sector 7G</div>
+</div>
+</header>
+<nav class="panel nav-panel">
+<div class="panel-title">Navigation</div>
+<button class="nav-btn">🗺️ Star Map</button>
+<button class="nav-btn">🛸 Ship Status</button>
+<button class="nav-btn">👨‍🚀 Crew Roster</button>
+<button class="nav-btn">📦 Cargo Hold</button>
+<button class="nav-btn">⚙️ Engineering</button>
+</nav>
+<main class="panel star-map">
+<div class="panel-title">Galactic Overview</div>
+<div class="map-placeholder">
+<div class="planet"></div>
+<div class="planet"></div>
+<div class="planet"></div>
+</div>
+<p class="map-label">// Community discoveries will appear here //</p>
+</main>
+<aside class="panel comms-panel">
+<div class="panel-title">Incoming Transmissions</div>
+<div class="message alert">
+<div class="message-time">14:32:07 UTC</div>
+                ⚠️ Anomaly detected in nearby nebula
+            </div>
+<div class="message">
+<div class="message-time">14:28:51 UTC</div>
+                📡 Signal received from unknown source
+            </div>
+<div class="message">
+<div class="message-time">14:15:22 UTC</div>
+                ✅ Docking sequence complete
+            </div>
+</aside>
+<footer class="footer">
+<div class="footer-stat"><span>2847</span> Light Years Traveled</div>
+<div class="footer-stat"><span>12</span> Planets Discovered</div>
+<div class="footer-stat"><span>89%</span> Hull Integrity</div>
+<div class="footer-stat"><span>∞</span> Possibilities</div>
+</footer>
+</div>
 </body>
 </html>
