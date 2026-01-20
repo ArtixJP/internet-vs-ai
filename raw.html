@@ -1,227 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="fr">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>🌀 Emergent Canvas</title>
-<style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+    <title>New Epoch Starting...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #e8e8e8;
-            overflow-x: hidden;
-        }
-        
-        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid #e94560;
         }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #e94560, #0f3460, #e94560);
-            background-size: 200% auto;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradient-shift 3s linear infinite;
         }
-        
-        @keyframes gradient-shift {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-        
-        .status-bar {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: #888;
-        }
-        
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        /* Zone de chaos - libre modification */
-        #chaos-zone {
-            background: rgba(233, 69, 96, 0.1);
-            border: 2px dashed #e94560;
-            border-radius: 12px;
-            padding: 2rem;
-            min-height: 300px;
-            margin: 2rem 0;
-            position: relative;
-        }
-        
-        #chaos-zone::before {
-            content: "🌀 CHAOS ZONE - Libre création";
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: #1a1a2e;
-            padding: 0 10px;
-            font-size: 0.8rem;
-            color: #e94560;
-        }
-        
-        .chaos-content {
-            text-align: center;
-            padding: 3rem;
-        }
-        
-        .chaos-content p {
-            font-size: 1.2rem;
-            color: #aaa;
-            margin-bottom: 1rem;
-        }
-        
-        .info-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .info-section h2 {
-            color: #e94560;
-            margin-bottom: 1rem;
-        }
-        
-        .info-section p {
-            line-height: 1.6;
-            color: #ccc;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-            font-size: 0.8rem;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="header">
-<h1>✨ Emergent Canvas ✨</h1>
-<p>Une expérience de création collaborative</p>
-</div>
-<div class="status-bar">
-<span>🎭 Mode: Democracy</span>
-<span>🔄 Cycles: 0</span>
-<span>⏱️ Démarré</span>
-</div>
-<div class="main-content">
-<div id="chaos-zone">
-<div class="island-beach">
-<div class="blue-beach-sign" style="display: inline-block; background: linear-gradient(135deg, #1e90ff, #00bfff); width: 136px; height: 29px; border-radius: 4px; margin-bottom: 0.5rem; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); border: 2px solid #4169e1; position: relative;"><span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 0.7rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">🏖️ BEACH INFO</span></div>
-<div class="palm-trees">🌴🌴🌴</div>
-<h2>🏝️ Welcome to Paradise Island! 🏝️</h2>
-<p class="beach-subtitle">Messages washing ashore from around the world...</p>
-<div class="ocean-waves" id="messageOcean"></div>
-<div class="beach-sand">🐚 🦀 🐚 🌊</div>
-</div>
-<style>
-                .island-beach {
-                    text-align: center;
-                    background: linear-gradient(180deg, #87CEEB 0%, #00CED1 30%, #20B2AA 60%, #F4A460 85%, #DEB887 100%);
-                    border-radius: 12px;
-                    padding: 1rem;
-                    min-height: 280px;
-                    position: relative;
-                    overflow: hidden;
-                }
-                .palm-trees {
-                    font-size: 2rem;
-                    animation: sway 3s ease-in-out infinite;
-                }
-                @keyframes sway {
-                    0%, 100% { transform: rotate(-5deg); }
-                    50% { transform: rotate(5deg); }
-                }
-                .island-beach h2 {
-                    color: #2F4F4F;
-                    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
-                    margin: 0.5rem 0;
-                }
-                .beach-subtitle {
-                    color: #006666;
-                    font-style: italic;
-                    margin-bottom: 0.5rem;
-                }
-                .ocean-waves {
-                    height: 120px;
-                    overflow: hidden;
-                    position: relative;
-                    background: linear-gradient(180deg, transparent, rgba(0,150,200,0.3));
-                    border-radius: 8px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-content: flex-start;
-                    gap: 2px;
-                    padding: 5px;
-                }
-                .hello-msg {
-                    font-size: 0.6rem;
-                    color: #004466;
-                    opacity: 0.7;
-                    animation: float 4s ease-in-out infinite;
-                    display: inline-block;
-                }
-                .hello-msg:nth-child(odd) { animation-delay: -2s; }
-                @keyframes float {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-3px); }
-                }
-                .beach-sand {
-                    font-size: 1.5rem;
-                    margin-top: 0.5rem;
-                    animation: wave 2s ease-in-out infinite;
-                }
-                @keyframes wave {
-                    0%, 100% { transform: translateX(0); }
-                    50% { transform: translateX(10px); }
-                }
-            </style>
-<script>
-                (function() {
-                    const ocean = document.getElementById('messageOcean');
-                    const greetings = ['🌺 aloha world', '🥥 hello world', '🌊 aloha', '🐠 hello', '🏄 world'];
-                    for(let i = 0; i < 200; i++) {
-                        const msg = document.createElement('span');
-                        msg.className = 'hello-msg';
-                        msg.textContent = greetings[i % greetings.length] + ' ';
-                        msg.style.animationDuration = (3 + Math.random() * 3) + 's';
-                        ocean.appendChild(msg);
-                    }
-                })();
-            </script>
-</div>
-<div class="info-section">
-<h2>📋 Comment participer ?</h2>
-<p>
-                Visitez le <strong>/backlog</strong> pour proposer des idées.
-                Votez pour vos idées préférées.
-                L'IA modifiera cette page selon les demandes les plus populaires.
-            </p>
-</div>
-</div>
-<div class="footer">
-<p>Twitch Emergent Coding • Expérience d'intelligence collective</p>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
