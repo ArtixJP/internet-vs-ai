@@ -1,41 +1,213 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Infinite Canvas</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000005 100%);
+            color: #e8e8ff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(200,200,255,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent);
+            background-size: 250px 150px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes twinkle {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+        
+        .main-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+        
+        .title-zone {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title-zone h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, #ff6b9d, #c44cff, #6b9dff, #4cffc4);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.6;
+            margin-top: 8px;
+            letter-spacing: 3px;
+        }
+        
+        .creation-zone {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .idea-bubble {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+        
+        .idea-bubble:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(100,100,255,0.2);
+        }
+        
+        .idea-bubble .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .idea-bubble h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 500; }
+        .idea-bubble p { font-size: 0.85rem; opacity: 0.7; line-height: 1.4; }
+        
+        .community-space {
+            margin-top: 30px;
+            padding: 30px;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 30px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .community-space h2 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 15px;
+            color: #c4b5ff;
+        }
+        
+        .placeholder-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .placeholder {
+            width: 80px; height: 80px;
+            border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            font-size: 1.5rem;
+            opacity: 0.5;
+            transition: all 0.3s;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .placeholder:hover {
+            opacity: 1;
+            border-color: #c44cff;
+            box-shadow: 0 0 20px rgba(196,76,255,0.3);
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        
+        .floating-orb {
+            position: fixed;
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(196,76,255,0.4), transparent);
+            filter: blur(40px);
+            pointer-events: none;
+            animation: float 20s ease-in-out infinite;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .orb-1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .orb-2 { top: 60%; right: 5%; animation-delay: -7s; background: radial-gradient(circle at 30% 30%, rgba(107,157,255,0.4), transparent); }
+        .orb-3 { bottom: 10%; left: 30%; animation-delay: -14s; background: radial-gradient(circle at 30% 30%, rgba(255,107,157,0.3), transparent); }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(30px, -20px); }
+            50% { transform: translate(-20px, 30px); }
+            75% { transform: translate(20px, 20px); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="stars"></div>
+<div class="floating-orb orb-1"></div>
+<div class="floating-orb orb-2"></div>
+<div class="floating-orb orb-3"></div>
+<div class="main-container">
+<div class="title-zone">
+<h1>THE VOID AWAITS</h1>
+<p class="subtitle">a canvas for infinite possibilities</p>
+</div>
+<div class="creation-zone">
+<div class="idea-bubble">
+<div class="icon">🎨</div>
+<h3>Create</h3>
+<p>Add colors, shapes, and wild ideas</p>
+</div>
+<div class="idea-bubble">
+<div class="icon">🌀</div>
+<h3>Transform</h3>
+<p>Morph reality into something new</p>
+</div>
+<div class="idea-bubble">
+<div class="icon">✨</div>
+<h3>Surprise</h3>
+<p>The unexpected is welcome here</p>
+</div>
+</div>
+<div class="community-space">
+<h2>🚀 Your Ideas Land Here</h2>
+<div class="placeholder-grid">
+<div class="placeholder">?</div>
+<div class="placeholder">?</div>
+<div class="placeholder">?</div>
+<div class="placeholder">?</div>
+<div class="placeholder">?</div>
+</div>
+</div>
+</div>
 </body>
 </html>
