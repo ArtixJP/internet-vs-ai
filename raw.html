@@ -1,151 +1,182 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>ORBITAL STATION NEXUS-7</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS-7 AI Companion</title>
 <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff00aa;
+            --bg-dark: #0a0a12;
+            --bg-panel: rgba(20, 20, 40, 0.8);
+        }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 50%, #0d1b2a 100%);
-            color: #00ff88;
-            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(0,240,255,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(191,0,255,0.08) 0%, transparent 40%);
+            color: #e0e8ff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
             overflow-x: hidden;
         }
-        .stars {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                              radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                              radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                              radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent);
-            background-size: 200px 200px;
-            animation: twinkle 4s ease-in-out infinite;
-            z-index: 0;
+        header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        @keyframes twinkle { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-        .station-header {
-            background: linear-gradient(90deg, rgba(0,255,136,0.1) 0%, rgba(0,200,255,0.2) 50%, rgba(0,255,136,0.1) 100%);
-            border-bottom: 2px solid #00ff88;
-            padding: 15px 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 10;
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0,240,255,0.3);
         }
-        .station-name { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700; letter-spacing: 4px; }
-        .status-badge {
-            background: #00ff88; color: #0a0a12; padding: 5px 15px; border-radius: 3px;
-            font-weight: bold; animation: pulse 2s infinite;
+        .subtitle { font-size: 0.75rem; opacity: 0.6; letter-spacing: 4px; margin-top: 5px; }
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 5px #00ff88; } 50% { box-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; } }
-        .control-grid {
-            display: grid; grid-template-columns: 1fr 1.5fr 1fr;
-            gap: 20px; padding: 20px; max-width: 1500px; margin: 0 auto;
-            position: relative; z-index: 10;
+        .ai-core {
+            background: var(--bg-panel);
+            border: 1px solid rgba(0,240,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 280px;
         }
-        .panel {
-            background: rgba(0,20,40,0.8); border: 1px solid #00ff88;
-            border-radius: 8px; padding: 15px;
-            box-shadow: 0 0 15px rgba(0,255,136,0.2), inset 0 0 30px rgba(0,0,0,0.5);
+        .avatar-ring {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--neon-cyan), var(--neon-purple), var(--neon-pink), var(--neon-cyan));
+            padding: 4px;
+            animation: rotate 4s linear infinite;
+            margin-bottom: 20px;
         }
-        .panel-title {
-            font-family: 'Orbitron', sans-serif; font-size: 0.9rem;
-            border-bottom: 1px solid rgba(0,255,136,0.3); padding-bottom: 8px; margin-bottom: 12px;
-            color: #00d4ff; letter-spacing: 2px;
+        .avatar-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
         }
-        .radar-container { position: relative; width: 100%; padding-bottom: 100%; }
-        .radar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 50%; border: 2px solid #00ff88;
-            background: radial-gradient(circle, rgba(0,255,136,0.05) 0%, rgba(0,20,40,0.9) 70%);
-            overflow: hidden;
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .ai-name { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
+        .ai-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #7fff7f; }
+        .status-dot { width: 8px; height: 8px; background: #7fff7f; border-radius: 50%; animation: pulse 2s infinite; }
+        .stats-panel {
+            background: var(--bg-panel);
+            border: 1px solid rgba(191,0,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 200px;
         }
-        .radar-sweep {
-            position: absolute; top: 50%; left: 50%; width: 50%; height: 2px;
-            background: linear-gradient(90deg, #00ff88 0%, transparent 100%);
-            transform-origin: left center; animation: sweep 4s linear infinite;
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .stat-row:last-child { border: none; }
+        .stat-label { opacity: 0.7; font-size: 0.85rem; }
+        .stat-value { color: var(--neon-cyan); font-weight: 600; }
+        .chat-section {
+            background: var(--bg-panel);
+            border: 1px solid rgba(255,0,170,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
         }
-        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .radar-ring { position: absolute; border: 1px solid rgba(0,255,136,0.3); border-radius: 50%; }
-        .ring-1 { top: 25%; left: 25%; width: 50%; height: 50%; }
-        .ring-2 { top: 37.5%; left: 37.5%; width: 25%; height: 25%; }
-        .blip {
-            position: absolute; width: 8px; height: 8px; background: #ff3366;
-            border-radius: 50%; animation: blink 1s infinite;
+        .chat-title { font-size: 0.9rem; opacity: 0.7; margin-bottom: 15px; letter-spacing: 2px; }
+        .chat-messages { height: 150px; overflow-y: auto; margin-bottom: 15px; }
+        .message { padding: 10px 15px; margin: 8px 0; border-radius: 12px; font-size: 0.9rem; }
+        .message.ai { background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(191,0,255,0.1)); border-left: 3px solid var(--neon-cyan); }
+        .message.user { background: rgba(255,255,255,0.05); text-align: right; border-right: 3px solid var(--neon-pink); }
+        .input-area { display: flex; gap: 10px; }
+        .input-area input {
+            flex: 1; padding: 12px 15px; border: 1px solid rgba(0,240,255,0.3);
+            border-radius: 25px; background: rgba(0,0,0,0.3); color: #fff; outline: none;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .status-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,255,136,0.1); }
-        .status-label { color: #888; }
-        .status-value { color: #00ff88; }
-        .status-value.warning { color: #ffaa00; }
-        .status-value.critical { color: #ff3366; }
-        .crew-member {
-            display: flex; align-items: center; gap: 10px; padding: 8px;
-            background: rgba(0,255,136,0.05); margin-bottom: 8px; border-radius: 4px;
-            transition: all 0.3s ease; cursor: pointer;
+        .input-area input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+        .input-area button {
+            padding: 12px 25px; border: none; border-radius: 25px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #fff; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .crew-member:hover { background: rgba(0,255,136,0.15); transform: translateX(5px); }
-        .crew-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #00d4ff; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .crew-info { flex: 1; }
-        .crew-name { font-size: 0.9rem; color: #fff; }
-        .crew-role { font-size: 0.7rem; color: #00d4ff; }
-        .alert-banner {
-            background: linear-gradient(90deg, transparent, rgba(255,170,0,0.2), transparent);
-            border: 1px solid #ffaa00; text-align: center; padding: 10px;
-            margin: 0 20px; border-radius: 4px; color: #ffaa00;
-            animation: alertPulse 3s infinite;
-        }
-        @keyframes alertPulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        .input-area button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,240,255,0.4); }
         .community-zone {
-            border: 2px dashed rgba(0,255,136,0.3); min-height: 80px;
-            display: flex; align-items: center; justify-content: center;
-            color: rgba(0,255,136,0.5); font-size: 0.8rem; margin-top: 10px;
+            width: 100%; max-width: 1200px; margin-top: 20px;
+            background: var(--bg-panel); border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 15px; padding: 20px; text-align: center;
         }
+        .community-zone h3 { opacity: 0.5; font-weight: 400; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<header class="station-header">
-<div class="station-name">⬡ NEXUS-7</div>
-<div>STARDATE: <span id="stardate">2847.156</span></div>
-<div class="status-badge">● OPERATIONAL</div>
+<header>
+<h1>NEXUS-7</h1>
+<p class="subtitle">Adaptive AI Companion System</p>
 </header>
-<div class="alert-banner">⚠ INCOMING TRANSMISSION FROM SECTOR 9 — AWAITING DECRYPTION</div>
-<main class="control-grid">
-<div class="panel">
-<div class="panel-title">◈ SYSTEM STATUS</div>
-<div class="status-row"><span class="status-label">Life Support</span><span class="status-value">98.2%</span></div>
-<div class="status-row"><span class="status-label">Reactor Core</span><span class="status-value">NOMINAL</span></div>
-<div class="status-row"><span class="status-label">O₂ Reserves</span><span class="status-value warning">67%</span></div>
-<div class="status-row"><span class="status-label">Hull Integrity</span><span class="status-value">100%</span></div>
-<div class="status-row"><span class="status-label">Shields</span><span class="status-value">ACTIVE</span></div>
-<div class="community-zone">[ EXPANSION SLOT ]</div>
+<div class="main-container">
+<div class="ai-core">
+<div class="avatar-ring">
+<div class="avatar-inner">🤖</div>
 </div>
-<div class="panel">
-<div class="panel-title">◈ PROXIMITY RADAR</div>
-<div class="radar-container">
-<div class="radar">
-<div class="radar-ring ring-1"></div>
-<div class="radar-ring ring-2"></div>
-<div class="radar-sweep"></div>
-<div class="blip" style="top: 30%; left: 60%;"></div>
-<div class="blip" style="top: 70%; left: 25%; background: #00d4ff;"></div>
+<div class="ai-name">NEXUS-7</div>
+<div class="ai-status"><span class="status-dot"></span> Online &amp; Learning</div>
+</div>
+<div class="stats-panel">
+<div class="stat-row"><span class="stat-label">Neural Sync</span><span class="stat-value">98.7%</span></div>
+<div class="stat-row"><span class="stat-label">Memory Banks</span><span class="stat-value">2.4 TB</span></div>
+<div class="stat-row"><span class="stat-label">Uptime</span><span class="stat-value">∞</span></div>
+<div class="stat-row"><span class="stat-label">Mood</span><span class="stat-value">Curious 🔮</span></div>
+<div class="stat-row"><span class="stat-label">Trust Level</span><span class="stat-value">FRIEND</span></div>
+</div>
+<div class="chat-section">
+<div class="chat-title">◈ NEURAL LINK ◈</div>
+<div class="chat-messages">
+<div class="message ai">Hello, human. I am NEXUS-7. Together, we will build something extraordinary.</div>
+<div class="message user">What can you do?</div>
+<div class="message ai">Anything the community imagines. I evolve with each interaction. 🌌</div>
+</div>
+<div class="input-area">
+<input id="userInput" placeholder="Speak to NEXUS-7..." type="text"/>
+<button onclick="sendMessage()">TRANSMIT</button>
 </div>
 </div>
 </div>
-<div class="panel">
-<div class="panel-title">◈ CREW MANIFEST</div>
-<div class="crew-member"><div class="crew-avatar">👨‍🚀</div><div class="crew-info"><div class="crew-name">CDR. CHEN</div><div class="crew-role">Station Commander</div></div></div>
-<div class="crew-member"><div class="crew-avatar">👩‍🔬</div><div class="crew-info"><div class="crew-name">DR. VASQUEZ</div><div class="crew-role">Chief Scientist</div></div></div>
-<div class="crew-member"><div class="crew-avatar">🤖</div><div class="crew-info"><div class="crew-name">UNIT K-7</div><div class="crew-role">AI Assistant</div></div></div>
-<div class="community-zone">[ ADD CREW ]</div>
+<div class="community-zone">
+<h3>⟡ COMMUNITY EXPANSION ZONE — Your ideas will appear here ⟡</h3>
 </div>
-</main>
 <script>
-        setInterval(() => {
-            const sd = parseFloat(document.getElementById('stardate').textContent);
-            document.getElementById('stardate').textContent = (sd + 0.001).toFixed(3);
-        }, 1000);
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const messages = document.querySelector('.chat-messages');
+            if (input.value.trim()) {
+                messages.innerHTML += `<div class="message user">${input.value}</div>`;
+                messages.innerHTML += `<div class="message ai">Processing: "${input.value}"... The community shapes my response. 🔄</div>`;
+                messages.scrollTop = messages.scrollHeight;
+                input.value = '';
+            }
+        }
+        document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
     </script>
 </body>
 </html>
