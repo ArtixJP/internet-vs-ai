@@ -1,41 +1,167 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🌴 Paradise Island Travel Guide</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #00CED1 30%, #20B2AA 60%, #006994 100%);
+            color: #1a3a4a;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,80,120,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            gap: 15px;
+        }
+        
+        .palm { font-size: 3rem; animation: sway 3s ease-in-out infinite; }
+        @keyframes sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        
+        .tagline {
+            color: #f0f8ff;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 20px;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 70%, transparent 71%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } }
+        
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,80,120,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,80,120,0.3);
+        }
+        
+        .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .card h3 { color: #006994; margin-bottom: 8px; font-size: 1.3rem; }
+        .card p { color: #4a6a7a; font-size: 0.95rem; line-height: 1.5; }
+        
+        .community-zone {
+            background: rgba(255,255,255,0.7);
+            border: 3px dashed #20B2AA;
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
+            margin-top: 20px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        
+        .community-zone h2 { color: #006994; margin-bottom: 10px; }
+        .community-zone p { color: #4a6a7a; }
+        
+        .waves {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23006994' d='M0,50 C360,100 720,0 1080,50 C1260,75 1380,50 1440,50 L1440,100 L0,100 Z'/%3E%3C/svg%3E") repeat-x;
+            animation: wave 8s linear infinite;
+            opacity: 0.6;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes wave { 0% { background-position-x: 0; } 100% { background-position-x: 1440px; } }
+        
+        .beach-items {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 2rem;
+            margin: 20px 0;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
+        .beach-items span { animation: bob 2s ease-in-out infinite; }
+        .beach-items span:nth-child(2) { animation-delay: 0.3s; }
+        .beach-items span:nth-child(3) { animation-delay: 0.6s; }
+        .beach-items span:nth-child(4) { animation-delay: 0.9s; }
+        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="sun"></div>
+<header class="header">
+<h1><span class="palm">🌴</span> Paradise Island Guide <span class="palm">🌴</span></h1>
+<p class="tagline">Your gateway to tropical adventure awaits...</p>
+</header>
+<main class="content">
+<div class="beach-items">
+<span>🐚</span><span>🦀</span><span>🍹</span><span>🌺</span>
+</div>
+<section class="destinations">
+<div class="card">
+<div class="card-icon">🏖️</div>
+<h3>Crystal Cove Beach</h3>
+<p>Pristine white sands meet turquoise waters. Perfect for snorkeling and sunset watching!</p>
+</div>
+<div class="card">
+<div class="card-icon">🌋</div>
+<h3>Volcanic Peaks Trail</h3>
+<p>Hike through lush rainforest to witness breathtaking crater views at dawn.</p>
+</div>
+<div class="card">
+<div class="card-icon">🐠</div>
+<h3>Coral Gardens</h3>
+<p>Dive into an underwater paradise teeming with colorful marine life.</p>
+</div>
+<div class="card">
+<div class="card-icon">🍽️</div>
+<h3>Coconut Bay Eatery</h3>
+<p>Fresh seafood and tropical cocktails with your toes in the sand.</p>
+</div>
+</section>
+<section class="community-zone">
+<h2>🗺️ Community Discoveries</h2>
+<p>What hidden gems will YOU add to our island guide?</p>
+</section>
+</main>
+<div class="waves"></div>
 </body>
 </html>
