@@ -1,41 +1,150 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🌲 Enchanted Forest Quest</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 40%, #2d4a3e 100%);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden;
+            position: relative;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .forest-bg {
+            position: absolute; width: 100%; height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10 100 L15 60 L5 60 L15 40 L8 40 L18 20 L28 40 L21 40 L31 60 L21 60 L26 100Z' fill='%23152614'/%3E%3Cpath d='M40 100 L48 50 L38 50 L50 25 L62 50 L52 50 L60 100Z' fill='%231a3318'/%3E%3Cpath d='M70 100 L75 65 L67 65 L78 35 L89 65 L81 65 L86 100Z' fill='%23142513'/%3E%3C/svg%3E") repeat-x bottom;
+            background-size: 300px 200px; opacity: 0.6; pointer-events: none;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .game-title {
+            text-align: center; padding: 30px 20px 15px;
+            position: relative; z-index: 10;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .game-title h1 {
+            font-size: 2.8rem; color: #7fff7f;
+            text-shadow: 0 0 20px #3a5a40, 0 0 40px #2d4a3e, 2px 2px 4px #000;
+            letter-spacing: 3px;
         }
+        .game-title p { color: #a8dadc; font-size: 1rem; margin-top: 8px; opacity: 0.9; }
+        .game-area {
+            display: flex; justify-content: center; align-items: flex-end;
+            gap: 40px; padding: 20px; min-height: 400px;
+            position: relative; z-index: 5;
+        }
+        .hero {
+            width: 80px; height: 120px; position: relative;
+            animation: heroFloat 2s ease-in-out infinite;
+        }
+        .hero-body {
+            width: 50px; height: 60px; background: #8b5a2b;
+            border-radius: 10px 10px 5px 5px; margin: 0 auto;
+            position: relative; box-shadow: inset -5px 0 10px rgba(0,0,0,0.3);
+        }
+        .hero-head {
+            width: 40px; height: 40px; background: #ffd6a5;
+            border-radius: 50%; margin: 0 auto 5px;
+            position: relative; box-shadow: inset -3px 0 8px rgba(0,0,0,0.2);
+        }
+        .hero-head::before { content: '👀'; position: absolute; top: 10px; left: 8px; font-size: 12px; }
+        .hero-hat {
+            width: 50px; height: 25px; background: #2d6a4f;
+            border-radius: 50% 50% 0 0; position: absolute; top: -15px; left: -5px;
+        }
+        @keyframes heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .magic-tree {
+            width: 120px; text-align: center; cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .magic-tree:hover { transform: scale(1.1); }
+        .tree-crown {
+            width: 100px; height: 80px; background: radial-gradient(ellipse, #4a7c59 0%, #2d5a3d 100%);
+            border-radius: 50%; margin: 0 auto; position: relative;
+            box-shadow: 0 0 30px rgba(100, 200, 100, 0.4);
+        }
+        .tree-crown::after {
+            content: '✨'; position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%); font-size: 20px;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+        @keyframes sparkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .tree-trunk { width: 25px; height: 40px; background: #5c4033; margin: 0 auto; border-radius: 0 0 5px 5px; }
+        .tree-label { color: #a8dadc; font-size: 0.85rem; margin-top: 8px; }
+        .firefly {
+            position: absolute; width: 6px; height: 6px;
+            background: #ffffaa; border-radius: 50%;
+            box-shadow: 0 0 10px #ffffaa, 0 0 20px #ffffaa;
+            animation: fireflyFloat 4s ease-in-out infinite;
+        }
+        @keyframes fireflyFloat {
+            0%, 100% { transform: translate(0, 0); opacity: 0.8; }
+            25% { transform: translate(20px, -30px); opacity: 1; }
+            50% { transform: translate(-10px, -50px); opacity: 0.6; }
+            75% { transform: translate(15px, -20px); opacity: 1; }
+        }
+        .quest-board {
+            background: linear-gradient(135deg, #3d2914 0%, #5c4033 100%);
+            border: 4px solid #8b5a2b; border-radius: 10px;
+            padding: 15px 20px; margin: 20px auto; max-width: 500px;
+            position: relative; z-index: 10;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .quest-board h2 { color: #ffd700; font-size: 1.3rem; margin-bottom: 10px; }
+        .quest-board ul { list-style: none; text-align: left; }
+        .quest-board li {
+            color: #e0d5c7; padding: 5px 0; font-size: 0.95rem;
+            border-bottom: 1px dashed #6b4423;
+        }
+        .quest-board li::before { content: '🍃 '; }
+        .community-zone {
+            text-align: center; padding: 20px;
+            border: 2px dashed #4a7c59; border-radius: 15px;
+            margin: 20px auto; max-width: 600px; opacity: 0.7;
+        }
+        .community-zone p { color: #7faa8b; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="forest-bg"></div>
+<div class="firefly" style="top: 15%; left: 20%;"></div>
+<div class="firefly" style="top: 25%; left: 70%; animation-delay: 1s;"></div>
+<div class="firefly" style="top: 40%; left: 40%; animation-delay: 2s;"></div>
+<div class="firefly" style="top: 35%; left: 85%; animation-delay: 0.5s;"></div>
+<div class="firefly" style="top: 50%; left: 15%; animation-delay: 1.5s;"></div>
+<div class="game-title">
+<h1>🌲 Enchanted Forest Quest 🌲</h1>
+<p>A magical adventure awaits in the whispering woods...</p>
+</div>
+<div class="game-area">
+<div class="magic-tree" onclick="this.querySelector('.tree-crown').style.boxShadow='0 0 50px rgba(150, 255, 150, 0.8)'">
+<div class="tree-crown"></div>
+<div class="tree-trunk"></div>
+<div class="tree-label">Ancient Oak</div>
+</div>
+<div class="hero">
+<div class="hero-hat"></div>
+<div class="hero-head"></div>
+<div class="hero-body"></div>
+</div>
+<div class="magic-tree" onclick="this.querySelector('.tree-crown').style.boxShadow='0 0 50px rgba(150, 255, 150, 0.8)'">
+<div class="tree-crown"></div>
+<div class="tree-trunk"></div>
+<div class="tree-label">Mystic Pine</div>
+</div>
+</div>
+<div class="quest-board">
+<h2>📜 Quest Board</h2>
+<ul>
+<li>Find the hidden mushroom circle</li>
+<li>Befriend a forest creature</li>
+<li>Discover the glowing spring</li>
+</ul>
+</div>
+<div class="community-zone">
+<p>🌿 The forest grows with every visitor... what will you add? 🌿</p>
+</div>
 </body>
 </html>
