@@ -1,41 +1,193 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>The Inventor's Workshop</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Special+Elite&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: linear-gradient(180deg, #1a1209 0%, #2d1f0f 50%, #1a1209 100%);
+            font-family: 'Special Elite', monospace;
+            color: #d4a56a;
+            overflow-x: hidden;
+        }
+        .workshop {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            color: #c9a227;
+            text-shadow: 0 0 20px rgba(201, 162, 39, 0.5), 2px 2px 4px #000;
+            grid-column: 1 / -1;
+            padding: 15px;
+            border-bottom: 3px double #8b6914;
+        }
+        .gear {
+            position: absolute;
+            border: 8px solid #8b6914;
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+        .gear::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 30%;
+            background: #5c4a1f;
+            border-radius: 50%;
+            border: 4px solid #8b6914;
+        }
+        .gear-1 { width: 120px; height: 120px; top: 10%; left: 5%; animation-duration: 15s; }
+        .gear-2 { width: 80px; height: 80px; top: 25%; left: 12%; animation-duration: 10s; animation-direction: reverse; }
+        .gear-3 { width: 100px; height: 100px; top: 5%; right: 8%; animation-duration: 18s; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .panel {
+            background: linear-gradient(135deg, #2a1f0a 0%, #3d2a12 100%);
+            border: 3px solid #8b6914;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .panel h2 {
+            font-family: 'Cinzel', serif;
+            color: #c9a227;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #5c4a1f;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .workbench {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><rect fill="%232a1f0a" width="50" height="50"/><rect fill="%23352610" x="0" y="0" width="25" height="25"/><rect fill="%23352610" x="25" y="25" width="25" height="25"/></svg>');
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .contraption {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(180deg, #5c4a1f 0%, #3d2a12 100%);
+            border: 4px solid #8b6914;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .contraption:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(201, 162, 39, 0.4);
+        }
+        .contraption::before {
+            content: '⚙️';
+            font-size: 3rem;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .steam {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(200, 200, 200, 0.3);
+            border-radius: 50%;
+            animation: rise 3s ease-out infinite;
+        }
+        .steam:nth-child(1) { left: 30px; animation-delay: 0s; }
+        .steam:nth-child(2) { left: 80px; animation-delay: 1s; }
+        .steam:nth-child(3) { left: 130px; animation-delay: 2s; }
+        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0.6; } 100% { transform: translateY(-80px) scale(2); opacity: 0; } }
+        .tool-rack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tool {
+            padding: 10px;
+            background: #3d2a12;
+            border: 2px solid #5c4a1f;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .tool:hover { background: #5c4a1f; transform: translateX(5px); }
+        .blueprints { list-style: none; }
+        .blueprints li {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(139, 105, 20, 0.2);
+            border-left: 3px solid #c9a227;
+        }
+        .community-board {
+            grid-column: 1 / -1;
+            min-height: 100px;
+            border-style: dashed;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
-        }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            color: #8b6914;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="gear gear-1"></div>
+<div class="gear gear-2"></div>
+<div class="gear gear-3"></div>
+<div class="workshop">
+<h1>⚙️ The Inventor's Workshop ⚙️</h1>
+<div class="panel tool-rack">
+<h2>🔧 Tools</h2>
+<div class="tool">🔩 Brass Wrench</div>
+<div class="tool">⚡ Tesla Coil</div>
+<div class="tool">🔬 Magnifying Lens</div>
+<div class="tool">🛠️ Soldering Iron</div>
+</div>
+<div class="panel workbench">
+<h2>⚒️ Workbench</h2>
+<div class="contraption">
+<div class="steam"></div>
+<div class="steam"></div>
+<div class="steam"></div>
+</div>
+<p style="margin-top: 15px; font-size: 0.9rem;">Click to activate!</p>
+</div>
+<div class="panel">
+<h2>📜 Blueprints</h2>
+<ul class="blueprints">
+<li>Clockwork Bird</li>
+<li>Steam Engine v3</li>
+<li>Aether Compass</li>
+<li>??? Mystery ???</li>
+</ul>
+</div>
+<div class="panel community-board">
+<p>🏭 Community Inventions Area — What will YOU create? 🏭</p>
+</div>
+</div>
+<script>
+        document.querySelector('.contraption').addEventListener('click', function() {
+            this.style.animation = 'shake 0.5s';
+            setTimeout(() => this.style.animation = '', 500);
+        });
+        const style = document.createElement('style');
+        style.textContent = '@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-2deg); } 75% { transform: translateX(5px) rotate(2deg); } }';
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
