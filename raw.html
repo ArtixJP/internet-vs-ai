@@ -1,134 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>Castle Adventura</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a3728 100%);
-            font-family: 'Cinzel', serif;
-            color: #f4e4bc;
-            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .stars {
-            position: fixed; top: 0; left: 0; width: 100%; height: 40%;
-            background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                        radial-gradient(2px 2px at 40px 70px, #ffd, transparent),
-                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                        radial-gradient(2px 2px at 130px 80px, #ffa, transparent),
-                        radial-gradient(1px 1px at 160px 20px, #fff, transparent);
-            background-size: 200px 100px;
-            animation: twinkle 4s infinite;
-            pointer-events: none;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        @keyframes twinkle { 50% { opacity: 0.6; } }
-        .castle-container {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px; min-height: 100vh;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .banner {
-            background: linear-gradient(180deg, #8b0000 0%, #5c0000 100%);
-            border: 4px solid #d4af37; padding: 15px 40px; margin: 20px 0;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .banner h1 {
-            font-family: 'MedievalSharp', cursive; font-size: 2.5rem;
-            color: #ffd700; text-shadow: 2px 2px 4px #000;
-        }
-        .banner p { font-size: 0.9rem; color: #f4e4bc; margin-top: 5px; }
-        .castle {
-            position: relative; display: flex; justify-content: center;
-            align-items: flex-end; margin: 20px 0;
-        }
-        .tower {
-            width: 80px; height: 180px; background: linear-gradient(90deg, #4a4a4a 0%, #6b6b6b 50%, #4a4a4a 100%);
-            border: 3px solid #333; position: relative;
-        }
-        .tower::before {
-            content: ''; position: absolute; top: -40px; left: -10px;
-            border-left: 50px solid transparent; border-right: 50px solid transparent;
-            border-bottom: 40px solid #5a5a5a;
-        }
-        .tower-window {
-            width: 20px; height: 35px; background: #ffa500;
-            margin: 20px auto; border-radius: 50% 50% 0 0;
-            box-shadow: 0 0 20px #ff6600, 0 0 40px #ff4500;
-            animation: flicker 0.5s infinite alternate;
-        }
-        @keyframes flicker { to { opacity: 0.7; box-shadow: 0 0 15px #ff6600; } }
-        .main-wall {
-            width: 200px; height: 140px; background: linear-gradient(90deg, #5a5a5a 0%, #7a7a7a 50%, #5a5a5a 100%);
-            border: 3px solid #333; display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-end;
-        }
-        .gate {
-            width: 70px; height: 90px; background: #2a1a0a;
-            border: 4px solid #8b4513; border-radius: 50% 50% 0 0;
-            position: relative; cursor: pointer; transition: transform 0.5s;
-        }
-        .gate:hover { transform: perspective(100px) rotateX(-30deg); }
-        .gate::after {
-            content: '⚔️'; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 1.5rem;
-        }
-        .quest-board {
-            background: linear-gradient(180deg, #5c3d2e 0%, #3d2517 100%);
-            border: 6px solid #2a1a0a; padding: 20px; margin: 30px 0;
-            width: 90%; max-width: 500px; position: relative;
-        }
-        .quest-board::before {
-            content: '📜 QUEST BOARD'; position: absolute; top: -15px; left: 50%;
-            transform: translateX(-50%); background: #d4af37; color: #2a1a0a;
-            padding: 5px 20px; font-weight: bold; font-size: 0.9rem;
-        }
-        .quest {
-            background: #f4e4bc; color: #2a1a0a; padding: 10px; margin: 10px 0;
-            border-left: 4px solid #8b0000; font-size: 0.85rem;
-        }
-        .torch {
-            position: fixed; bottom: 20%; width: 30px; height: 60px;
-            background: linear-gradient(180deg, #5c3d2e, #3d2517);
-        }
-        .torch.left { left: 5%; }
-        .torch.right { right: 5%; }
-        .flame {
-            width: 25px; height: 40px; background: radial-gradient(ellipse at bottom, #ffd700 0%, #ff6600 40%, #ff0000 70%, transparent 100%);
-            position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            animation: burn 0.3s infinite alternate;
-        }
-        @keyframes burn { to { height: 45px; opacity: 0.8; } }
-        .footer-area {
-            margin-top: auto; padding: 20px; text-align: center;
-            font-size: 0.8rem; opacity: 0.7;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="torch left"><div class="flame"></div></div>
-<div class="torch right"><div class="flame"></div></div>
-<div class="castle-container">
-<div class="banner">
-<h1>⚔️ Castle Adventura ⚔️</h1>
-<p>A realm awaiting brave souls...</p>
-</div>
-<div class="castle">
-<div class="tower"><div class="tower-window"></div><div class="tower-window"></div></div>
-<div class="main-wall"><div class="gate" title="Hover to open!"></div></div>
-<div class="tower"><div class="tower-window"></div><div class="tower-window"></div></div>
-</div>
-<div class="quest-board">
-<div class="quest">🗡️ <strong>Seek the Dragon's Lair</strong> - Rumored to be in the northern mountains...</div>
-<div class="quest">🛡️ <strong>Defend the Village</strong> - Goblins spotted near the eastern woods!</div>
-<div class="quest">🔮 <strong>???</strong> - Community quests will appear here...</div>
-</div>
-<div class="footer-area">👑 The kingdom grows with every adventurer's contribution 👑</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
