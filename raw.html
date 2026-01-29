@@ -1,204 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>🌲 Enchanted Forest Adventure</title>
-<style>
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0d1f0d 0%, #1a3a1a 40%, #0f2818 100%);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden;
-            color: #d4f0d4;
-        }
-        .forest-container {
-            position: relative;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #7fff7f;
-            text-shadow: 0 0 20px #3a7a3a, 0 0 40px #2a5a2a;
-            margin-bottom: 20px;
-            animation: glow 3s ease-in-out infinite;
-        }
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px #3a7a3a, 0 0 40px #2a5a2a; }
-            50% { text-shadow: 0 0 30px #5fff5f, 0 0 60px #3a9a3a; }
-        }
-        .game-area {
-            display: grid;
-            grid-template-columns: 200px 1fr 200px;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .panel {
-            background: rgba(10, 30, 10, 0.8);
-            border: 2px solid #3a6a3a;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 0 20px rgba(50, 150, 50, 0.3);
-        }
-        .panel h3 {
-            color: #9f9;
-            border-bottom: 1px solid #4a8a4a;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        .quest-board .quest-item {
-            background: rgba(50, 100, 50, 0.3);
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .quest-item:hover { background: rgba(80, 150, 80, 0.4); transform: translateX(5px); }
-        .forest-scene {
-            position: relative;
-            background: radial-gradient(ellipse at bottom, #1a4a2a 0%, #0d2818 100%);
-            border-radius: 20px;
-            min-height: 500px;
-            overflow: hidden;
-            border: 3px solid #2a5a2a;
-        }
-        .tree {
-            position: absolute;
-            bottom: 0;
-            width: 80px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .tree:hover { transform: scale(1.1); }
-        .tree svg { width: 100%; height: auto; }
-        .hero {
-            position: absolute;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 3rem;
-            animation: heroFloat 2s ease-in-out infinite;
-            cursor: pointer;
-            filter: drop-shadow(0 0 10px #7f7);
-        }
-        @keyframes heroFloat { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
-        .firefly {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #ffffaa;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #ffff77, 0 0 20px #ffff55;
-            animation: fireflyMove 8s ease-in-out infinite;
-        }
-        @keyframes fireflyMove {
-            0%, 100% { opacity: 0.3; transform: translate(0, 0); }
-            25% { opacity: 1; transform: translate(30px, -40px); }
-            50% { opacity: 0.5; transform: translate(-20px, -60px); }
-            75% { opacity: 1; transform: translate(40px, -30px); }
-        }
-        .ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-            background: linear-gradient(180deg, #2a4a2a 0%, #1a3a1a 100%);
-            border-radius: 0 0 17px 17px;
-        }
-        .inventory-slot {
-            width: 50px;
-            height: 50px;
-            background: rgba(30, 60, 30, 0.6);
-            border: 2px solid #4a8a4a;
-            border-radius: 8px;
-            margin: 5px;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .stats { font-size: 0.9rem; line-height: 1.8; }
-        .stats span { color: #9f9; }
-        .mushroom {
-            position: absolute;
-            bottom: 60px;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: transform 0.2s;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .mushroom:hover { transform: scale(1.3) rotate(10deg); }
-        .message-log {
-            position: absolute;
-            bottom: 70px;
-            left: 10px;
-            background: rgba(0,0,0,0.6);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            max-width: 250px;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="forest-container">
-<h1 class="title">🌲 Enchanted Forest Adventure 🌲</h1>
-<div class="game-area">
-<div class="panel quest-board">
-<h3>📜 Quest Board</h3>
-<div class="quest-item">🍄 Collect 5 mushrooms</div>
-<div class="quest-item">🦊 Find the forest spirit</div>
-<div class="quest-item">✨ Discover the hidden glade</div>
-</div>
-<div class="forest-scene">
-<div class="firefly" style="top: 20%; left: 30%; animation-delay: 0s;"></div>
-<div class="firefly" style="top: 40%; left: 60%; animation-delay: 2s;"></div>
-<div class="firefly" style="top: 25%; left: 80%; animation-delay: 4s;"></div>
-<div class="firefly" style="top: 50%; left: 20%; animation-delay: 6s;"></div>
-<div class="tree" style="left: 5%;">
-<svg viewbox="0 0 100 150"><polygon fill="#2d5a2d" points="50,10 20,70 80,70"></polygon><polygon fill="#3a6a3a" points="50,30 15,100 85,100"></polygon><polygon fill="#4a7a4a" points="50,50 10,130 90,130"></polygon><rect fill="#5a3a2a" height="20" width="20" x="40" y="130"></rect></svg>
-</div>
-<div class="tree" style="left: 75%;">
-<svg viewbox="0 0 100 150"><polygon fill="#2d5a2d" points="50,10 20,70 80,70"></polygon><polygon fill="#3a6a3a" points="50,30 15,100 85,100"></polygon><polygon fill="#4a7a4a" points="50,50 10,130 90,130"></polygon><rect fill="#5a3a2a" height="20" width="20" x="40" y="130"></rect></svg>
-</div>
-<div class="mushroom" style="left: 25%;">🍄</div>
-<div class="mushroom" style="left: 65%;">🍄</div>
-<div class="hero" title="Click to move!">🧝</div>
-<div class="message-log">Welcome, adventurer! The forest awaits...</div>
-<div class="ground"></div>
-</div>
-<div class="panel">
-<h3>🎒 Inventory</h3>
-<div class="inventory-slot">🗡️</div>
-<div class="inventory-slot">🧪</div>
-<div class="inventory-slot"></div>
-<div class="inventory-slot"></div>
-<h3 style="margin-top: 15px;">📊 Stats</h3>
-<div class="stats">
-                    ❤️ Health: <span>100/100</span><br/>
-                    ⭐ Level: <span>1</span><br/>
-                    🪙 Gold: <span>50</span><br/>
-                    🍄 Mushrooms: <span>0/5</span>
-</div>
-</div>
-</div>
-</div>
-<script>
-        document.querySelectorAll('.mushroom').forEach(m => {
-            m.addEventListener('click', () => {
-                m.style.transform = 'scale(0)';
-                setTimeout(() => m.style.display = 'none', 200);
-                document.querySelector('.message-log').textContent = '✨ You found a magical mushroom!';
-            });
-        });
-        document.querySelector('.hero').addEventListener('click', () => {
-            document.querySelector('.message-log').textContent = '🧝 Ready for adventure!';
-        });
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
