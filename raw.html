@@ -1,213 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>☕ The Cozy Bean</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Nunito:wght@400;600&display=swap');
-        
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2c1810 0%, #3d2317 50%, #4a2c1a 100%);
-            font-family: 'Nunito', sans-serif;
-            color: #f5e6d3;
-            overflow-x: hidden;
-        }
-        
-        .shop-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            border-bottom: 2px dashed #8b5a2b;
-            margin-bottom: 30px;
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: #d4a574;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            animation: gentleFloat 3s ease-in-out infinite;
-        }
-        
-        .tagline {
-            font-style: italic;
-            color: #c9a882;
-            margin-top: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 30px;
-            align-items: start;
-        }
-        
-        .menu-board {
-            background: #1a0f0a;
-            border: 8px solid #5c3d2e;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        }
-        
-        .menu-board h2 {
-            font-family: 'Playfair Display', serif;
-            color: #e8c89e;
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #5c3d2e;
-            padding-bottom: 10px;
-        }
-        
-        .menu-item {
             display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dotted #3d2317;
-            transition: all 0.3s ease;
-        }
-        
-        .menu-item:hover {
-            background: rgba(212, 165, 116, 0.1);
-            padding-left: 10px;
-        }
-        
-        .menu-item span:first-child { color: #f5e6d3; }
-        .menu-item span:last-child { color: #d4a574; font-weight: 600; }
-        
-        .featured-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .coffee-cup {
-            background: linear-gradient(145deg, #6b4423, #8b5a2b);
-            border-radius: 0 0 50% 50%;
-            width: 180px;
-            height: 140px;
-            margin: 0 auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        
-        .coffee-cup::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: 10px;
-            right: 10px;
-            height: 30px;
-            background: linear-gradient(180deg, #3d2317, #2c1810);
-            border-radius: 50%;
-        }
-        
-        .steam {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-        }
-        
-        .steam span {
-            width: 8px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            animation: steam 2s ease-out infinite;
-        }
-        
-        .steam span:nth-child(2) { animation-delay: 0.3s; height: 50px; }
-        .steam span:nth-child(3) { animation-delay: 0.6s; height: 35px; }
-        
-        .specials-board {
-            background: #2a1a12;
-            padding: 20px;
-            border-radius: 12px;
-            border: 3px solid #5c3d2e;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
         }
-        
-        .specials-board h3 {
-            color: #ffb347;
-            font-size: 1.4rem;
+        .container {
+            animation: fadeIn 1s ease-out;
+        }
+        h1 { 
+            font-size: 2.5rem; 
             margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .community-corner {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(92, 61, 46, 0.3);
-            border-radius: 12px;
-            text-align: center;
-            border: 2px dashed #8b5a2b;
-        }
-        
-        .community-corner h3 {
-            color: #d4a574;
-            margin-bottom: 10px;
-        }
-        
-        @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        @keyframes steam {
-            0% { opacity: 0; transform: translateY(0) scaleX(1); }
-            50% { opacity: 0.6; transform: translateY(-20px) scaleX(1.5); }
-            100% { opacity: 0; transform: translateY(-40px) scaleX(2); }
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="shop-container">
-<header>
-<h1 class="logo">☕ The Cozy Bean</h1>
-<p class="tagline">"Where every cup tells a story"</p>
-</header>
-<div class="main-content">
-<div class="menu-board">
-<h2>📋 Menu</h2>
-<div class="menu-item"><span>Espresso</span><span>$3.50</span></div>
-<div class="menu-item"><span>Cappuccino</span><span>$4.50</span></div>
-<div class="menu-item"><span>Latte</span><span>$4.75</span></div>
-<div class="menu-item"><span>Mocha</span><span>$5.25</span></div>
-<div class="menu-item"><span>Hot Chocolate</span><span>$4.00</span></div>
-
-</div>
-<div class="featured-section">
-<div class="coffee-cup">
-<div class="steam">
-<span></span><span></span><span></span>
-</div>
-</div>
-<div class="specials-board">
-<h3>✨ Today's Special ✨</h3>
-<p>Cinnamon Maple Latte - $5.00</p>
-<p style="font-size: 0.9rem; color: #c9a882; margin-top: 8px;">Made with real maple syrup!</p>
-</div>
-</div>
-</div>
-<div class="community-corner">
-<h3>🎨 Community Corner</h3>
-<p>This space is waiting for your ideas...</p>
-</div>
-</div>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
