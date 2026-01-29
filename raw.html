@@ -1,248 +1,41 @@
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<title>🎮 Pixel Arcade Showcase</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: #0a0a12;
-            font-family: 'Press Start 2P', monospace;
-            color: #fff;
-            overflow-x: hidden;
-            image-rendering: pixelated;
-        }
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);
-            pointer-events: none;
-            z-index: 1000;
-        }
-        .arcade-header {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(180deg, #1a1a2e 0%, transparent 100%);
-        }
-        .arcade-header h1 {
-            font-size: 1.5rem;
-            color: #ff6b9d;
-            text-shadow: 0 0 10px #ff6b9d, 0 0 20px #ff6b9d, 4px 4px 0 #3a0a20;
-            animation: flicker 3s infinite;
-        }
-        @keyframes flicker {
-            0%, 90%, 100% { opacity: 1; }
-            92% { opacity: 0.8; }
-            94% { opacity: 1; }
-            96% { opacity: 0.9; }
-        }
-        .coin-counter {
-            margin-top: 10px;
-            font-size: 0.6rem;
-            color: #ffd700;
-        }
-        .main-stage {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .game-cabinet {
-            background: linear-gradient(145deg, #2a2a4a 0%, #1a1a2e 100%);
-            border: 4px solid #4a4a6a;
-            border-radius: 8px;
-            padding: 15px;
-            width: 280px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-        .game-cabinet:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(255,107,157,0.3), 0 0 20px rgba(0,255,255,0.2);
-        }
-        .game-screen {
-            background: #000;
-            border: 3px solid #333;
-            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .pixel-hero {
-            font-size: 4rem;
-            animation: bounce 0.5s infinite alternate;
-        }
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-        .game-title {
-            font-size: 0.5rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
             text-align: center;
-            margin-top: 10px;
-            color: #0ff;
         }
-        .game-genre {
-            font-size: 0.4rem;
-            color: #888;
-            text-align: center;
-            margin-top: 5px;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        .pixel-art-display {
-            display: grid;
-            grid-template-columns: repeat(8, 12px);
-            gap: 2px;
-            margin: 10px auto;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .pixel {
-            width: 12px;
-            height: 12px;
-            background: var(--color, #333);
-        }
-        .characters-row {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            background: linear-gradient(90deg, transparent, rgba(255,107,157,0.1), transparent);
-        }
-        .pixel-character {
-            font-size: 3rem;
-            animation: walk 0.3s steps(2) infinite;
-        }
-        @keyframes walk {
-            from { transform: translateX(-2px); }
-            to { transform: translateX(2px); }
-        }
-        .community-zone {
-            text-align: center;
-            padding: 30px;
-            border: 2px dashed #4a4a6a;
-            margin: 20px auto;
-            max-width: 600px;
-            border-radius: 8px;
-        }
-        .community-zone h3 {
-            font-size: 0.6rem;
-            color: #9d4edd;
-            margin-bottom: 10px;
-        }
-        .community-zone p {
-            font-size: 0.4rem;
-            color: #666;
-        }
-        .footer-bar {
-            text-align: center;
-            padding: 15px;
-            font-size: 0.4rem;
-            color: #555;
-            background: linear-gradient(0deg, #1a1a2e 0%, transparent 100%);
-        }
-        .stars {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1;
-        }
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #fff;
-            animation: twinkle 2s infinite;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="scanlines"></div>
-<div class="stars" id="stars"></div>
-<header class="arcade-header">
-<h1>🕹️ PIXEL ARCADE 🕹️</h1>
-<div class="coin-counter">💰 INSERT COIN TO PLAY 💰</div>
-</header>
-<div class="characters-row">
-<span class="pixel-character">🧙</span>
-<span class="pixel-character">🗡️</span>
-<span class="pixel-character">👾</span>
-<span class="pixel-character">🐉</span>
-<span class="pixel-character">🏰</span>
-</div>
-<main class="main-stage">
-<div class="game-cabinet">
-<div class="game-screen">
-<span class="pixel-hero">🚀</span>
-</div>
-<div class="game-title">STAR VOYAGER</div>
-<div class="game-genre">[ SHOOT EM UP ]</div>
-</div>
-<div class="game-cabinet">
-<div class="game-screen">
-<span class="pixel-hero">⚔️</span>
-</div>
-<div class="game-title">DUNGEON QUEST</div>
-<div class="game-genre">[ RPG ]</div>
-</div>
-<div class="game-cabinet">
-<div class="game-screen">
-<span class="pixel-hero">🏎️</span>
-</div>
-<div class="game-title">TURBO RACER</div>
-<div class="game-genre">[ RACING ]</div>
-</div>
-<div class="game-cabinet">
-<div class="game-screen">
-<span class="pixel-hero">👻</span>
-</div>
-<div class="game-title">GHOST HUNTER</div>
-<div class="game-genre">[ PUZZLE ]</div>
-</div>
-</main>
-<div class="community-zone">
-<h3>✨ COMMUNITY CABINET ZONE ✨</h3>
-<p>Your pixel creations will appear here!</p>
-</div>
-<footer class="footer-bar">
-        PRESS START • HIGH SCORE: 999999 • © PIXEL ARCADE 2024
-    </footer>
-<script>
-        // Generate twinkling stars
-        const starsContainer = document.getElementById('stars');
-        for(let i = 0; i < 50; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 2 + 's';
-            star.style.opacity = Math.random() * 0.5 + 0.3;
-            starsContainer.appendChild(star);
-        }
-        
-        // Cabinet click effect
-        document.querySelectorAll('.game-cabinet').forEach(cab => {
-            cab.addEventListener('click', () => {
-                cab.style.animation = 'none';
-                cab.offsetHeight;
-                cab.style.animation = 'shake 0.3s';
-            });
-        });
-    </script>
-<style>
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-    </style>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
