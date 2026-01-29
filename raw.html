@@ -1,41 +1,186 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<title>NEXUS-7 Robot Factory</title>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-orange: #ff6b35;
+            --neon-green: #39ff14;
+            --dark-bg: #0a0a12;
+            --panel-bg: #12121c;
+            --border-glow: rgba(0, 240, 255, 0.3);
+        }
         body {
             min-height: 100vh;
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+        .factory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .factory-title {
+            font-size: 1.8rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-dot {
+            width: 12px; height: 12px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px var(--neon-green); }
+            50% { box-shadow: 0 0 20px var(--neon-green), 0 0 30px var(--neon-green); }
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+            height: calc(100vh - 120px);
+        }
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .panel-title {
+            color: var(--neon-orange);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-value {
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+        .assembly-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            height: 100%;
+            position: relative;
+        }
+        .conveyor {
+            position: absolute;
+            bottom: 30%;
+            width: 90%;
+            height: 8px;
+            background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
+            border-radius: 4px;
+        }
+        .conveyor::after {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,240,255,0.2) 20px, rgba(0,240,255,0.2) 22px);
+            animation: conveyorMove 2s linear infinite;
+        }
+        @keyframes conveyorMove {
+            from { background-position: 0 0; }
+            to { background-position: 44px 0; }
+        }
+        .robot {
+            font-size: 3rem;
+            animation: assemble 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+        .robot:nth-child(2) { animation-delay: -1s; }
+        .robot:nth-child(3) { animation-delay: -2s; }
+        @keyframes assemble {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-15px); opacity: 1; }
+        }
+        .community-zone {
+            border: 2px dashed rgba(255,107,53,0.4);
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
-            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            margin-top: 10px;
+            border-radius: 6px;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .alert-ticker {
+            background: rgba(255,107,53,0.1);
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            animation: tickerGlow 2s ease-in-out infinite;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes tickerGlow {
+            0%, 100% { border-left: 3px solid var(--neon-orange); }
+            50% { border-left: 3px solid transparent; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<header class="factory-header">
+<div class="factory-title">🏭 NEXUS-7 ROBOT FACTORY</div>
+<div class="status-indicator">
+<span class="status-dot"></span>
+<span>SYSTEMS ONLINE</span>
+</div>
+</header>
+<main class="dashboard">
+<section class="panel">
+<h2 class="panel-title">📊 Production Stats</h2>
+<div class="stat-row"><span>Robots Built Today</span><span class="stat-value">1,247</span></div>
+<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
+<div class="stat-row"><span>Power Usage</span><span class="stat-value">82 MW</span></div>
+<div class="stat-row"><span>Queue</span><span class="stat-value">358 units</span></div>
+<div class="community-zone">[ Community Stats Zone ]</div>
+</section>
+<section class="panel">
+<h2 class="panel-title">🔧 Assembly Line Alpha</h2>
+<div class="assembly-line">
+<div class="conveyor"></div>
+<span class="robot">🤖</span>
+<span class="robot">🦾</span>
+<span class="robot">🤖</span>
+</div>
+</section>
+<section class="panel">
+<h2 class="panel-title">⚠️ System Alerts</h2>
+<div class="alert-ticker">Sector 7G: Maintenance scheduled 02:00</div>
+<div class="alert-ticker">New model TX-500 approved for production</div>
+<div class="alert-ticker">Coffee machine in break room: CRITICAL</div>
+<div class="community-zone">[ Community Alerts Zone ]</div>
+</section>
+</main>
 </body>
 </html>
