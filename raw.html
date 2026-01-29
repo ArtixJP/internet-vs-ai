@@ -1,178 +1,41 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>Castle Thornwood - A Medieval Adventure</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap');
+    <title>New Epoch Starting...</title>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a2c6a 70%, #1a0a2e 100%);
-            font-family: 'Cinzel', serif;
-            color: #e8d5b7;
-            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
         }
-        .stars {
-            position: fixed; top: 0; left: 0; width: 100%; height: 40%;
-            background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                        radial-gradient(2px 2px at 40px 70px, #ffd, transparent),
-                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                        radial-gradient(2px 2px at 130px 80px, #ffa, transparent),
-                        radial-gradient(1px 1px at 160px 20px, #fff, transparent);
-            background-size: 200px 100px;
-            animation: twinkle 4s infinite alternate;
-            pointer-events: none; z-index: 0;
+        .container {
+            animation: fadeIn 1s ease-out;
         }
-        @keyframes twinkle { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-        .castle-scene {
-            position: relative; width: 100%; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px; z-index: 1;
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        h1 {
-            font-family: 'MedievalSharp', cursive; font-size: 2.8rem;
-            text-shadow: 0 0 20px #ff6b35, 0 0 40px #ff4500;
-            margin: 20px 0 10px; letter-spacing: 3px;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        @keyframes glow { from { text-shadow: 0 0 20px #ff6b35; } to { text-shadow: 0 0 30px #ffa500, 0 0 50px #ff4500; } }
-        .subtitle { font-size: 1rem; opacity: 0.8; margin-bottom: 20px; font-style: italic; }
-        .castle {
-            position: relative; width: 90%; max-width: 700px;
-            background: linear-gradient(180deg, #3d2b1f 0%, #2a1f15 100%);
-            border: 4px solid #5a4a3a; border-radius: 8px 8px 0 0;
-            padding: 15px; margin-top: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.4);
-        }
-        .battlements {
-            position: absolute; top: -25px; left: -4px; right: -4px;
-            height: 25px; display: flex; justify-content: space-around;
-        }
-        .merlon {
-            width: 30px; height: 25px;
-            background: linear-gradient(180deg, #4a3a2a, #3d2b1f);
-            border: 2px solid #5a4a3a; border-bottom: none;
-        }
-        .towers {
-            position: absolute; top: -60px; display: flex; justify-content: space-between;
-            width: calc(100% + 40px); left: -20px;
-        }
-        .tower {
-            width: 50px; height: 80px;
-            background: linear-gradient(180deg, #4a3a2a, #2a1f15);
-            border: 3px solid #5a4a3a; position: relative;
-        }
-        .tower::before {
-            content: ''; position: absolute; top: -20px; left: -5px;
-            border-left: 30px solid transparent; border-right: 30px solid transparent;
-            border-bottom: 25px solid #6b4423;
-        }
-        .torch {
-            position: absolute; bottom: 20px; width: 8px; height: 25px;
-            background: linear-gradient(180deg, #8b4513, #5a3010);
-        }
-        .torch::after {
-            content: '🔥'; position: absolute; top: -20px; left: -6px;
-            font-size: 1.2rem; animation: flicker 0.3s infinite alternate;
-        }
-        .torch.left { left: 15px; }
-        .torch.right { right: 15px; }
-        @keyframes flicker { 0% { transform: scale(1) rotate(-5deg); } 100% { transform: scale(1.1) rotate(5deg); } }
-        .gate {
-            width: 80px; height: 100px; margin: 20px auto 0;
-            background: linear-gradient(180deg, #1a1a1a, #0d0d0d);
-            border: 4px solid #5a4a3a; border-radius: 40px 40px 0 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; cursor: pointer; transition: all 0.3s;
-        }
-        .gate:hover { background: #2a2a2a; box-shadow: 0 0 20px #ff6b35; }
-        .courtyard {
-            display: flex; justify-content: space-around; flex-wrap: wrap;
-            gap: 15px; margin-top: 20px; padding: 10px;
-            background: rgba(0,0,0,0.3); border-radius: 8px;
-        }
-        .area {
-            background: rgba(90, 74, 58, 0.4); border: 2px dashed #7a6a5a;
-            border-radius: 8px; padding: 15px; min-width: 150px;
-            text-align: center; transition: all 0.3s; cursor: pointer;
-        }
-        .area:hover { background: rgba(90, 74, 58, 0.7); transform: scale(1.05); }
-        .area-icon { font-size: 2rem; margin-bottom: 5px; }
-        .area-name { font-size: 0.9rem; }
-        .knight {
-            position: absolute; bottom: 10px; left: 20%;
-            font-size: 2rem; animation: patrol 8s linear infinite;
-        }
-        @keyframes patrol {
-            0%, 100% { left: 20%; transform: scaleX(1); }
-            50% { left: 70%; transform: scaleX(-1); }
-        }
-        .scroll {
-            margin-top: 20px; padding: 15px 25px;
-            background: linear-gradient(180deg, #d4b896, #c4a876);
-            border-radius: 5px; color: #3d2b1f; max-width: 500px;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
-            font-size: 0.95rem; line-height: 1.5;
-        }
-        .scroll::before, .scroll::after {
-            content: '📜'; font-size: 1.5rem;
+        p { font-size: 1.1rem; opacity: 0.8; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="castle-scene">
-<h1>⚔️ Castle Thornwood ⚔️</h1>
-<p class="subtitle">A realm awaiting brave adventurers...</p>
-<div class="castle">
-<div class="towers">
-<div class="tower"><div class="torch left"></div></div>
-<div class="tower"><div class="torch right"></div></div>
-</div>
-<div class="battlements">
-<div class="merlon"></div><div class="merlon"></div><div class="merlon"></div>
-<div class="merlon"></div><div class="merlon"></div><div class="merlon"></div>
-</div>
-<div class="gate" title="Enter the castle...">🚪</div>
-<div class="courtyard">
-<div class="area" id="treasury">
-<div class="area-icon">💰</div>
-<div class="area-name">Treasury</div>
-</div>
-<div class="area" id="armory">
-<div class="area-icon">🗡️</div>
-<div class="area-name">Armory</div>
-</div>
-<div class="area" id="dungeon">
-<div class="area-icon">⛓️</div>
-<div class="area-name">Dungeon</div>
-</div>
-<div class="area" id="tavern">
-<div class="area-icon">🍺</div>
-<div class="area-name">Tavern</div>
-</div>
-</div>
-<div class="knight">🧑‍🤝‍🧑</div>
-</div>
-<div class="scroll">
-            Welcome, traveler! The ancient Castle Thornwood stands before you.
-            What adventures await within these stone walls? The community shall decide...
-        </div>
-</div>
-<script>
-        document.querySelectorAll('.area').forEach(area => {
-            area.addEventListener('click', () => {
-                area.style.animation = 'none';
-                area.offsetHeight;
-                area.style.animation = 'pulse 0.5s';
-            });
-        });
-        document.querySelector('.gate').addEventListener('click', function() {
-            this.textContent = this.textContent === '🚪' ? '🏰' : '🚪';
-        });
-    </script>
+    <div class="container">
+        <h1>🌅 New Epoch Starting</h1>
+        <p>AI is generating a fresh page based on the new theme...</p>
+    </div>
 </body>
 </html>
