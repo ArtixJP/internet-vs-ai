@@ -1,41 +1,218 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<title>PIXEL PALACE ARCADE</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
+            background: #0a0a12;
+            font-family: 'Press Start 2P', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.1) 0px,
+                rgba(0,0,0,0.1) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+        .arcade-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            gap: 25px;
+        }
+        .neon-title {
+            font-size: 2.2rem;
+            color: #fff;
+            text-shadow:
+                0 0 5px #ff00de,
+                0 0 10px #ff00de,
+                0 0 20px #ff00de,
+                0 0 40px #ff00de;
+            animation: flicker 3s infinite;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96% { opacity: 0.8; }
+            97% { opacity: 1; }
+            98% { opacity: 0.9; }
+        }
+        .arcade-cabinet {
+            width: 180px;
+            height: 220px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 4px solid #00ffff;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            box-shadow: 0 0 20px #00ffff44, inset 0 0 30px rgba(0,255,255,0.1);
+        }
+        .cabinet-screen {
+            width: 140px;
+            height: 100px;
+            background: #000;
+            margin: 15px auto 10px;
+            border: 3px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #000066, #000033);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            animation: screenGlow 2s ease-in-out infinite;
+        }
+        @keyframes screenGlow {
+            0%, 100% { box-shadow: inset 0 0 20px #0066ff; }
+            50% { box-shadow: inset 0 0 40px #00ffff; }
+        }
+        .pac-ghost {
+            font-size: 24px;
+            animation: bounce 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes bounce { to { transform: translateY(-5px); } }
+        .joystick-area {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        .joystick {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #ff0066, #990033);
+            border-radius: 50%;
+            box-shadow: 0 4px 0 #660022;
+        }
+        .buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+        }
+        .btn-a { background: #ff3366; }
+        .btn-b { background: #33ff66; }
+        .high-scores {
+            background: linear-gradient(180deg, #1a0a2e 0%, #0a0515 100%);
+            border: 3px solid #ffff00;
+            padding: 15px 25px;
+            box-shadow: 0 0 15px #ffff0044;
+        }
+        .high-scores h2 {
+            color: #ffff00;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            color: #00ff00;
+            font-size: 0.6rem;
+            margin: 6px 0;
+            gap: 30px;
+        }
+        .insert-coin {
+            color: #ffff00;
+            font-size: 0.8rem;
+            animation: blink 1s step-end infinite;
+            cursor: pointer;
+            padding: 10px 20px;
+            border: 2px solid #ffff00;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        .insert-coin:hover {
+            background: #ffff00;
+            color: #000;
+            box-shadow: 0 0 20px #ffff00;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .pixel-decor {
+            position: absolute;
+            font-size: 20px;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        .pixel-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .pixel-2 { top: 20%; right: 8%; animation-delay: 1s; }
+        .pixel-3 { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .pixel-4 { bottom: 25%; right: 5%; animation-delay: 0.5s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .community-zone {
+            border: 2px dashed #ff00de55;
+            padding: 15px;
+            margin-top: 10px;
             text-align: center;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .community-zone p {
+            color: #ff00de;
+            font-size: 0.5rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="pixel-decor pixel-1">👾</div>
+<div class="pixel-decor pixel-2">🕹️</div>
+<div class="pixel-decor pixel-3">⭐</div>
+<div class="pixel-decor pixel-4">🎮</div>
+<div class="arcade-container">
+<h1 class="neon-title">PIXEL PALACE</h1>
+<div class="arcade-cabinet">
+<div class="cabinet-screen">
+<div class="screen-content">
+<span class="pac-ghost">👻</span>
+</div>
+</div>
+<div class="joystick-area">
+<div class="joystick"></div>
+<div class="buttons">
+<div class="btn btn-a"></div>
+<div class="btn btn-b"></div>
+</div>
+</div>
+</div>
+<div class="high-scores">
+<h2>★ HIGH SCORES ★</h2>
+<div class="score-entry"><span>1. AAA</span><span>999999</span></div>
+<div class="score-entry"><span>2. CPU</span><span>888888</span></div>
+<div class="score-entry"><span>3. ???</span><span>777777</span></div>
+</div>
+<button class="insert-coin">INSERT COIN</button>
+<div class="community-zone">
+<p>[ COMMUNITY EXPANSION ZONE ]</p>
+<p>YOUR IDEAS GO HERE</p>
+</div>
+</div>
 </body>
 </html>
