@@ -1,186 +1,235 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-<meta charset="utf-8"/>
-<title>NEXUS-7 Robot Factory</title>
+<title>The Mystic Cauldron - Potion Emporium</title>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --neon-blue: #00f0ff;
-            --neon-orange: #ff6b35;
-            --neon-green: #39ff14;
-            --dark-bg: #0a0a12;
-            --panel-bg: #12121c;
-            --border-glow: rgba(0, 240, 255, 0.3);
-        }
         body {
             min-height: 100vh;
-            background: var(--dark-bg);
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            padding: 15px;
+            background: linear-gradient(180deg, #0d0d1a 0%, #1a0a2e 50%, #0d0d1a 100%);
+            color: #e8d5b7;
+            font-family: 'Georgia', serif;
             overflow-x: hidden;
         }
-        .factory-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .factory-title {
-            font-size: 1.8rem;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .status-dot {
-            width: 12px; height: 12px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 5px var(--neon-green); }
-            50% { box-shadow: 0 0 20px var(--neon-green), 0 0 30px var(--neon-green); }
-        }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 15px;
-            height: calc(100vh - 120px);
-        }
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .panel-title {
-            color: var(--neon-orange);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .stat-value {
-            color: var(--neon-blue);
-            font-weight: bold;
-        }
-        .assembly-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            height: 100%;
+        .shop {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             position: relative;
         }
-        .conveyor {
-            position: absolute;
-            bottom: 30%;
-            width: 90%;
-            height: 8px;
-            background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
-            border-radius: 4px;
+        .shop-sign {
+            text-align: center;
+            padding: 20px 0;
+            animation: flicker 3s infinite;
         }
-        .conveyor::after {
+        .shop-sign h1 {
+            font-size: 2.8rem;
+            color: #9b59b6;
+            text-shadow: 0 0 10px #9b59b6, 0 0 20px #8e44ad, 0 0 30px #6c3483;
+            letter-spacing: 3px;
+        }
+        .shop-sign p {
+            color: #7bed9f;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        .main-area {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cauldron-area {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cauldron {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-radius: 0 0 100px 100px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .cauldron::before {
             content: '';
             position: absolute;
-            width: 100%; height: 100%;
-            background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,240,255,0.2) 20px, rgba(0,240,255,0.2) 22px);
-            animation: conveyorMove 2s linear infinite;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            height: 25px;
+            background: #3d3d3d;
+            border-radius: 10px;
         }
-        @keyframes conveyorMove {
-            from { background-position: 0 0; }
-            to { background-position: 44px 0; }
+        .brew {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 80px;
+            background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%);
+            border-radius: 0 0 80px 80px;
+            animation: bubble 2s infinite;
         }
-        .robot {
-            font-size: 3rem;
-            animation: assemble 3s ease-in-out infinite;
-            position: relative;
-            z-index: 2;
+        .bubble {
+            position: absolute;
+            background: rgba(46, 204, 113, 0.6);
+            border-radius: 50%;
+            animation: rise 2s infinite;
         }
-        .robot:nth-child(2) { animation-delay: -1s; }
-        .robot:nth-child(3) { animation-delay: -2s; }
-        @keyframes assemble {
-            0%, 100% { transform: translateY(0); opacity: 0.5; }
-            50% { transform: translateY(-15px); opacity: 1; }
+        .bubble:nth-child(1) { width: 15px; height: 15px; left: 30%; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 10px; height: 10px; left: 50%; animation-delay: 0.5s; }
+        .bubble:nth-child(3) { width: 12px; height: 12px; left: 70%; animation-delay: 1s; }
+        @keyframes rise {
+            0% { bottom: 10px; opacity: 1; }
+            100% { bottom: 60px; opacity: 0; }
         }
-        .community-zone {
-            border: 2px dashed rgba(255,107,53,0.4);
-            min-height: 80px;
+        @keyframes bubble {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .smoke {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            opacity: 0.5;
+            animation: smokeRise 3s infinite;
+        }
+        @keyframes smokeRise {
+            0% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+            100% { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+        }
+        .potion-shelf {
+            flex: 1.5;
+            min-width: 350px;
+            background: linear-gradient(180deg, #2c1810 0%, #1a0f0a 100%);
+            border-radius: 10px;
+            padding: 20px;
+            border: 3px solid #4a3728;
+        }
+        .shelf-title {
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .potions {
             display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .potion {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.3);
-            font-size: 0.8rem;
-            margin-top: 10px;
-            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
-        .alert-ticker {
-            background: rgba(255,107,53,0.1);
-            padding: 8px 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            animation: tickerGlow 2s ease-in-out infinite;
+        .potion:hover {
+            transform: scale(1.1) rotate(5deg);
         }
-        @keyframes tickerGlow {
-            0%, 100% { border-left: 3px solid var(--neon-orange); }
-            50% { border-left: 3px solid transparent; }
+        .potion-bottle {
+            width: 40px;
+            height: 60px;
+            border-radius: 5px 5px 15px 15px;
+            position: relative;
         }
+        .potion-bottle::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 12px;
+            background: #5d4e37;
+            border-radius: 3px 3px 0 0;
+        }
+        .health { background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%); box-shadow: 0 0 15px #e74c3c; }
+        .mana { background: linear-gradient(180deg, #3498db 0%, #2980b9 100%); box-shadow: 0 0 15px #3498db; }
+        .luck { background: linear-gradient(180deg, #f1c40f 0%, #f39c12 100%); box-shadow: 0 0 15px #f1c40f; }
+        .mystery { background: linear-gradient(180deg, #9b59b6 0%, #8e44ad 100%); box-shadow: 0 0 15px #9b59b6; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 15px #9b59b6; }
+            50% { box-shadow: 0 0 25px #9b59b6, 0 0 35px #8e44ad; }
+        }
+        .potion-label {
+            font-size: 0.75rem;
+            margin-top: 8px;
+            color: #bdc3c7;
+        }
+        .counter {
+            margin-top: 30px;
+            background: linear-gradient(90deg, #2c1810, #3d2817, #2c1810);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #5d4e37;
+        }
+        .counter p {
+            color: #7bed9f;
+            font-size: 1.1rem;
+        }
+        .gold { color: #f1c40f !important; font-weight: bold; }
     </style>
 </head>
 <body>
-<header class="factory-header">
-<div class="factory-title">🏭 NEXUS-7 ROBOT FACTORY</div>
-<div class="status-indicator">
-<span class="status-dot"></span>
-<span>SYSTEMS ONLINE</span>
+<div class="shop">
+<div class="shop-sign">
+<h1>🧙 The Mystic Cauldron 🧙</h1>
+<p>"Brews for every need, prices you can bleed"</p>
 </div>
-</header>
-<main class="dashboard">
-<section class="panel">
-<h2 class="panel-title">📊 Production Stats</h2>
-<div class="stat-row"><span>Robots Built Today</span><span class="stat-value">1,247</span></div>
-<div class="stat-row"><span>Efficiency</span><span class="stat-value">94.7%</span></div>
-<div class="stat-row"><span>Power Usage</span><span class="stat-value">82 MW</span></div>
-<div class="stat-row"><span>Queue</span><span class="stat-value">358 units</span></div>
-<div class="community-zone">[ Community Stats Zone ]</div>
-</section>
-<section class="panel">
-<h2 class="panel-title">🔧 Assembly Line Alpha</h2>
-<div class="assembly-line">
-<div class="conveyor"></div>
-<span class="robot">🤖</span>
-<span class="robot">🦾</span>
-<span class="robot">🤖</span>
+<div class="main-area">
+<div class="cauldron-area">
+<div class="cauldron">
+<div class="smoke">💨</div>
+<div class="brew">
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
 </div>
-</section>
-<section class="panel">
-<h2 class="panel-title">⚠️ System Alerts</h2>
-<div class="alert-ticker">Sector 7G: Maintenance scheduled 02:00</div>
-<div class="alert-ticker">New model TX-500 approved for production</div>
-<div class="alert-ticker">Coffee machine in break room: CRITICAL</div>
-<div class="community-zone">[ Community Alerts Zone ]</div>
-</section>
-</main>
+</div>
+<p style="margin-top: 20px; color: #7bed9f;">✨ Currently brewing... ✨</p>
+</div>
+<div class="potion-shelf">
+<h2 class="shelf-title">📜 Potions for Sale 📜</h2>
+<div class="potions">
+<div class="potion">
+<div class="potion-bottle health"></div>
+<span class="potion-label">Health Elixir</span>
+</div>
+<div class="potion">
+<div class="potion-bottle mana"></div>
+<span class="potion-label">Mana Tonic</span>
+</div>
+<div class="potion">
+<div class="potion-bottle luck"></div>
+<span class="potion-label">Liquid Luck</span>
+</div>
+<div class="potion">
+<div class="potion-bottle mystery"></div>
+<span class="potion-label">??? Mystery ???</span>
+</div>
+</div>
+</div>
+</div>
+<div class="counter">
+<p>🔔 Ring the bell for service! 🔔</p>
+<p class="gold">💰 Shop Gold: 847g</p>
+</div>
+</div>
 </body>
 </html>
