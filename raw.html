@@ -4,147 +4,267 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>🌲 Enchanted Forest Quest</title>
+<title>The Whispering Flask - Mystical Potions</title>
 <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 40%, #2d4a3e 100%);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(180deg, #0d0a1a 0%, #1a0f2e 50%, #0f0a18 100%);
+            font-family: 'Crimson Text', serif;
+            color: #d4c4a8;
             overflow-x: hidden;
+        }
+        
+        .shop {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
             position: relative;
         }
-        .forest-bg {
-            position: absolute; width: 100%; height: 100%;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10 100 L15 60 L5 60 L15 40 L8 40 L18 20 L28 40 L21 40 L31 60 L21 60 L26 100Z' fill='%23152614'/%3E%3Cpath d='M40 100 L48 50 L38 50 L50 25 L62 50 L52 50 L60 100Z' fill='%231a3318'/%3E%3Cpath d='M70 100 L75 65 L67 65 L78 35 L89 65 L81 65 L86 100Z' fill='%23142513'/%3E%3C/svg%3E") repeat-x bottom;
-            background-size: 300px 200px; opacity: 0.6; pointer-events: none;
+        
+        .shop-sign {
+            text-align: center;
+            padding: 30px 0 20px;
         }
-        .game-title {
-            text-align: center; padding: 30px 20px 15px;
-            position: relative; z-index: 10;
-        }
-        .game-title h1 {
-            font-size: 2.8rem; color: #7fff7f;
-            text-shadow: 0 0 20px #3a5a40, 0 0 40px #2d4a3e, 2px 2px 4px #000;
+        
+        .shop-sign h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: #c9a227;
+            text-shadow: 0 0 20px rgba(201, 162, 39, 0.5), 0 0 40px rgba(201, 162, 39, 0.3);
             letter-spacing: 3px;
         }
-        .game-title p { color: #a8dadc; font-size: 1rem; margin-top: 8px; opacity: 0.9; }
-        .game-area {
-            display: flex; justify-content: center; align-items: flex-end;
-            gap: 40px; padding: 20px; min-height: 400px;
-            position: relative; z-index: 5;
+        
+        .shop-sign p {
+            font-style: italic;
+            opacity: 0.7;
+            margin-top: 8px;
         }
-        .hero {
-            width: 80px; height: 120px; position: relative;
-            animation: heroFloat 2s ease-in-out infinite;
+        
+        .fog {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(transparent, rgba(138, 79, 255, 0.1));
+            pointer-events: none;
+            animation: fogPulse 4s ease-in-out infinite;
         }
-        .hero-body {
-            width: 50px; height: 60px; background: #8b5a2b;
-            border-radius: 10px 10px 5px 5px; margin: 0 auto;
-            position: relative; box-shadow: inset -5px 0 10px rgba(0,0,0,0.3);
+        
+        @keyframes fogPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
         }
-        .hero-head {
-            width: 40px; height: 40px; background: #ffd6a5;
-            border-radius: 50%; margin: 0 auto 5px;
-            position: relative; box-shadow: inset -3px 0 8px rgba(0,0,0,0.2);
+        
+        .shelves {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 30px 0;
         }
-        .hero-head::before { content: '👀'; position: absolute; top: 10px; left: 8px; font-size: 12px; }
-        .hero-hat {
-            width: 50px; height: 25px; background: #2d6a4f;
-            border-radius: 50% 50% 0 0; position: absolute; top: -15px; left: -5px;
+        
+        .potion {
+            width: 80px;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        @keyframes heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .magic-tree {
-            width: 120px; text-align: center; cursor: pointer;
-            transition: transform 0.3s;
+        
+        .potion:hover {
+            transform: translateY(-10px) scale(1.1);
         }
-        .magic-tree:hover { transform: scale(1.1); }
-        .tree-crown {
-            width: 100px; height: 80px; background: radial-gradient(ellipse, #4a7c59 0%, #2d5a3d 100%);
-            border-radius: 50%; margin: 0 auto; position: relative;
-            box-shadow: 0 0 30px rgba(100, 200, 100, 0.4);
+        
+        .potion .bottle {
+            width: 60px;
+            height: 90px;
+            margin: 0 auto;
+            border-radius: 5px 5px 20px 20px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.1), 0 5px 20px rgba(0,0,0,0.5);
         }
-        .tree-crown::after {
-            content: '✨'; position: absolute; top: 10px; left: 50%;
-            transform: translateX(-50%); font-size: 20px;
-            animation: sparkle 1.5s ease-in-out infinite;
+        
+        .potion .cork {
+            width: 30px;
+            height: 15px;
+            background: #8b6914;
+            margin: 0 auto;
+            border-radius: 3px 3px 0 0;
         }
-        @keyframes sparkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .tree-trunk { width: 25px; height: 40px; background: #5c4033; margin: 0 auto; border-radius: 0 0 5px 5px; }
-        .tree-label { color: #a8dadc; font-size: 0.85rem; margin-top: 8px; }
-        .firefly {
-            position: absolute; width: 6px; height: 6px;
-            background: #ffffaa; border-radius: 50%;
-            box-shadow: 0 0 10px #ffffaa, 0 0 20px #ffffaa;
-            animation: fireflyFloat 4s ease-in-out infinite;
+        
+        .potion .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            animation: potionGlow 2s ease-in-out infinite;
         }
-        @keyframes fireflyFloat {
-            0%, 100% { transform: translate(0, 0); opacity: 0.8; }
-            25% { transform: translate(20px, -30px); opacity: 1; }
-            50% { transform: translate(-10px, -50px); opacity: 0.6; }
-            75% { transform: translate(15px, -20px); opacity: 1; }
+        
+        @keyframes potionGlow {
+            0%, 100% { box-shadow: 0 0 10px currentColor; }
+            50% { box-shadow: 0 0 25px currentColor, 0 0 40px currentColor; }
         }
-        .quest-board {
-            background: linear-gradient(135deg, #3d2914 0%, #5c4033 100%);
-            border: 4px solid #8b5a2b; border-radius: 10px;
-            padding: 15px 20px; margin: 20px auto; max-width: 500px;
-            position: relative; z-index: 10;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        
+        .potion.health .bottle { background: linear-gradient(180deg, #ff6b6b 0%, #c0392b 100%); }
+        .potion.health .glow { color: #ff6b6b; }
+        
+        .potion.mana .bottle { background: linear-gradient(180deg, #74b9ff 0%, #0984e3 100%); }
+        .potion.mana .glow { color: #74b9ff; }
+        
+        .potion.poison .bottle { background: linear-gradient(180deg, #55efc4 0%, #00b894 100%); }
+        .potion.poison .glow { color: #55efc4; }
+        
+        .potion.mystery .bottle { background: linear-gradient(180deg, #a29bfe 0%, #6c5ce7 100%); }
+        .potion.mystery .glow { color: #a29bfe; }
+        
+        .potion-label {
+            text-align: center;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .quest-board h2 { color: #ffd700; font-size: 1.3rem; margin-bottom: 10px; }
-        .quest-board ul { list-style: none; text-align: left; }
-        .quest-board li {
-            color: #e0d5c7; padding: 5px 0; font-size: 0.95rem;
-            border-bottom: 1px dashed #6b4423;
+        
+        .potion:hover .potion-label { opacity: 1; }
+        
+        .cauldron-area {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
         }
-        .quest-board li::before { content: '🍃 '; }
-        .community-zone {
-            text-align: center; padding: 20px;
-            border: 2px dashed #4a7c59; border-radius: 15px;
-            margin: 20px auto; max-width: 600px; opacity: 0.7;
+        
+        .cauldron {
+            width: 200px;
+            height: 150px;
+            background: #2d2d2d;
+            border-radius: 0 0 100px 100px;
+            position: relative;
+            box-shadow: inset 0 -30px 50px rgba(138, 79, 255, 0.4), 0 10px 30px rgba(0,0,0,0.5);
         }
-        .community-zone p { color: #7faa8b; font-style: italic; }
+        
+        .cauldron::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -15px;
+            right: -15px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+        
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 60%;
+            bottom: 20%;
+            overflow: hidden;
+        }
+        
+        .bubble {
+            position: absolute;
+            background: rgba(138, 79, 255, 0.6);
+            border-radius: 50%;
+            animation: rise 3s infinite ease-in;
+        }
+        
+        .bubble:nth-child(1) { width: 15px; height: 15px; left: 30%; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 10px; height: 10px; left: 50%; animation-delay: 0.5s; }
+        .bubble:nth-child(3) { width: 12px; height: 12px; left: 70%; animation-delay: 1s; }
+        .bubble:nth-child(4) { width: 8px; height: 8px; left: 40%; animation-delay: 1.5s; }
+        
+        @keyframes rise {
+            0% { bottom: 0; opacity: 1; }
+            100% { bottom: 100%; opacity: 0; }
+        }
+        
+        .community-board {
+            background: rgba(20, 15, 35, 0.8);
+            border: 2px solid #c9a227;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .community-board h2 {
+            font-family: 'Cinzel', serif;
+            color: #c9a227;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.5), transparent),
+                        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.7), transparent);
+            background-size: 200px 200px;
+            animation: twinkle 5s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-<div class="forest-bg"></div>
-<div class="firefly" style="top: 15%; left: 20%;"></div>
-<div class="firefly" style="top: 25%; left: 70%; animation-delay: 1s;"></div>
-<div class="firefly" style="top: 40%; left: 40%; animation-delay: 2s;"></div>
-<div class="firefly" style="top: 35%; left: 85%; animation-delay: 0.5s;"></div>
-<div class="firefly" style="top: 50%; left: 15%; animation-delay: 1.5s;"></div>
-<div class="game-title">
-<h1>🌲 Enchanted Forest Quest 🌲</h1>
-<p>A magical adventure awaits in the whispering woods...</p>
+<div class="stars"></div>
+<div class="fog"></div>
+<div class="shop">
+<header class="shop-sign">
+<h1>🌙 The Whispering Flask 🌙</h1>
+<p>"Brews for the bold, elixirs for the wise"</p>
+</header>
+<section class="shelves">
+<div class="potion health">
+<div class="cork"></div>
+<div class="bottle"><div class="glow"></div></div>
+<div class="potion-label">Health Elixir</div>
 </div>
-<div class="game-area">
-<div class="magic-tree" onclick="this.querySelector('.tree-crown').style.boxShadow='0 0 50px rgba(150, 255, 150, 0.8)'">
-<div class="tree-crown"></div>
-<div class="tree-trunk"></div>
-<div class="tree-label">Ancient Oak</div>
+<div class="potion mana">
+<div class="cork"></div>
+<div class="bottle"><div class="glow"></div></div>
+<div class="potion-label">Mana Essence</div>
 </div>
-<div class="hero">
-<div class="hero-hat"></div>
-<div class="hero-head"></div>
-<div class="hero-body"></div>
+<div class="potion poison">
+<div class="cork"></div>
+<div class="bottle"><div class="glow"></div></div>
+<div class="potion-label">Serpent's Kiss</div>
 </div>
-<div class="magic-tree" onclick="this.querySelector('.tree-crown').style.boxShadow='0 0 50px rgba(150, 255, 150, 0.8)'">
-<div class="tree-crown"></div>
-<div class="tree-trunk"></div>
-<div class="tree-label">Mystic Pine</div>
+<div class="potion mystery">
+<div class="cork"></div>
+<div class="bottle"><div class="glow"></div></div>
+<div class="potion-label">???</div>
+</div>
+</section>
+<section class="cauldron-area">
+<div class="cauldron">
+<div class="bubbles">
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
 </div>
 </div>
-<div class="quest-board">
-<h2>📜 Quest Board</h2>
-<ul>
-<li>Find the hidden mushroom circle</li>
-<li>Befriend a forest creature</li>
-<li>Discover the glowing spring</li>
-</ul>
-</div>
-<div class="community-zone">
-<p>🌿 The forest grows with every visitor... what will you add? 🌿</p>
+</section>
+<aside class="community-board">
+<h2>📜 Shopkeeper's Notice</h2>
+<p>Welcome, traveler! This humble shop awaits your contributions...<br/>
+<em>What potions shall we brew next?</em></p>
+</aside>
 </div>
 </body>
 </html>
