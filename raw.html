@@ -4,195 +4,222 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta charset="utf-8"/>
-<title>Ravenswood Manor - A Mystery Awaits</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYNTHWAVE RADIO</title>
 <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            background: linear-gradient(180deg, #0a0a12 0%, #1a1020 50%, #0d0d15 100%);
-            color: #c9b896;
-            font-family: 'Georgia', serif;
-            overflow-x: hidden;
+            background: linear-gradient(180deg, #0d0221 0%, #150734 50%, #1a0a2e 100%);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             position: relative;
         }
-        .fog {
+        
+        /* Retro Grid Floor */
+        .grid-floor {
             position: absolute;
+            bottom: 0;
             width: 200%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(200,200,220,0.03)"/></svg>');
-            animation: drift 30s linear infinite;
-            pointer-events: none;
-            opacity: 0.6;
+            height: 45%;
+            background: linear-gradient(transparent 0%, rgba(255,0,128,0.1) 100%),
+                repeating-linear-gradient(90deg, transparent, transparent 60px, #ff00ff33 60px, #ff00ff33 61px),
+                repeating-linear-gradient(0deg, transparent, transparent 30px, #00ffff33 30px, #00ffff33 31px);
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center top;
+            animation: gridScroll 20s linear infinite;
         }
-        @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         
-        .mansion-header {
-            text-align: center;
-            padding: 40px 20px 20px;
+        @keyframes gridScroll {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: 0 0, 0 1000px, 0 1000px; }
+        }
+        
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 10%;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(180deg, #ff6b35 0%, #f72585 50%, #7209b7 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #f72585, 0 0 120px #f7258577;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%, 0 55%, 100% 55%, 100% 62%, 0 62%, 0 70%, 100% 70%, 100% 80%, 0 80%, 0 100%, 100% 100%);
+        }
+        
+        /* Main Player Container */
+        .player {
             position: relative;
-        }
-        .mansion-title {
-            font-size: 3rem;
-            color: #8b0000;
-            text-shadow: 0 0 20px rgba(139,0,0,0.5), 2px 2px 4px #000;
-            letter-spacing: 4px;
-            animation: flicker 4s infinite;
-        }
-        .subtitle {
-            font-style: italic;
-            opacity: 0.7;
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.7; }
-            94% { opacity: 1; }
-            96% { opacity: 0.8; }
-            97% { opacity: 1; }
+            z-index: 10;
+            background: linear-gradient(145deg, rgba(20,10,40,0.9) 0%, rgba(10,5,30,0.95) 100%);
+            border: 2px solid #ff00ff55;
+            border-radius: 20px;
+            padding: 30px 40px;
+            box-shadow: 0 0 30px #ff00ff33, inset 0 0 30px rgba(0,255,255,0.05);
+            backdrop-filter: blur(10px);
         }
         
-        .main-content {
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            text-shadow: 0 0 30px #ff00ff;
+            margin-bottom: 25px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        /* Visualizer */
+        .visualizer {
             display: flex;
+            align-items: flex-end;
             justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            flex-wrap: wrap;
-            max-width: 1400px;
-            margin: 0 auto;
+            gap: 6px;
+            height: 80px;
+            margin-bottom: 25px;
         }
         
-        .mansion-silhouette {
-            width: 300px;
-            height: 250px;
-            background: linear-gradient(180deg, #0d0d15 60%, transparent);
-            position: relative;
-            border-bottom: 3px solid #2a2035;
-        }
-        .mansion-silhouette::before {
-            content: '🏚️';
-            font-size: 180px;
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: brightness(0.3) contrast(1.2);
-        }
-        .window {
-            position: absolute;
-            width: 20px;
-            height: 25px;
-            background: #3a2010;
-            box-shadow: 0 0 15px 5px rgba(255,150,50,0.3);
-            animation: windowGlow 3s ease-in-out infinite;
-        }
-        .window:nth-child(1) { top: 80px; left: 100px; animation-delay: 0s; }
-        .window:nth-child(2) { top: 80px; left: 180px; animation-delay: 1.5s; }
-        .window:nth-child(3) { top: 140px; left: 140px; animation-delay: 0.7s; }
-        @keyframes windowGlow {
-            0%, 100% { box-shadow: 0 0 15px 5px rgba(255,150,50,0.3); }
-            50% { box-shadow: 0 0 25px 8px rgba(255,100,30,0.5); }
+        .bar {
+            width: 12px;
+            background: linear-gradient(180deg, #00ffff 0%, #ff00ff 100%);
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 0 10px currentColor;
+            animation: bounce 0.5s ease-in-out infinite alternate;
         }
         
-        .door-container {
+        .bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 80%; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 50%; animation-delay: 0.15s; }
+        .bar:nth-child(5) { height: 90%; animation-delay: 0.3s; }
+        .bar:nth-child(6) { height: 70%; animation-delay: 0.05s; }
+        .bar:nth-child(7) { height: 40%; animation-delay: 0.25s; }
+        .bar:nth-child(8) { height: 85%; animation-delay: 0.12s; }
+        .bar:nth-child(9) { height: 55%; animation-delay: 0.18s; }
+        .bar:nth-child(10) { height: 35%; animation-delay: 0.08s; }
+        
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); opacity: 0.7; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+        
+        /* Track Info */
+        .track-info {
             text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .door-container:hover { transform: scale(1.05); }
-        .door {
-            font-size: 100px;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
-            transition: transform 0.5s;
-        }
-        .door-container:hover .door { transform: perspective(200px) rotateY(-15deg); }
-        .door-label {
-            font-size: 0.9rem;
-            margin-top: 10px;
-            color: #666;
+            margin-bottom: 20px;
         }
         
-        .clue-board {
-            background: linear-gradient(145deg, #2a1f15 0%, #1a1510 100%);
-            border: 4px solid #3d2b1f;
-            padding: 20px;
-            width: 320px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .clue-board h3 {
-            color: #8b0000;
-            border-bottom: 1px solid #4a3525;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+        .track-name {
+            font-family: 'Orbitron', monospace;
             font-size: 1.3rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff77;
         }
-        .clue {
-            background: rgba(255,250,240,0.05);
-            padding: 10px;
-            margin: 8px 0;
-            border-left: 3px solid #5a3d2b;
-            font-size: 0.95rem;
-        }
-        .clue::before { content: '🔍 '; }
         
-        .candles {
+        .artist {
+            font-size: 1rem;
+            color: #ff00ff;
+            opacity: 0.8;
+        }
+        
+        /* Controls */
+        .controls {
             display: flex;
             justify-content: center;
-            gap: 60px;
-            margin-top: 30px;
-        }
-        .candle {
-            font-size: 40px;
-            animation: candleFlicker 0.5s infinite alternate;
-        }
-        .candle:nth-child(2) { animation-delay: 0.1s; }
-        .candle:nth-child(3) { animation-delay: 0.2s; }
-        @keyframes candleFlicker {
-            from { filter: brightness(1); transform: scale(1); }
-            to { filter: brightness(1.3); transform: scale(1.02); }
+            gap: 20px;
         }
         
-        .ghost-zone {
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
-            border: 1px dashed #333;
-            color: #555;
-            font-style: italic;
+        .btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            background: transparent;
+            color: #00ffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: #00ffff22;
+            box-shadow: 0 0 20px #00ffff55, inset 0 0 20px #00ffff22;
+            transform: scale(1.1);
+        }
+        
+        .btn.play {
+            width: 65px;
+            height: 65px;
+            border-color: #ff00ff;
+            color: #ff00ff;
+            font-size: 1.5rem;
+        }
+        
+        .btn.play:hover {
+            background: #ff00ff22;
+            box-shadow: 0 0 25px #ff00ff55, inset 0 0 25px #ff00ff22;
+        }
+        
+        /* Community Zone Placeholder */
+        .community-zone {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            color: #ffffff55;
+            border: 1px dashed #ffffff33;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-<div class="fog"></div>
-<header class="mansion-header">
-<h1 class="mansion-title">RAVENSWOOD MANOR</h1>
-<p class="subtitle">"Some doors are better left unopened..."</p>
-</header>
-<main class="main-content">
-<div class="mansion-silhouette">
-<div class="window"></div>
-<div class="window"></div>
-<div class="window"></div>
+<div class="sun"></div>
+<div class="grid-floor"></div>
+<div class="player">
+<h1 class="title">Synthwave Radio</h1>
+<div class="visualizer">
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
 </div>
-<div class="door-container" onclick="this.querySelector('.door-label').textContent='The door creaks... 👁️'">
-<div class="door">🚪</div>
-<p class="door-label">Click to enter...</p>
+<div class="track-info">
+<div class="track-name">Neon Dreams</div>
+<div class="artist">The Midnight</div>
 </div>
-<div class="clue-board">
-<h3>📜 Evidence Board</h3>
-<div class="clue">The butler was last seen at midnight</div>
-<div class="clue">A broken pocket watch stopped at 3:33 AM</div>
-<div class="clue">Strange scratches on the library door</div>
+<div class="controls">
+<button class="btn" title="Previous">⏮</button>
+<button class="btn play" title="Play/Pause">▶</button>
+<button class="btn" title="Next">⏭</button>
 </div>
-</main>
-<div class="candles">
-<span class="candle">🕯️</span>
-<span class="candle">🕯️</span>
-<span class="candle">🕯️</span>
 </div>
-<div class="ghost-zone">
-        👻 The spirits await more visitors... 👻
-    </div>
+<div class="community-zone">💜 Community additions go here</div>
 </body>
 </html>
