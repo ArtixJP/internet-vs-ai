@@ -1,41 +1,259 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://esm.sh https://esm.run https://cdn.tailwindcss.com https://threejs.org https://cdn.threejs.org https://cdn.p5js.org https://code.jquery.com https://d3js.org https://cdn.plot.ly https://cdn.tonejs.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'self' https: wss: ws:; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <title>New Epoch Starting...</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>🧪 The Bubbling Cauldron - Mystical Potions</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+            font-family: 'Crimson Text', serif;
+            color: #e8d5b7;
+            overflow-x: hidden;
+        }
+        
+        .shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Shop Header */
+        .shop-header {
             text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
         }
-        .container {
-            animation: fadeIn 1s ease-out;
+        .shop-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #c9a227;
+            text-shadow: 0 0 20px rgba(201, 162, 39, 0.5), 0 0 40px rgba(201, 162, 39, 0.3);
+            letter-spacing: 3px;
         }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .shop-subtitle {
+            font-style: italic;
+            color: #9d8ec9;
+            margin-top: 10px;
+            font-size: 1.2rem;
         }
-        p { font-size: 1.1rem; opacity: 0.8; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        /* Potion Shelves */
+        .shelves {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .potion {
+            width: 100px;
+            height: 140px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .potion:hover {
+            transform: scale(1.1) translateY(-10px);
+        }
+        .bottle {
+            width: 60px;
+            height: 100px;
+            margin: 0 auto;
+            border-radius: 0 0 30px 30px;
+            position: relative;
+            box-shadow: inset 0 -20px 30px rgba(0,0,0,0.3), 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .bottle::before {
+            content: '';
+            position: absolute;
+            top: -15px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 20px;
+            background: #8b4513;
+            border-radius: 3px;
+        }
+        .bottle.health { background: linear-gradient(180deg, #ff6b6b 0%, #c92a2a 100%); }
+        .bottle.mana { background: linear-gradient(180deg, #74c0fc 0%, #1971c2 100%); }
+        .bottle.poison { background: linear-gradient(180deg, #8ce99a 0%, #2f9e44 100%); }
+        .bottle.mystery { background: linear-gradient(180deg, #da77f2 0%, #9c36b5 100%); }
+        .bottle.gold { background: linear-gradient(180deg, #ffd43b 0%, #f59f00 100%); }
+        
+        .bubble {
+            position: absolute;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            animation: bubble 2s infinite ease-in-out;
+        }
+        @keyframes bubble {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(-20px); opacity: 0.8; }
+        }
+        
+        .potion-name {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #c9a227;
+        }
+        
+        /* Cauldron */
+        .cauldron-area {
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .cauldron {
+            width: 200px;
+            height: 150px;
+            background: #2d2d2d;
+            border-radius: 0 0 100px 100px;
+            position: relative;
+            box-shadow: inset 0 -30px 50px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .cauldron::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px;
+            height: 80px;
+            background: linear-gradient(180deg, #4a1f7a 0%, #2d1b4e 100%);
+            border-radius: 50%;
+            animation: brew 3s infinite ease-in-out;
+        }
+        @keyframes brew {
+            0%, 100% { box-shadow: 0 0 20px #9b59b6, inset 0 0 30px rgba(155, 89, 182, 0.5); }
+            50% { box-shadow: 0 0 40px #9b59b6, inset 0 0 50px rgba(155, 89, 182, 0.7); }
+        }
+        .steam {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(155, 89, 182, 0.6);
+            font-size: 2rem;
+            animation: steam 2s infinite;
+        }
+        @keyframes steam {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.8; transform: translateX(-50%) translateY(-20px); }
+        }
+        
+        /* Community Area */
+        .community-board {
+            background: rgba(45, 27, 78, 0.6);
+            border: 2px solid #c9a227;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .board-title {
+            font-family: 'Cinzel', serif;
+            color: #c9a227;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        .board-content {
+            font-style: italic;
+            color: #9d8ec9;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌅 New Epoch Starting</h1>
-        <p>AI is generating a fresh page based on the new theme...</p>
-    </div>
+<div class="particles">
+<div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+<div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+<div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+<div class="particle" style="left: 70%; animation-delay: 1s;"></div>
+<div class="particle" style="left: 90%; animation-delay: 3s;"></div>
+</div>
+<div class="shop-container">
+<header class="shop-header">
+<h1 class="shop-title">✨ The Bubbling Cauldron ✨</h1>
+<p class="shop-subtitle">"Where magic meets remedy, and dreams become elixirs"</p>
+</header>
+<section class="shelves">
+<div class="potion">
+<div class="bottle health">
+<div class="bubble" style="width:6px;height:6px;bottom:20px;left:15px;animation-delay:0s;"></div>
+<div class="bubble" style="width:4px;height:4px;bottom:30px;left:30px;animation-delay:0.5s;"></div>
+</div>
+<p class="potion-name">Health Elixir</p>
+</div>
+<div class="potion">
+<div class="bottle mana">
+<div class="bubble" style="width:5px;height:5px;bottom:25px;left:20px;animation-delay:0.3s;"></div>
+</div>
+<p class="potion-name">Mana Tonic</p>
+</div>
+<div class="potion">
+<div class="bottle poison">
+<div class="bubble" style="width:4px;height:4px;bottom:15px;left:25px;animation-delay:0.7s;"></div>
+</div>
+<p class="potion-name">Venom Extract</p>
+</div>
+<div class="potion">
+<div class="bottle mystery">
+<div class="bubble" style="width:6px;height:6px;bottom:35px;left:18px;animation-delay:0.2s;"></div>
+<div class="bubble" style="width:3px;height:3px;bottom:20px;left:35px;animation-delay:0.8s;"></div>
+</div>
+<p class="potion-name">??? Brew</p>
+</div>
+<div class="potion">
+<div class="bottle gold">
+<div class="bubble" style="width:5px;height:5px;bottom:28px;left:22px;animation-delay:0.4s;"></div>
+</div>
+<p class="potion-name">Liquid Fortune</p>
+</div>
+</section>
+<section class="cauldron-area">
+<div class="cauldron">
+<span class="steam">〰️</span>
+</div>
+</section>
+<section class="community-board">
+<h2 class="board-title">📜 Shopkeeper's Notice Board</h2>
+<p class="board-content">The community's magical requests shall appear here...</p>
+</section>
+</div>
 </body>
 </html>
